@@ -91,7 +91,7 @@ def parseFile(file):
                         measure_num_real += 1
                         out[measure_num_real] = out[i]
                         if i in sections.keys():
-                            print(f"Bar {measure_num_real}, Section {sections[i]}")
+                            # print(f"Bar {measure_num_real}, Section {sections[i]}")
                             sections[measure_num_real] = sections[i]
 
                     find_section = None
