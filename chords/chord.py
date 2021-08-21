@@ -45,8 +45,8 @@ class Chord:
         if self.bass != None: bass = f"/{self.bass}"
         return str(self.root) + ": " + str(self.components) + bass
 
-    def toSymbol(self, key=0, includeRoot=True, keyLess=False) -> str:
-        return Symbol((self.root + key) % 12, self.components, self.bass).toString(includeRoot, keyLess)
+    def toSymbol(self, key=0, includeRoot=True, keyLess=False, includeBass=True) -> str:
+        return Symbol((self.root + key) % 12, self.components, self.bass).toString(includeRoot, keyLess, includeBass)
 
     def getNotes(self, key=0):
         notes = []

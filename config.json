@@ -1,0 +1,14 @@
+{
+  "xmldirectory": {
+    "full": ["dataset/xml/", "dataset/xml2"],
+    "sample": ["dataset/sample_tunes/"],
+    "test": ["dataset/test2/"]
+  },
+  "config": {
+    "input": "test",
+	"use_basic_chords": false,
+    "reduce_consecutive_chords": true,
+	"N_ngrams": 4,
+    "output_directory": "./chord_sequences"
+  }
+}
