@@ -8,7 +8,7 @@ class Symbol:
         self.components = components
         self.bass = bass
 
-    def toString(self, includeRoot=True, keyLess=False) -> str:
+    def toString(self, includeRoot=True, keyLess=False, includeBass=True) -> str:
         self.notesLeft = self.components.copy()
 
         # each method takes notes away the relevant note(s) from notesLeft
@@ -22,7 +22,9 @@ class Symbol:
         if includeRoot: note = Note(self.root).toSymbol()
         if includeRoot and keyLess: note = str(self.root)
         bass = ""
-        if self.bass != None: bass = f"/{Note(self.bass).toSymbol()}"
+        if includeBass:
+            if self.bass is not None:
+                bass = f"/{Note(self.bass).toSymbol()}"
         return note + minmaj + augdim + seventh + additions + sus + bass
 
     def getSus(self) -> str:
