@@ -11,7 +11,7 @@ composers = {}
 keys = {}
 for file in files:
     # print(file)
-    out[file], key, mode, composer = parseFile(xmldirectory + file)
+    out[file], key, mode, composer, sections, measure_num_real, max_num_chords_per_bar = parseFile(xmldirectory + file)
     composers[file] = composer
     keys[file] = {'key': key,
                   'mode': mode}
