@@ -2,7 +2,11 @@ import json
 
 def readData(modifier):
     data = json.load(open('dataset/parsed.json'))
-    represent = lambda chord: {'root': chord['root'], 'components': modifier(chord['degrees'])}
+    represent = lambda chord: {'root': chord['root'],
+                               'components': modifier(chord['degrees']),
+                               'bass': chord['bass'],
+                               'measure': chord['measure'],
+                               }
 
     seqs = []
     for key in data.keys():
@@ -11,6 +15,7 @@ def readData(modifier):
         for measureKey in song.keys():
             measure = song[measureKey]
             for chord in measure:
+                chord['measure'] = measureKey
                 seq += [represent(chord)]
         seqs += [seq]
     
