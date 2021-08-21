@@ -5,8 +5,8 @@ from dataset.xmlChildren import getChild, getChildren
 #A:0 B:2 C:3 D:5 E:7 F:8 G:10
 class ChordXML:
     def __init__(self, harmony, keytag):
-        self.harmony = harmony # music xml harmony tag
-        self.key = self.parseKey(keytag) # music xml key tag
+        self.harmony = harmony  # music xml harmony tag
+        self.key = self.parseKey(keytag)  # default key of the tune; A:0, C:3
         self.root = self.getRoot()
         self.bass = self.parseBass() # using self.harmony
         self.degrees = self.alterDegrees(self.getDegreesFromKind())
@@ -65,6 +65,7 @@ class ChordXML:
         kindEl = getChild(self.harmony, "kind")
         if ("text" in kindEl.attrib):
             attr = kindEl.attrib["text"]
+            if (attr == 'N.C.'):   return []  # N.C. => No Chord
             if (attr == ""):       return [4, 7]
             if (attr == "m"):      return [3, 7]
             if (attr == "6"):      return [4, 7, 9]
@@ -94,7 +95,7 @@ class ChordXML:
             text = kindEl.text
             if (text == "major"): return [4, 7]
             if (text == "diminished"): return [3, 6]
-            if (text == "diminished-seventh"): return [3, 6, 10]
+            if (text == "diminished-seventh"): return [3, 6, 9]
         
         print("weird kind degree!!: " + kindEl.text)
 
