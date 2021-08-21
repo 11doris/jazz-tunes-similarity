@@ -15,6 +15,7 @@ def parseFile(file):
     attribute = getChild(part1[0], "attributes")
     key = getChild(attribute, "key")
     keynumber = None
+    mode = getChild(key, "mode").text
 
     out = {}
     for measure in part1:
@@ -26,10 +27,10 @@ def parseFile(file):
         # parse the harmony tag with Chord().toJson and put it into the json file
         chords = []
         for harmony in harmonies:
-            chord = ChordXML(harmony, key)
+            chord = ChordXML(harmony, key)  # chord.key is the default key of the tune, 0 = C!
             keynumber = chord.key
             chords += [chord.toJson()]
         # chords = [Chord(harmony, key).toJson() for harmony in harmonies]
         out[measure.attrib["number"]] = chords
 
-    return out, keynumber, composer
+    return out, keynumber, mode, composer
