@@ -65,6 +65,7 @@ class ChordXML:
         kindEl = getChild(self.harmony, "kind")
         if ("text" in kindEl.attrib):
             attr = kindEl.attrib["text"]
+            if (attr == 'N.C.'):   return []  # N.C. => No Chord
             if (attr == ""):       return [4, 7]
             if (attr == "m"):      return [3, 7]
             if (attr == "6"):      return [4, 7, 9]
