@@ -1,6 +1,7 @@
 import functools
 from typing import List, Optional
 from chords.symbol.parts.noteSymbol import Note
+import re
 
 class Symbol:
     def __init__(self, root:int, components:List[int], bass:Optional[int]):
@@ -25,7 +26,14 @@ class Symbol:
         if includeBass:
             if self.bass is not None:
                 bass = f"/{Note(self.bass).toSymbol()}"
-        return note + minmaj + augdim + seventh + additions + sus + bass
+
+        chord_formatted = note + minmaj + augdim + seventh + additions + sus + bass
+
+        # fix for diminished chords
+        chord_formatted = re.sub('mdim7', 'm7b5', chord_formatted)
+        chord_formatted = re.sub('mdim6', 'dim7', chord_formatted)
+        return chord_formatted
+
 
     def getSus(self) -> str:
         r = lambda x: self.notesLeft.remove(x)
