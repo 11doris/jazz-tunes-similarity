@@ -24,13 +24,13 @@ composers = {}
 keys = {}
 meta_info = {}
 
-for file in files:
+for i, file in enumerate(files):
     print(file)
     out[file], key, mode, composer, sections, num_bars, max_num_chords_per_bar = parseFile(file)
     composers[file] = composer
     keys[file] = {'key': key,
                   'mode': mode}
-    meta_info[file] = {'title': os.path.splitext(os.path.basename(file))[0],
+    meta_info[i] = {'title': os.path.splitext(os.path.basename(file))[0],
                       'default_key': {'key': key,
                                       'mode': mode
                                       },
@@ -38,6 +38,7 @@ for file in files:
                       'sections': sections,
                       'num_bars': num_bars,
                       'max_num_chords_per_bar': max_num_chords_per_bar,
+                      'file_path': file,
                       }
 
 f = open("dataset/chords.json", "w")
