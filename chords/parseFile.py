@@ -6,6 +6,13 @@ from dataset.chordFromXML import ChordXML
 def get_chords(measure, key):
     # each measure (beat) has multiple harmonies (chords)
     harmonies = getChildren(measure, "harmony")
+    notes = getChildren(measure, 'note')
+
+    durations = []
+    for note in notes:
+        types = getChildren(note, 'type')
+        for _type in types:
+            durations += [_type.text]
 
     # parse the harmony tag with Chord().toJson and put it into the json file
     chords = []
@@ -14,7 +21,10 @@ def get_chords(measure, key):
         keynumber = chord.key
         chords += [chord.toJson()]
     # chords = [Chord(harmony, key).toJson() for harmony in harmonies]
-    return chords, keynumber
+
+    assert(len(chords) == len(durations))
+
+    return chords, durations, keynumber
 
 
 def parseFile(file):
@@ -23,8 +33,14 @@ def parseFile(file):
     part1 = getChild(root, "part")
 
     identification = getChild(root, "identification")
-    creator = getChild(identification, "creator")
-    composer = creator.text
+    creator = getChildren(identification, "creator")
+    composer = ""
+    style = ""
+    for el in creator:
+        if el.attrib['type'] == 'composer':
+            composer = el.text
+        elif el.attrib['type'] == 'lyricist':
+            style = el.text
 
     # get the song key xml information; the actual key is parsed with get_chords() further down
     attribute = getChild(part1[0], "attributes")
@@ -32,7 +48,13 @@ def parseFile(file):
     keynumber = None
     mode = getChild(key, "mode").text
 
+    # get the beat measure information
+    beats = getChild(attribute, 'time')
+    beat_time = {'beats': int(getChild(beats, "beats").text),
+                 'beat-time': int(getChild(beats, "beat-type").text)}
+
     out = {}
+    durations = {}
     sections = {}
     repeat_from = None
     ending1 = None
@@ -46,9 +68,10 @@ def parseFile(file):
 
         measure_num_xml = int(measure.attrib["number"])
         out[measure_num_real] = {}
+        durations[measure_num_real] = {}
         # print(f'Measure XML file: {measure_num_xml}, Real Measure: {measure_num_real}----- ')
 
-        out[measure_num_real], keynumber = get_chords(measure=measure, key=key)
+        out[measure_num_real], durations[measure_num_real], keynumber = get_chords(measure=measure, key=key)
 
         # retrieve the maximum number of chords per bar for this tune
         if len(out[measure_num_real]) > max_num_chords_per_bar:
@@ -98,4 +121,15 @@ def parseFile(file):
                     repeat_from = None
                     ending1 = None
 
-    return out, keynumber, mode, composer, sections, measure_num_real, max_num_chords_per_bar
+    _meta_info = {'default_key': {'key': keynumber,
+                                  'mode': mode
+                                  },
+                  'composer': composer,
+                  'style': style,
+                  'sections': sections,
+                  'num_bars': measure_num_real,
+                  'beat-time': beat_time,
+                  'max_num_chords_per_bar': max_num_chords_per_bar,
+                  }
+
+    return out, durations, _meta_info

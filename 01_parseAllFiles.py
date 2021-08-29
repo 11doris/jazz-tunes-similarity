@@ -20,35 +20,29 @@ print(f'Found {len(files)} files to parse... ')
 
 # parse the MusicXML files and generate a json object with the chords information
 out = {}
+durations = {}
 composers = {}
 keys = {}
 meta_info = {}
 
 for i, file in enumerate(files):
     print(file)
-    out[file], key, mode, composer, sections, num_bars, max_num_chords_per_bar = parseFile(file)
-    composers[file] = composer
-    keys[file] = {'key': key,
-                  'mode': mode}
-    meta_info[i] = {'title': os.path.splitext(os.path.basename(file))[0],
-                      'default_key': {'key': key,
-                                      'mode': mode
-                                      },
-                      'composer': composer,
-                      'sections': sections,
-                      'num_bars': num_bars,
-                      'max_num_chords_per_bar': max_num_chords_per_bar,
-                      'file_path': file,
-                      }
+    out[file], durations[file], info = parseFile(file)
+    meta_info[file] = info
+    meta_info[file]['title'] = os.path.splitext(os.path.basename(file))[0]
+    meta_info[file]['file_path'] = file
+
 
 f = open("dataset/chords.json", "w")
 f.write(json.dumps(out, indent=2))
+f.close()
+
+f = open("dataset/durations.json", "w")
+f.write(json.dumps(durations, indent=2))
 f.close()
 
 f = open("dataset/meta_info.json", "w")
 f.write(json.dumps(meta_info, indent=2))
 f.close()
 
-f = open("dataset/keys.json", "w")
-f.write(json.dumps(keys, indent=2))
-f.close()
+f
