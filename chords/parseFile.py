@@ -113,6 +113,7 @@ def parseFile(file):
                     for i in range(repeat_from, repeat_end):
                         measure_num_real += 1
                         out[measure_num_real] = out[i]
+                        durations[measure_num_real] = durations[i]
                         if i in sections.keys():
                             # print(f"Bar {measure_num_real}, Section {sections[i]}")
                             sections[measure_num_real] = sections[i]

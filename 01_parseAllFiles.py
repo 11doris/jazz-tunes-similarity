@@ -27,17 +27,17 @@ meta_info = {}
 
 for i, file in enumerate(files):
     print(file)
-    out[file], durations[file], info = parseFile(file)
-    meta_info[file] = info
-    meta_info[file]['title'] = os.path.splitext(os.path.basename(file))[0]
-    meta_info[file]['file_path'] = file
+    out[i], durations[i], info = parseFile(file)
+    meta_info[i] = info
+    meta_info[i]['title'] = os.path.splitext(os.path.basename(file))[0]
+    meta_info[i]['file_path'] = file
 
 
 f = open("dataset/chords.json", "w")
 f.write(json.dumps(out, indent=2))
 f.close()
 
-f = open("dataset/durations.json", "w")
+f = open("dataset/duration.json", "w")
 f.write(json.dumps(durations, indent=2))
 f.close()
 
