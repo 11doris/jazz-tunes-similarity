@@ -14,13 +14,6 @@ class ChordSequence:
         # read config file
         self.config = json.load(open(_config_file))
 
-        if meta is None:
-            _meta_file = 'dataset/meta_info.json'
-        else:
-            _meta_file = meta
-        # read meta information
-        self.meta = json.load(open(_meta_file))
-
         # read the raw data as a data object
         self.data_obj = ReadData()
         self.data_obj.read_tunes()
@@ -51,6 +44,10 @@ class ChordSequence:
         for i in range(len(data)):
             tune = data[i]
             seq = []
+            # initialize the chord sequence with an empty list per measure
+            for n in range(tune[len(tune)-1]['measure']):
+                seq.append([])
+
             # transpose a major tune to C major, and a minor tune to A minor
             #### TODO key = 3 if mode_dict[i] == 'major' else 0
             key = 3
@@ -61,12 +58,18 @@ class ChordSequence:
                 # replace mM9 chord by mM7 because it occurs only once
                 formatted_chord = re.sub('mM9$', 'mM7', formatted_chord)
                 # replace all maug chords; they occur only once minor-augmented =
-                seq += [formatted_chord]
+                seq[chord['measure']-1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
             sequences += [seq]
 
-        assert(len(self.meta) == len(sequences))
+        assert(len(self.data_obj.meta) == len(sequences))
 
         for _id, tune in enumerate(sequences):
-            print(self.meta[str(_id)]['title'])
-            print(f'    {sequences[_id]}')
+            #print(self.data_obj.meta[str(_id)]['title'])
+            #print(f'    {sequences[_id]}')
+            self.data_obj.meta[str(_id)]['out'] = {}
+            self.data_obj.meta[str(_id)]['out']['chords'] = tune
+            self.data_obj.meta[str(_id)]['out']['duration'] = self.data_obj.duration[str(_id)]
+            assert(len(self.data_obj.meta[str(_id)]['out']['chords']) == len(self.data_obj.meta[str(_id)]['out']['chords']))
+
+        return self.data_obj.meta
