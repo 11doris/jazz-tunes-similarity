@@ -4,10 +4,13 @@ import json
 class ReadData():
     def __init__(self):
         self.file_path = None
+        self.meta_path = None
         self.data = None
 
     def read_tunes(self):
         self.file_path = './dataset/chords.json'
+        self.meta_path = './dataset/meta_info.json'
+        self.duration_path = './dataset/duration.json'
 
     def read_progressions(self):
         self.file_path = './dataset/chord_progressions/chord_progressions.json'
@@ -21,6 +24,9 @@ class ReadData():
         :return:
         """
         self.data = json.load(open(self.file_path))
+        self.meta = json.load(open(self.meta_path))
+        self.duration = json.load(open(self.duration_path))
+
         represent = lambda chord: {'root': chord['root'],
                                    'components': modifier(chord['degrees']),
                                    'bass': chord['bass'],
@@ -33,12 +39,13 @@ class ReadData():
         seqs = []
         # loop over all tunes
         for key in self.data.keys():
+            assert (self.duration[key].keys() == self.data[key].keys())
             song = self.data[key]
             seq = []
             for measureKey in song.keys():
                 measure = song[measureKey]
                 for chord in measure:
-                    chord['measure'] = measureKey
+                    chord['measure'] = int(measureKey)
                     seq += [represent(chord)]
             seqs += [seq]
         return seqs, names
