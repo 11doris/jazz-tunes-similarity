@@ -225,8 +225,9 @@ def plot_all_tunes(corpus):
 
     df = pd.DataFrame(chords_list)
     df.columns = ['from', 'to']
+    
+    # count occurance of transitions and use this information as the edge weight
     dd = df.value_counts(subset=['from', 'to'], sort=False).reset_index(name='weight')
-
     G = nx.from_pandas_edgelist(dd, 'from', 'to', edge_attr='weight')
     pp = draw_graph3(G, output_filename=f"all_titles.html", directed=False, show_buttons=True)
 
