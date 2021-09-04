@@ -8,12 +8,6 @@ def get_chords(measure, key):
     harmonies = getChildren(measure, "harmony")
     notes = getChildren(measure, 'note')
 
-    durations = []
-    for note in notes:
-        types = getChildren(note, 'type')
-        for _type in types:
-            durations += [_type.text]
-
     # parse the harmony tag with Chord().toJson and put it into the json file
     chords = []
     for harmony in harmonies:
@@ -22,9 +16,7 @@ def get_chords(measure, key):
         chords += [chord.toJson()]
     # chords = [Chord(harmony, key).toJson() for harmony in harmonies]
 
-    assert(len(chords) == len(durations))
-
-    return chords, durations, keynumber
+    return chords, keynumber
 
 
 def parseFile(file):
@@ -54,7 +46,6 @@ def parseFile(file):
                  'beat-time': int(getChild(beats, "beat-type").text)}
 
     out = {}
-    durations = {}
     sections = {}
     repeat_from = None
     ending1 = None
@@ -68,10 +59,9 @@ def parseFile(file):
 
         measure_num_xml = int(measure.attrib["number"])
         out[measure_num_real] = {}
-        durations[measure_num_real] = {}
         # print(f'Measure XML file: {measure_num_xml}, Real Measure: {measure_num_real}----- ')
 
-        out[measure_num_real], durations[measure_num_real], keynumber = get_chords(measure=measure, key=key)
+        out[measure_num_real], keynumber = get_chords(measure=measure, key=key)
 
         # retrieve the maximum number of chords per bar for this tune
         if len(out[measure_num_real]) > max_num_chords_per_bar:
@@ -113,7 +103,6 @@ def parseFile(file):
                     for i in range(repeat_from, repeat_end):
                         measure_num_real += 1
                         out[measure_num_real] = out[i]
-                        durations[measure_num_real] = durations[i]
                         if i in sections.keys():
                             # print(f"Bar {measure_num_real}, Section {sections[i]}")
                             sections[measure_num_real] = sections[i]
@@ -133,4 +122,4 @@ def parseFile(file):
                   'max_num_chords_per_bar': max_num_chords_per_bar,
                   }
 
-    return out, durations, _meta_info
+    return out, _meta_info
