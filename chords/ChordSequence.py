@@ -18,6 +18,15 @@ class ChordSequence:
         self.data_obj = ReadData()
         self.data_obj.read_tunes()
 
+        # define output directory and create if not available
+        directory = self.config['config']['output_directory']
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        self.out_dir = os.path.join(directory, 'chords')
+        if not os.path.exists(self.out_dir):
+            os.makedirs(self.out_dir)
+
     def _simplify_chords(self):
         # use simplified basic chords - or full chords?
         if self.config['config']['use_basic_chords']:
@@ -55,6 +64,17 @@ class ChordSequence:
                     if len(measure) == 2:
                         continue
                     _seq[index].append(measure[0])
+            elif _beats == 5:
+                for index, measure in enumerate(_seq):
+                    if len(measure) == 1:
+                        new_seq = [measure[0]] * 2
+                        _seq[index] = new_seq
+                    elif len(measure) == 2:
+                        new_seq = [measure[0]]
+                        new_seq.append(measure[1])
+                        _seq[index] = new_seq
+                    else:
+                        raise NotImplementedError('Unsupported number of chords for 5 beats')
             else:
                 raise NotImplementedError("Unsupported number of beats for 2 chords!")
         elif max_chords == 4 or max_chords == 3:
@@ -75,7 +95,7 @@ class ChordSequence:
                         new_seq.append(measure[1])
                         new_seq.append(measure[2])
                         _seq[index] = new_seq
-            elif _beats == 3:
+            elif _beats == 3 or _beats == 5:
                 for index, measure in enumerate(_seq):
                     if len(measure) == 3:
                         continue
@@ -92,16 +112,12 @@ class ChordSequence:
             raise NotImplementedError("Unsupported Max Number of Chords per Measure!")
         return _seq
 
+    def write_seq(self, out):
+        f = open(os.path.join(self.out_dir, 'chord_sequences.json'), "w")
+        f.write(json.dumps(out, indent=None))
+        f.close()
+
     def read_data(self):
-        # TODO: Move this Code!!
-        directory = self.config['config']['output_directory']
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
-        subdir = os.path.join(directory, 'chords')
-        if not os.path.exists(subdir):
-            os.makedirs(subdir)
-
         data = self._simplify_chords()
 
         sequences = []
@@ -136,6 +152,6 @@ class ChordSequence:
             # print(f'    {sequences[_id]}')
             self.data_obj.meta[str(_id)]['out'] = {}
             self.data_obj.meta[str(_id)]['out']['chords'] = tune
-            # self.data_obj.meta[str(_id)]['out']['duration'] = self.data_obj.duration[str(_id)]
 
+        self.write_seq(self.data_obj.meta)
         return self.data_obj.meta
