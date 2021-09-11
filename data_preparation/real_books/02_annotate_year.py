@@ -28,13 +28,13 @@ if __name__ == "__main__":
 
     # loop over all tunes
     for song in df.itertuples():
-        pdf_file = os.path.join(dir_path, song.NewFilename)
+        pdf_file = os.path.join(dir_path, song.file_name)
         if os.path.isfile(pdf_file):
             print(pdf_file)
             p = subprocess.Popen([acrobat_path, pdf_file])
             input('Press a key to terminate Adobe')
             p.kill()
-            year = input(f"Enter Year for {song.NewFilename}:")
+            year = input(f"Enter Year for {song.file_name}:")
             # store result to disk
             with open('songlist_year.csv', 'a', newline='', encoding='utf-8') as csvfile:
                 song_csv = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
