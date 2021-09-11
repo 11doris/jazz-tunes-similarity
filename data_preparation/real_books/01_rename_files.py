@@ -45,7 +45,7 @@ if __name__ == "__main__":
                 volume.append(volume_name)
 
     df = pd.DataFrame(list(zip(song_id, title, old_filename, new_filename, volume)),
-                      columns =['Id', 'Title', 'OldFilename', 'NewFilename', 'Volume'])
+                      columns =['id', 'title', 'old_filename', 'file_name', 'volume'])
 
     # write mapping table to disk
     df = df.sort_values('NewFilename')
