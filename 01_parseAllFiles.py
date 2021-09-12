@@ -6,38 +6,28 @@ import numpy as np
 from chords.parseFile import parseFile
 
 
-def metadata_cleaning(meta):
-
-    df = pd.read_csv('./data_preparation/irealpro_manual_year.csv', sep='\t', encoding='utf8')
-
+def __add_year_from_musicxml_and_clean(meta):
     for key, value in meta.items():
-        row = df[df['file_name'].str.contains(key)]
-        if len(row) > 0:
-            if np.isnan(row['year'].values[0]):
-                value['year'] = None
-            else:
-                value['year'] = int(row['year'].values[0])
+        _composer_str = value['composer']
 
-        else:
-            _composer_str = value['composer']
-            # If the year is contained in the composer column, extract it to a new column
-            m = re.search("\(?(18[0-9]{2}|19[0-9]{2}|20[0-9]{2})\)?", _composer_str)
-            if m:
-                value['year'] = int(m.group(1))
-            else:
-                value['year'] = None
+        # If the year is contained in the composer column, extract it to a new column
+        m = re.search("\(?(18[0-9]{2}|19[0-9]{2}|20[0-9]{2})\)?", _composer_str)
+        if m:
+            value['year'] = int(m.group(1))
             value["composer"] = re.sub(r"\(?(18[0-9]{2}|19[0-9]{2}|20[0-9]{2})\)?", "", _composer_str).strip()
+        else:
+            value['year'] = None
 
+        # clean title
         pattern = re.compile("\(Dixieland Tunes\)", re.IGNORECASE)
         value['title'] = pattern.sub("", value['title']).strip()
-
     return meta
-        #
-        # # Fix composer names
-        # df['composer'] = df['composer'].str.replace("Van-Heusen", "Van Heusen", regex=False)
-        # df['composer'] = df['composer'].str.replace("Armstroong", "Louis Armstrong", regex=False)
-        # df['composer'] = df['composer'].str.replace("Antonio-Carlos", "Antonio Carlos", regex=False)
 
+
+def metadata_cleaning(meta):
+
+    meta = __add_year_from_musicxml_and_clean(meta)
+    return meta
 
 
 if __name__ == "__main__":

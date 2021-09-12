@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+import json
 
 if __name__ == "__main__":
     """
@@ -16,8 +16,12 @@ if __name__ == "__main__":
     Write the result to disk.
     """
 
-    df_irealpro_raw = pd.read_csv('./iRealPro/ireal_tunes_composer.csv', sep='\t')
-    df_irealpro_raw.reset_index(inplace=True)
+    # read meta info and convert to data frame
+    meta = json.load(open('../dataset/meta_info.json'))
+    df = pd.DataFrame.from_dict(meta, orient='index')
+    df.reset_index(inplace=True)
+    df_irealpro_raw = df.rename(columns={'index': 'file_name'})
+
     df_realbook_raw = pd.read_csv('./real_books/songlist_year.csv', sep=',', quotechar='|')
     df_realbook_raw.reset_index(inplace=True)
 
@@ -113,5 +117,41 @@ if __name__ == "__main__":
     print(f'Number of missing years for iReal: {na_per_col["year"]}')
 
     ##
-    # Save resulting data frame to disk
-    outer_join_df.to_csv('outerjoin.csv', sep='\t', index_label='index')
+    # Cleanup and save all tunes to csv
+    df_year = outer_join_df[['file_name_y', 'title_y', 'composer', 'year']]
+    df_year.columns = ['file_name', 'title', 'composer', 'year']
+    df_year = df_year.dropna(subset=['file_name'])
+    df_year.to_csv('tunes_year.csv', sep='\t', index_label='index')
+
+    ##
+    # Define data frame with all iRealPro tunes that still have a missing year
+    df_miss = outer_join_df[['file_name_y', 'title_y', 'composer', 'year']]
+    df_miss.columns = ['file_name', 'title', 'composer', 'year']
+    df_miss = df_miss.dropna(subset=['title'])
+    df_miss = df_miss[df_miss['year'].isna()]
+
+    df_miss.to_csv('tunes_missing_year_generated-file.csv', sep='\t', index_label='index')
+
+
+    ##
+    # Update the meta.json file with the year information
+    year_source_1 = pd.read_csv('tunes_year.csv', sep='\t', encoding='utf8')
+    year_source_2 = pd.read_csv('irealpro_manual_year.csv', sep='\t', encoding='utf8')
+
+    for index, row in year_source_1.iterrows():
+        _year = row['year']
+        if np.isnan(_year):
+            meta[row['file_name']]['year'] = None
+        else:
+            meta[row['file_name']]['year'] = int(_year)
+
+    for index, row in year_source_2.iterrows():
+        _year = row['year']
+        if np.isnan(_year):
+            meta[row['file_name']]['year'] = None
+        else:
+            meta[row['file_name']]['year'] = int(_year)
+
+    f = open("../dataset/meta_info.json", "w")
+    f.write(json.dumps(meta, indent=2))
+    f.close()
