@@ -30,11 +30,9 @@ if __name__ == "__main__":
     # create data frame with file name, title, year and composer columns
     df_irealpro = df_irealpro_raw[['title', 'file_name', 'year', 'composer']]
     df_irealpro = df_irealpro.drop_duplicates()
-    df_irealpro.to_csv('ireal.csv', sep='\t', index_label='index')
 
     df_realbook = df_realbook_raw[['title', 'file_name', 'year']]
     df_realbook = df_realbook.drop_duplicates()
-    df_realbook.to_csv('realbook.csv', sep='\t', index_label='index')
 
 
     # define a list of words to be removed
