@@ -15,31 +15,6 @@ df = df.rename(columns = {'index': 'file_name'})
 
 print(f'Found {len(df)} files to parse... ')
 
-df.groupby('composer').count()
-
-##
-# Cleaning
-
-# If the year is contained in the composer column, extract it to a new column
-df['year'] = df['composer'].str.extract(r"\(?(18[0-9]{2}|19[0-9]{2}|20[0-9]{2})\)?")
-
-# write data frame with filename and year to disk
-df_year = df[['file_name', 'title', 'composer', 'year']]
-df_year.to_csv('ireal_year.csv', sep='\t', index=False)
-
-
-#
-df['composer'] = df['composer'].str.replace(r"\(?(18[0-9]{2}|19[0-9]{2}|20[0-9]{2})\)?", "", regex=True).str.strip()
-
-# Remove the (Dixieland Tunes) from the title
-df['title'] = df['title'].str.replace("(Dixieland Tunes)", "", regex=False).str.strip()
-df['title'] = df['title'].str.replace("(dixieland Tunes)", "", regex=False).str.strip()
-
-# Fix composer names
-df['composer'] = df['composer'].str.replace("Van-Heusen", "Van Heusen", regex=False)
-df['composer'] = df['composer'].str.replace("Armstroong", "Louis Armstrong", regex=False)
-df['composer'] = df['composer'].str.replace("Antonio-Carlos", "Antonio Carlos", regex=False)
-
 
 ## Split multiple composers to multiple rows
 #

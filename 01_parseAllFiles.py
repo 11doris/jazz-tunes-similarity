@@ -21,12 +21,13 @@ def __add_year_from_musicxml_and_clean(meta):
         # clean title
         pattern = re.compile("\(Dixieland Tunes\)", re.IGNORECASE)
         value['title'] = pattern.sub("", value['title']).strip()
-    return meta
 
+        # clean composer names
+        value['composer'] = value['composer'].replace("Van-Heusen", "Van Heusen")
+        value['composer'] = value['composer'].replace("Armstroong", "Louis Armstrong")
+        value['composer'] = value['composer'].replace("Antonio-Carlos", "Antonio Carlos")
+        value['composer'] = value['composer'].replace("De-Rose", "DeRose")
 
-def metadata_cleaning(meta):
-
-    meta = __add_year_from_musicxml_and_clean(meta)
     return meta
 
 
@@ -69,7 +70,7 @@ if __name__ == "__main__":
                           'max_num_chords_per_bar': max_num_chords_per_bar,
                           }
 
-    meta_info = metadata_cleaning(meta_info)
+    meta_info = __add_year_from_musicxml_and_clean(meta_info)
 
     f = open("dataset/chords.json", "w")
     f.write(json.dumps(out, indent=2))
