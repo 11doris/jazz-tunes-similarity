@@ -27,6 +27,7 @@ def __add_year_from_musicxml_and_clean(meta):
         value['composer'] = value['composer'].replace("Armstroong", "Louis Armstrong")
         value['composer'] = value['composer'].replace("Antonio-Carlos", "Antonio Carlos")
         value['composer'] = value['composer'].replace("De-Rose", "DeRose")
+        value['composer'] = value['composer'].replace("Matt Maineck", "Matty Malneck")
 
     return meta
 
