@@ -1,4 +1,4 @@
-Id,Title,OldFilename,NewFilename,Volume,Year
+id,title,old_filename,file_name,volume,year
 187750,'Deed I Do,187750.pdf,'Deed I Do.pdf,Vol3,1926
 704250,'Round Midnight,704250.pdf,'Round Midnight.pdf,Vol1,1944
 809600,'Tain't What You Do (It's The Way That Cha Do It),809600.pdf,'Tain't What You Do It's The Way That Cha Do It.pdf,Vol2,1939
@@ -32,7 +32,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 983308,Affirmation,983308.pdf,Affirmation.pdf,Vol2,1975
 55844,African Flower (Petite Fleur Africaine),055844.pdf,African Flower Petite Fleur Africaine.pdf,Vol1,1963
 24273,Afro Blue,024273.pdf,Afro Blue.pdf,Vol1,1959
-6675,After You've Gone,006675.pdf,After You've Gone.pdf,Vol3,
+6675,After You've Gone,006675.pdf,After You've Gone.pdf,Vol3,1918
 6651,After You,006651.pdf,After You.pdf,Vol3,
 6693,Afternoon In Paris,006693.pdf,Afternoon In Paris.pdf,Vol1,1955
 8000,Ain't Misbehavin',008000.pdf,Ain't Misbehavin'.pdf,Vol3,1929
@@ -85,7 +85,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 56890,Autumn In 3,056890.pdf,Autumn In 3.pdf,Vol3,1996
 47680,Autumn In New York,047680.pdf,Autumn In New York.pdf,Vol1,1934
 47880,Autumn Leaves,047880.pdf,Autumn Leaves.pdf,Vol1,1947
-48450,Avalon,048450.pdf,Avalon.pdf,Vol2,
+48450,Avalon,048450.pdf,Avalon.pdf,Vol2,1920
 19090,Azure,019090.pdf,Azure.pdf,Vol2,1937
 17889,Ba-Lue Bolivar Ba-Lues-Are (Bolivar Blues),017889.pdf,Ba-Lue Bolivar Ba-Lues-Are Bolivar Blues.pdf,Vol2,1958
 52160,|Baby, It's Cold Outside|,052160.pdf,Baby It's Cold Outside.pdf,Vol2,1948
@@ -182,7 +182,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 111300,Caldonia (What Makes Your Big Head So Hard?),111300.pdf,Caldonia What Makes Your Big Head So Hard.pdf,Vol3,1945
 112680,Call Me Irresponsible,112680.pdf,Call Me Irresponsible.pdf,Vol1,1962
 112290,Call Me,112290.pdf,Call Me.pdf,Vol1,1965
-116850,Can't Help Lovin' Dat Man,116850.pdf,Can't Help Lovin' Dat Man.pdf,Vol1,
+116850,Can't Help Lovin' Dat Man,116850.pdf,Can't Help Lovin' Dat Man.pdf,Vol1,1927
 118230,Candy,118230.pdf,Candy.pdf,Vol2,1944
 18373,Cantelope Island,018373.pdf,Cantelope Island.pdf,Vol2,
 10155,Captain Marvel,010155.pdf,Captain Marvel.pdf,Vol1,1972
@@ -202,10 +202,10 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 129500,Chega De Saudade (No More Blues),129500.pdf,Chega De Saudade No More Blues.pdf,Vol1,1962
 58818,Chelsea Bells,058818.pdf,Chelsea Bells.pdf,Vol1,1975
 129510,Chelsea Bridge,129510.pdf,Chelsea Bridge.pdf,Vol1,1941
-129850,Cherokee (Indian Love Song),129850.pdf,Cherokee Indian Love Song.pdf,Vol1,
+129850,Cherokee (Indian Love Song),129850.pdf,Cherokee Indian Love Song.pdf,Vol1,1938
 130075,Cherry Pink And Apple Blossom White,130075.pdf,Cherry Pink And Apple Blossom White.pdf,Vol1,1950
 130090,Cheryl,130090.pdf,Cheryl.pdf,Vol3,1947
-130701,Chicago (That Toddlin' Town),130701.pdf,Chicago That Toddlin' Town.pdf,Vol3,
+130701,Chicago (That Toddlin' Town),130701.pdf,Chicago That Toddlin' Town.pdf,Vol3,1922
 54965,Chippie,054965.pdf,Chippie.pdf,Vol1,1958
 132285,Chitlins Con Carne,132285.pdf,Chitlins Con Carne.pdf,Vol1,1963
 26413,Circle,026413.pdf,Circle.pdf,Vol2,1965
@@ -248,7 +248,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 1187,Day Dream,001187.pdf,Day Dream.pdf,Vol3,1940
 60417,Day Waves,060417.pdf,Day Waves.pdf,Vol1,1972
 59296,Days And Nights Waiting,059296.pdf,Days And Nights Waiting.pdf,Vol1,1967
-59338,Dear Old Stockholm,059338.pdf,Dear Old Stockholm.pdf,Vol1,
+59338,Dear Old Stockholm,059338.pdf,Dear Old Stockholm.pdf,Vol1,1800
 186960,Dearly Beloved,186960.pdf,Dearly Beloved.pdf,Vol1,1942
 187830,Dedicated To You,187830.pdf,Dedicated To You.pdf,Vol1,1936
 55620,Deluge,055620.pdf,Deluge.pdf,Vol1,1964
@@ -420,7 +420,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 344970,Hullo Bolinas,344970.pdf,Hullo Bolinas.pdf,Vol1,1971
 54971,Hummin',054971.pdf,Hummin'.pdf,Vol2,1969
 18486,Humpty Dumpty,018486.pdf,Humpty Dumpty.pdf,Vol2,1978
-348790,I Ain't Got Nobody (And Nobody Cares For Me),348790.pdf,I Ain't Got Nobody And Nobody Cares For Me.pdf,Vol3,
+348790,I Ain't Got Nobody (And Nobody Cares For Me),348790.pdf,I Ain't Got Nobody And Nobody Cares For Me.pdf,Vol3,1915
 348900,I Ain't Got Nothin' But The Blues,348900.pdf,I Ain't Got Nothin' But The Blues.pdf,Vol3,1944
 349990,I Believe In You,349990.pdf,I Believe In You.pdf,Vol2,1961
 350400,I Can't Believe That You're In Love With Me,350400.pdf,I Can't Believe That You're In Love With Me.pdf,Vol3,1926
@@ -442,14 +442,14 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 357490,I Gotta Right To Sing The Blues,357490.pdf,I Gotta Right To Sing The Blues.pdf,Vol3,1932
 298575,I Guess I'll Hang My Tears Out To Dry,298575.pdf,I Guess I'll Hang My Tears Out To Dry.pdf,Vol3,1944
 358500,I Have Dreamed,358500.pdf,I Have Dreamed.pdf,Vol2,1951
-998565,I Hear A Rhapsody,998565.pdf,I Hear A Rhapsody.pdf,Vol2,
+998565,I Hear A Rhapsody,998565.pdf,I Hear A Rhapsody.pdf,Vol2,1941
 358675,I Hear Music,358675.pdf,I Hear Music.pdf,Vol3,1940
 10363,I Keep Going Back To Joe's,010363.pdf,I Keep Going Back To Joe's.pdf,Vol3,1961
 360525,I Left My Heart In San Francisco,360525.pdf,I Left My Heart In San Francisco.pdf,Vol3,1954
 360650,I Let A Song Go Out Of My Heart,360650.pdf,I Let A Song Go Out Of My Heart.pdf,Vol1,1938
 361190,I Like The Likes Of You,361190.pdf,I Like The Likes Of You.pdf,Vol3,1933
 362300,I Love Paris,362300.pdf,I Love Paris.pdf,Vol1,1953
-255360,(I Love You) For Sentimental Reasons,255360.pdf,I Love You For Sentimental Reasons.pdf,Vol1,
+255360,(I Love You) For Sentimental Reasons,255360.pdf,I Love You For Sentimental Reasons.pdf,Vol1,1945
 363060,I Love You,363060.pdf,I Love You.pdf,Vol1,1943
 983349,I Mean You,983349.pdf,I Mean You.pdf,Vol1,1947
 12252,I Remember Bird,012252.pdf,I Remember Bird.pdf,Vol2,1967
@@ -476,7 +476,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 11808,I'm A Fool To Want You,011808.pdf,I'm A Fool To Want You.pdf,Vol2,1951
 983462,(I'm Afraid) The Masquerade Is Over,983462.pdf,I'm Afraid The Masquerade Is Over.pdf,Vol3,1938
 379960,I'm All Smiles,379960.pdf,I'm All Smiles.pdf,Vol1,1964
-380170,I'm Always Chasing Rainbows,380170.pdf,I'm Always Chasing Rainbows.pdf,Vol3,
+380170,I'm Always Chasing Rainbows,380170.pdf,I'm Always Chasing Rainbows.pdf,Vol3,1917
 380650,I'm Beginning To See The Light,380650.pdf,I'm Beginning To See The Light.pdf,Vol1,1944
 381330,I'm Confessin' (That I Love You),381330.pdf,I'm Confessin' That I Love You.pdf,Vol2,1930
 381720,I'm Glad There Is You (In This World Of Ordinary People),381720.pdf,I'm Glad There Is You In This World Of Ordinary People.pdf,Vol3,1941
@@ -519,8 +519,8 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 983350,In Walked Bud,983350.pdf,In Walked Bud.pdf,Vol2,1948
 59299,In Your Quiet Place,059299.pdf,In Your Quiet Place.pdf,Vol1,1968
 55848,Indian Lady,055848.pdf,Indian Lady.pdf,Vol1,1967
-984734,Indian Summer,984734.pdf,Indian Summer.pdf,Vol3,
-402890,Indiana (Back Home Again In Indiana),402890.pdf,Indiana Back Home Again In Indiana.pdf,Vol2,
+984734,Indian Summer,984734.pdf,Indian Summer.pdf,Vol3,1919
+402890,Indiana (Back Home Again In Indiana),402890.pdf,Indiana Back Home Again In Indiana.pdf,Vol2,1917
 403200,Infant Eyes,403200.pdf,Infant Eyes.pdf,Vol2,1965
 10223,Inner Urge,010223.pdf,Inner Urge.pdf,Vol1,1964
 51778,Interchange,051778.pdf,Interchange.pdf,Vol3,1994
@@ -545,7 +545,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 410700,It's A Good Day,410700.pdf,It's A Good Day.pdf,Vol3,1946
 410780,It's A Lovely Day Today,410780.pdf,It's A Lovely Day Today.pdf,Vol3,1950
 411000,It's A Most Unusual Day,411000.pdf,It's A Most Unusual Day.pdf,Vol3,1947
-412175,It's All Right With Me,412175.pdf,It's All Right With Me.pdf,Vol2,
+412175,It's All Right With Me,412175.pdf,It's All Right With Me.pdf,Vol2,1953
 412680,|It's Been A Long, Long Time|,412680.pdf,It's Been A Long Long Time.pdf,Vol3,1945
 412890,It's De-Lovely,412890.pdf,It's De-Lovely.pdf,Vol3,1936
 413200,It's Easy To Remember,413200.pdf,It's Easy To Remember.pdf,Vol1,1934
@@ -614,7 +614,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 478160,Like Sonny (Simple Like),478160.pdf,Like Sonny Simple Like.pdf,Vol2,1977
 478195,Like Young,478195.pdf,Like Young.pdf,Vol2,1950
 55626,Limbo,055626.pdf,Limbo.pdf,Vol2,1968
-479020,Limehouse Blues,479020.pdf,Limehouse Blues.pdf,Vol1,
+479020,Limehouse Blues,479020.pdf,Limehouse Blues.pdf,Vol1,1921
 479150,Line For Lyons,479150.pdf,Line For Lyons.pdf,Vol3,1954
 54983,Line Games,054983.pdf,Line Games.pdf,Vol3,1976
 9784,Lines And Spaces,009784.pdf,Lines And Spaces.pdf,Vol1,1991
@@ -634,7 +634,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 55663,Lonely Dreams,055663.pdf,Lonely Dreams.pdf,Vol2,1956
 489630,Long Ago (And Far Away),489630.pdf,Long Ago And Far Away.pdf,Vol1,1944
 491120,Lonnie's Lament,491120.pdf,Lonnie's Lament.pdf,Vol1,1977
-491340,Look For The Silver Lining,491340.pdf,Look For The Silver Lining.pdf,Vol2,
+491340,Look For The Silver Lining,491340.pdf,Look For The Silver Lining.pdf,Vol2,1919
 491600,Look To The Rainbow,491600.pdf,Look To The Rainbow.pdf,Vol3,1946
 491620,Look To The Sky,491620.pdf,Look To The Sky.pdf,Vol1,1967
 494800,Lost In The Stars,494800.pdf,Lost In The Stars.pdf,Vol3,1944
@@ -707,7 +707,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 561380,More Than You Know,561380.pdf,More Than You Know.pdf,Vol2,1929
 560400,More (Ti Guarderò Nel Cuore),560400.pdf,More Ti Guarderò Nel Cuore.pdf,Vol3,1962
 561590,Morning Dance,561590.pdf,Morning Dance.pdf,Vol2,1979
-562710,Moten Swing,562710.pdf,Moten Swing.pdf,Vol2,1947
+562710,Moten Swing,562710.pdf,Moten Swing.pdf,Vol2,1932
 563540,Mountain Greenery,563540.pdf,Mountain Greenery.pdf,Vol3,1926
 30942,Move,030942.pdf,Move.pdf,Vol2,1947
 30608,Mr. Magic,030608.pdf,Mr. Magic.pdf,Vol2,1975
@@ -715,7 +715,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 569280,My Attorney Bernie,569280.pdf,My Attorney Bernie.pdf,Vol2,1983
 569430,My Baby Just Cares For Me,569430.pdf,My Baby Just Cares For Me.pdf,Vol3,1930
 569900,My Blue Heaven,569900.pdf,My Blue Heaven.pdf,Vol3,1927
-570570,My Buddy,570570.pdf,My Buddy.pdf,Vol1,
+570570,My Buddy,570570.pdf,My Buddy.pdf,Vol1,1922
 571940,My Favorite Things,571940.pdf,My Favorite Things.pdf,Vol1,1959
 572090,My Foolish Heart,572090.pdf,My Foolish Heart.pdf,Vol1,1949
 572280,My Funny Valentine,572280.pdf,My Funny Valentine.pdf,Vol1,1937
@@ -725,7 +725,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 575348,My Little Suede Shoes,575348.pdf,My Little Suede Shoes.pdf,Vol2,1956
 575820,My Lucky Star,575820.pdf,My Lucky Star.pdf,Vol3,1928
 575920,My Man (Mon Homme),575920.pdf,My Man Mon Homme.pdf,Vol3,
-576075,My Melancholy Baby,576075.pdf,My Melancholy Baby.pdf,Vol3,
+576075,My Melancholy Baby,576075.pdf,My Melancholy Baby.pdf,Vol3,1912
 576451,My Old Flame,576451.pdf,My Old Flame.pdf,Vol2,1934
 576680,My One And Only Love,576680.pdf,My One And Only Love.pdf,Vol1,1952
 577600,My Romance,577600.pdf,My Romance.pdf,Vol1,1935
@@ -789,7 +789,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 634885,Oye Como Va,634885.pdf,Oye Como Va.pdf,Vol2,1963
 634981,P.S. I Love You,634981.pdf,P.S. I Love You.pdf,Vol1,1934
 12472,Pannonica,012472.pdf,Pannonica.pdf,Vol2,1958
-636690,Paper Doll,636690.pdf,Paper Doll.pdf,Vol1,
+636690,Paper Doll,636690.pdf,Paper Doll.pdf,Vol1,1915
 6114,Parisian Thoroughfare,006114.pdf,Parisian Thoroughfare.pdf,Vol2,1953
 10400,Passion Dance,010400.pdf,Passion Dance.pdf,Vol1,1967
 9161,Passion Flower,009161.pdf,Passion Flower.pdf,Vol1,1944
@@ -816,7 +816,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 55461,Poem For #15 (The Saga Of Harrison Crabfeathers),055461.pdf,Poem For 15 The Saga Of Harrison Crabfeathers.pdf,Vol1,1972
 657485,Poinciana (Song Of The Tree),657485.pdf,Poinciana Song Of The Tree.pdf,Vol3,1936
 658540,Polka Dots And Moonbeams,658540.pdf,Polka Dots And Moonbeams.pdf,Vol2,1939
-660250,Poor Butterfly,660250.pdf,Poor Butterfly.pdf,Vol3,
+660250,Poor Butterfly,660250.pdf,Poor Butterfly.pdf,Vol3,1916
 58823,Portsmouth Figurations,058823.pdf,Portsmouth Figurations.pdf,Vol1,1969
 668770,Prelude To A Kiss,668770.pdf,Prelude To A Kiss.pdf,Vol1,1938
 11672,Pretend,011672.pdf,Pretend.pdf,Vol3,1952
@@ -852,7 +852,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 699185,Rockin' In Rhythm,699185.pdf,Rockin' In Rhythm.pdf,Vol2,1931
 41421,Romance Without Finance,041421.pdf,Romance Without Finance.pdf,Vol3,1944
 702008,Room 608,702008.pdf,Room 608.pdf,Vol3,1956
-703700,Rose Room,703700.pdf,Rose Room.pdf,Vol3,
+703700,Rose Room,703700.pdf,Rose Room.pdf,Vol3,1917
 703803,Rosetta,703803.pdf,Rosetta.pdf,Vol2,1933
 703807,Rosewood,703807.pdf,Rosewood.pdf,Vol3,1974
 59320,Round Trip,059320.pdf,Round Trip.pdf,Vol2,1968
@@ -863,7 +863,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 707108,S'posin',707108.pdf,S'posin'.pdf,Vol2,1929
 766930,S.O.S.,766930.pdf,S.O.S..pdf,Vol3,1965
 25843,Sack Of Woe,025843.pdf,Sack Of Woe.pdf,Vol2,1960
-778240,Saint James Infirmary,778240.pdf,Saint James Infirmary.pdf,Vol2,
+778240,Saint James Infirmary,778240.pdf,Saint James Infirmary.pdf,Vol2,1928
 710940,Salt Peanuts,710940.pdf,Salt Peanuts.pdf,Vol2,1943
 712050,Samba De Orfeu,712050.pdf,Samba De Orfeu.pdf,Vol3,1959
 983394,Sandu,983394.pdf,Sandu.pdf,Vol2,1962
@@ -898,7 +898,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 742890,Sister Sadie,742890.pdf,Sister Sadie.pdf,Vol3,1959
 37293,Skating In Central Park,037293.pdf,Skating In Central Park.pdf,Vol1,1959
 745330,Skylark,745330.pdf,Skylark.pdf,Vol3,1941
-745400,Skyliner,745400.pdf,Skyliner.pdf,Vol2,
+745400,Skyliner,745400.pdf,Skyliner.pdf,Vol2,1944
 991685,Slipped Disc,991685.pdf,Slipped Disc.pdf,Vol2,1945
 749525,Small Fry,749525.pdf,Small Fry.pdf,Vol3,1938
 749450,Small World,749450.pdf,Small World.pdf,Vol3,1959
@@ -937,7 +937,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 776915,Spring Can Really Hang You Up The Most,776915.pdf,Spring Can Really Hang You Up The Most.pdf,Vol3,1955
 777360,Spring Will Be A Little Late This Year,777360.pdf,Spring Will Be A Little Late This Year.pdf,Vol3,1943
 777670,Squeeze Me,777670.pdf,Squeeze Me.pdf,Vol3,1925
-778250,St. Louis Blues,778250.pdf,St. Louis Blues.pdf,Vol2,
+778250,St. Louis Blues,778250.pdf,St. Louis Blues.pdf,Vol2,1914
 778550,St. Thomas,778550.pdf,St. Thomas.pdf,Vol2,1963
 983490,Stablemates,983490.pdf,Stablemates.pdf,Vol3,1955
 779950,Standing On The Corner,779950.pdf,Standing On The Corner.pdf,Vol1,1956
@@ -1018,7 +1018,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 455300,The Lady's In Love With You,455300.pdf,The Lady's In Love With You.pdf,Vol3,1939
 459230,The Last Time I Saw Paris,459230.pdf,The Last Time I Saw Paris.pdf,Vol2,1940
 491530,The Look Of Love,491530.pdf,The Look Of Love.pdf,Vol3,1967
-499310,The Love Nest,499310.pdf,The Love Nest.pdf,Vol3,
+499310,The Love Nest,499310.pdf,The Love Nest.pdf,Vol3,1920
 59303,The Magician In You,059303.pdf,The Magician In You.pdf,Vol1,1971
 513600,The Man That Got Away,513600.pdf,The Man That Got Away.pdf,Vol3,1954
 11306,The Meaning Of The Blues,011306.pdf,The Meaning Of The Blues.pdf,Vol3,1957
@@ -1056,11 +1056,11 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 829025,(There Ought To Be A) Moonlight Savings Time,829025.pdf,There Ought To Be A Moonlight Savings Time.pdf,Vol3,1931
 829100,There Will Never Be Another You,829100.pdf,There Will Never Be Another You.pdf,Vol1,1942
 934875,(There'll Be Bluebirds Over) The White Cliffs Of Dover,934875.pdf,There'll Be Bluebirds Over The White Cliffs Of Dover.pdf,Vol3,1941
-829350,There'll Be Some Changes Made,829350.pdf,There'll Be Some Changes Made.pdf,Vol1,
+829350,There'll Be Some Changes Made,829350.pdf,There'll Be Some Changes Made.pdf,Vol1,1921
 830780,There's A Mingus Amonk Us,830780.pdf,There's A Mingus Amonk Us.pdf,Vol3,1986
 831060,There's A Small Hotel,831060.pdf,There's A Small Hotel.pdf,Vol2,1936
 832770,These Foolish Things (Remind Me Of You),832770.pdf,These Foolish Things Remind Me Of You.pdf,Vol2,1936
-833370,They Didn't Believe Me,833370.pdf,They Didn't Believe Me.pdf,Vol1,
+833370,They Didn't Believe Me,833370.pdf,They Didn't Believe Me.pdf,Vol1,1914
 833530,They Say It's Wonderful,833530.pdf,They Say It's Wonderful.pdf,Vol3,1946
 834167,Things Ain't What They Used To Be,834167.pdf,Things Ain't What They Used To Be.pdf,Vol3,1942
 956280,Things To Come,956280.pdf,Things To Come.pdf,Vol2,1948
@@ -1186,7 +1186,7 @@ Id,Title,OldFilename,NewFilename,Volume,Year
 960370,You Brought A New Kind Of Love To Me,960370.pdf,You Brought A New Kind Of Love To Me.pdf,Vol1,1930
 960481,You Can Depend On Me,960481.pdf,You Can Depend On Me.pdf,Vol2,1932
 962350,You Don't Know What Love Is,962350.pdf,You Don't Know What Love Is.pdf,Vol1,1941
-963575,You Made Me Love You (I Didn't Want To Do It),963575.pdf,You Made Me Love You I Didn't Want To Do It.pdf,Vol3,
+963575,You Made Me Love You (I Didn't Want To Do It),963575.pdf,You Made Me Love You I Didn't Want To Do It.pdf,Vol3,1913
 965675,You Took Advantage Of Me,965675.pdf,You Took Advantage Of Me.pdf,Vol1,1928
 966720,You'd Be So Nice To Come Home To,966720.pdf,You'd Be So Nice To Come Home To.pdf,Vol2,1942
 967500,You're Blasé,967500.pdf,You're Blasé.pdf,Vol3,1931
