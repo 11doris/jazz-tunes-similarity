@@ -31,7 +31,9 @@ class Symbol:
 
         # fix for diminished chords
         chord_formatted = re.sub('mdim7', 'm7b5', chord_formatted)
+        chord_formatted = re.sub('mdimM7', 'dimM7', chord_formatted)
         chord_formatted = re.sub('mdim6', 'dim7', chord_formatted)
+        chord_formatted = re.sub('mdim9', 'ø9', chord_formatted)
         return chord_formatted
 
 
