@@ -35,10 +35,10 @@ class ReadData():
         for key in self.data.keys():
             song = self.data[key]
             seq = []
-            for measureKey in song.keys():
-                measure = song[measureKey]
+            for measure_num in song.keys():
+                measure = song[measure_num]
                 for chord in measure:
-                    chord['measure'] = measureKey
+                    chord['measure'] = measure_num
                     seq += [represent(chord)]
             seqs += [seq]
         return seqs, names
