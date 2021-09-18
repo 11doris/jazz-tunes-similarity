@@ -68,7 +68,7 @@ class ChordXML:
             if (attr == 'N.C.'):   return []  # N.C. => No Chord
             if (attr == ""):       return [4, 7]
             if (attr == "m"):      return [3, 7]
-            if (attr == "5"):      return [3, 7, 8] # min flat-6
+            if (attr == "5"):      return [7]
             if (attr == "6"):      return [4, 7, 9]
             if (attr == "7"):      return [4, 7, 10]
             if (attr == "9"):      return [4, 7, 10, 2]
@@ -86,7 +86,7 @@ class ChordXML:
             if (attr == "maj9"):   return [4, 7, 11, 2]
             if (attr == "maj11"):  return [4, 7, 11, 5]
             if (attr == "maj13"):  return [4, 7, 11, 9]
-            if (attr == "7alt"):   return [4, 6, 10]
+            if (attr == "7alt"):   return [4, 8, 10, 1, 3, 6]
             if (attr == "+"):      return [4, 8]
             if (attr == "sus4"):   return [5, 7]
             if (attr == "7sus4"):  return [5, 7, 10]

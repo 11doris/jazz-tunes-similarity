@@ -36,21 +36,20 @@ def test_chords():
             seq += [formatted_chord]
         sequences += [seq]
 
-
-    correct_chord_representation = [
+    correct_chords = [
         [
             'C', 'CM7', 'Cm7', 'C7',
-            'C7sus', 'CM7', 'Cm', 'C7alt',
+            'C7sus4', 'CM7', 'Cm', 'C7alt',
             'Csus4', 'C6', 'Cm6', 'Cdim7',
             'Cm7b5', 'CM9', 'Cm9', 'C9',
             'C9sus4', 'CM13', 'Cm11', 'C13',
             'C13sus4', 'C6(+9)', 'Cm6(+9)', 'CmM7',
-            'CmM9', 'CM7(+#11)', 'CM9(+#11)', 'Cm(-b6)'
+            'CmM9', 'CM7(+#11)', 'CM9(+#11)', 'Cm(+b6)'
         ],
         [
             'Cmaug', 'CdimM7', 'CaugM7', 'C(+9)',
-            'Cm(+9)', 'Cm7b5', 'Cø9', 'C2',
-            'C5', 'Caug', 'Cdim', 'Cø',
+            'Cm(+9)', 'Cm7b5', 'Cm7b5(+9)', 'C(+9)',
+            'C5', 'Caug', 'Cdim', 'Cm7b5',
             'C7(+b9)', 'C7(+#9)', 'C7(+b5)', 'Caug7',
             'C7(+b13)', 'C7(+#11)', 'C9(+#11)', 'C13(+#11)',
             'C7(+b9)(+b13)', 'Caug7(+b9)', 'C7(+b5)(+b9)', 'C7(+b9)(+#9)',
@@ -62,9 +61,9 @@ def test_chords():
     errors = 0
     for i in range(len(sequences)):
         for num, chord in enumerate(sequences[i]):
-            if chord != correct_chord_representation[i][num]:
+            if chord != correct_chords[i][num]:
                 errors += 1
-                print(num + 1, chord, '!! Wrong')
+                print(num + 1, chord, f'!! Wrong - should be {correct_chords[i][num]}')
             else:
                 print(num + 1, chord)
 

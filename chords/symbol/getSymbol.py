@@ -13,10 +13,11 @@ class Symbol:
         self.notesLeft = self.components.copy()
 
         # each method takes notes away the relevant note(s) from notesLeft
-        seventh =   self.getSeventh()
         sus =       self.getSus()
-        minmaj =    self.getMinMaj()
         augdim =    self.getAugDim()
+        seventh =   self.getSeventh()
+        minmaj =    self.getMinMaj()
+
         additions = self.getAdditions()
 
         note = ""
@@ -29,20 +30,17 @@ class Symbol:
 
         chord_formatted = note + minmaj + augdim + seventh + additions + sus + bass
 
-        # fix for diminished chords
-        chord_formatted = re.sub('mdim7', 'm7b5', chord_formatted)
-        chord_formatted = re.sub('mdimM7', 'dimM7', chord_formatted)
-        chord_formatted = re.sub('mdim6', 'dim7', chord_formatted)
-        chord_formatted = re.sub('mdim9', 'ø9', chord_formatted)
+        # fix for chords
+        chord_formatted = chord_formatted.replace('5sus4', 'sus4')
+        chord_formatted = chord_formatted.replace('m(+b13)', 'm(+b6)')
+        chord_formatted = chord_formatted.replace('7(+b5)(+b9)(+#9)(+b13)', '7alt')
+
         return chord_formatted
 
 
     def getSus(self) -> str:
         r = lambda x: self.notesLeft.remove(x)
-        if self.match([ 2, -3, -4,  5]): r(2); r(5); return "sus2/4"
-        if self.match([ 2, -3, -4, -5]): r(2);       return "sus2"
-        if self.match([-2, -3, -4,  5]): r(5);       return "sus4"
-        if self.match([-2, -3, -4, -5]):             return "sus"
+        if self.match([-3, -4,  5]): r(5);       return "sus4"
         return ""
 
     def getMinMaj(self) -> str:
@@ -55,7 +53,10 @@ class Symbol:
 
     def getAugDim(self) -> str:
         r = lambda x: self.notesLeft.remove(x)
-        if self.match([ 6, -7, -8]): r(6); return "dim"
+        if self.match([3, -4, 6, -7, -8, -9, -10, -11]): r(3); r(6); return "dim"
+        if self.match([3, -4, 6, -7, -8, -9, -10, 11]): r(3); r(6); r(11); return "dimM7"
+        if self.match([ 3, -4, 6, -7, -8, 9]): r(3); r(6); r(9); return "dim7"
+        if self.match([ 3, -4, 6, 10]): r(3); r(6); r(10); return "m7b5"
         if self.match([-6, -7,  8]): r(8); return "aug"
         return ""
 
@@ -67,6 +68,8 @@ class Symbol:
         if self.match([5, 11]): r(5); r(11); return "M11"
         if self.match([2, 10]): r(2); r(10); return "9"
         if self.match([2, 11]): r(2); r(11); return "M9"
+        #if self.match([2, 4, 7, -9, -10]): r(2); r(4); r(7); return "2"
+        if self.match([-3, -4, -5, 7, -10, -11]): r(7); return "5"
 
         if self.match([9]): r(9);   return "6"
         if self.match([10]): r(10); return "7"
@@ -75,11 +78,12 @@ class Symbol:
 
     def getAdditions(self) -> str:
         additions = []
+        if self.match([6, -7]): additions += ["b5"]
         if self.match([1]): additions += ["b9"]
         if self.match([2]): additions += ["9"]
         if self.match([3]): additions += ["#9"]
         if self.match([5]): additions += ["11"]
-        if self.match([6]): additions += ["#11"]
+        if self.match([6, 7]): additions += ["#11"]
         if self.match([8]): additions += ["b13"]
         return functools.reduce(lambda prev, curr: f"{prev}(+{curr})", additions, "")
 
