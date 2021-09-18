@@ -68,6 +68,7 @@ class ChordXML:
             if (attr == 'N.C.'):   return []  # N.C. => No Chord
             if (attr == ""):       return [4, 7]
             if (attr == "m"):      return [3, 7]
+            if (attr == "5"):      return [7]
             if (attr == "6"):      return [4, 7, 9]
             if (attr == "7"):      return [4, 7, 10]
             if (attr == "9"):      return [4, 7, 10, 2]
@@ -80,16 +81,19 @@ class ChordXML:
             if (attr == "m11"):    return [3, 7, 10, 5]
             if (attr == "m13"):    return [3, 7, 10, 9]
             if (attr == "m69"):    return [3, 7, 9, 2]
+            if (attr == "m(add9)"): return [3, 7, 2]
             if (attr == "maj7"):   return [4, 7, 11]
             if (attr == "maj9"):   return [4, 7, 11, 2]
             if (attr == "maj11"):  return [4, 7, 11, 5]
             if (attr == "maj13"):  return [4, 7, 11, 9]
-            if (attr == "7alt"):   return [4, 6, 10]
+            if (attr == "7alt"):   return [4, 8, 10, 1, 3, 6]
             if (attr == "+"):      return [4, 8]
             if (attr == "sus4"):   return [5, 7]
             if (attr == "7sus4"):  return [5, 7, 10]
+            if (attr == "7susadd3"): return [5, 7, 10, 4]
             if (attr == "9sus4"):  return [5, 7, 10, 2]
             if (attr == "13sus4"): return [5, 7, 10, 9]
+            if (attr == "dim(maj7)"): return [3, 6, 11]
             
         else:
             text = kindEl.text
