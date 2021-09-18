@@ -6,8 +6,11 @@ class ReadData():
         self.file_path = None
         self.data = None
 
-    def read_tunes(self):
-        self.file_path = './dataset/chords.json'
+    def read_tunes(self, file_path = None):
+        if file_path is not None:
+            self.file_path = file_path
+        else:
+            self.file_path = './dataset/chords.json'
 
     def read_progressions(self):
         self.file_path = './dataset/chord_progressions/chord_progressions.json'
@@ -35,10 +38,10 @@ class ReadData():
         for key in self.data.keys():
             song = self.data[key]
             seq = []
-            for measureKey in song.keys():
-                measure = song[measureKey]
+            for measure_num in song.keys():
+                measure = song[measure_num]
                 for chord in measure:
-                    chord['measure'] = measureKey
+                    chord['measure'] = measure_num
                     seq += [represent(chord)]
             seqs += [seq]
         return seqs, names
