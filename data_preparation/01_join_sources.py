@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import json
+import warnings
+
 
 if __name__ == "__main__":
     """
@@ -133,22 +135,31 @@ if __name__ == "__main__":
 
     ##
     # Update the meta.json file with the year information
-    year_source_1 = pd.read_csv('tunes_year.csv', sep='\t', encoding='utf8')
-    year_source_2 = pd.read_csv('irealpro_manual_year.csv', sep='\t', encoding='utf8')
+    file_source_1 = 'tunes_year.csv'
+    file_source_2 = 'irealpro_manual_year.csv'
+    year_source_1 = pd.read_csv(file_source_1, sep='\t', encoding='utf8')
+    year_source_2 = pd.read_csv(file_source_2, sep='\t', encoding='utf8')
 
     for index, row in year_source_1.iterrows():
-        _year = row['year']
-        if np.isnan(_year):
-            meta[row['file_name']]['year'] = None
+        if row['file_name'] in meta.keys():
+            _year = row['year']
+            if np.isnan(_year):
+                meta[row['file_name']]['year'] = None
+            else:
+                meta[row['file_name']]['year'] = int(_year)
         else:
-            meta[row['file_name']]['year'] = int(_year)
+            warnings.warn(f"Tune {index} from {file_source_1} not found in meta_info.json.")
+
 
     for index, row in year_source_2.iterrows():
-        _year = row['year']
-        if np.isnan(_year):
-            meta[row['file_name']]['year'] = None
+        if row['file_name'] in meta.keys():
+            _year = row['year']
+            if np.isnan(_year):
+                meta[row['file_name']]['year'] = None
+            else:
+                meta[row['file_name']]['year'] = int(_year)
         else:
-            meta[row['file_name']]['year'] = int(_year)
+            warnings.warn(f"Tune {row['file_name']} from {file_source_2} not found in meta_info.json.")
 
     f = open("../dataset/meta_info.json", "w")
     f.write(json.dumps(meta, indent=2))
