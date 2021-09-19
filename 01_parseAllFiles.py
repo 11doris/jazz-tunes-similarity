@@ -61,8 +61,11 @@ if __name__ == "__main__":
         meta_info[file] = info
         meta_info[file]['title'] = os.path.splitext(os.path.basename(file))[0]
         meta_info[file]['file_path'] = file
-    	meta_info = __add_year_from_musicxml_and_clean(meta_info)
 
+    # extract the year from the Composer if available, do some cleaning
+    meta_info = __add_year_from_musicxml_and_clean(meta_info)
+
+    # dump to files
     f = open("dataset/chords.json", "w")
     f.write(json.dumps(out, indent=2))
     f.close()
