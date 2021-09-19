@@ -7,12 +7,15 @@ class ReadData():
         self.meta_path = None
         self.data = None
 
-    def read_tunes(self, file_path = None):
-        if file_path is not None:
-            self.file_path = file_path
+    def read_tunes(self, tunes_path = None, meta_path = None):
+        if tunes_path is not None:
+            self.file_path = tunes_path
         else:
             self.file_path = './dataset/chords.json'
-        self.meta_path = './dataset/meta_info.json'
+        if meta_path is not None:
+            self.meta_path = meta_path
+        else:
+            self.meta_path = './dataset/meta_info.json'
 
     def read_progressions(self):
         self.file_path = './dataset/chord_progressions/chord_progressions.json'

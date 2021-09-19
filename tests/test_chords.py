@@ -9,20 +9,28 @@ def test_chords():
              './fixtures/All Chords Part2.xml']
 
     out = {}
-    for file in files:
-        out[file], key, mode, composer, sections, num_bars, max_num_chords_per_bar = parseFile(file)
+    meta_info = {}
+    for i, file in enumerate(files):
+        out[i], info = parseFile(file)
+        meta_info[i] = info
 
-    assert num_bars == 28
-    assert max_num_chords_per_bar == 1
+    assert info['num_bars'] == 28
+    assert info['max_num_chords_per_bar'] == 1
 
-    file_path = "test_parse_file_chords.json"
-    f = open(file_path, "w")
+    tunes_path = "test_parse_file_chords.json"
+    f = open(tunes_path, "w")
     f.write(json.dumps(out, indent=2))
     f.close()
 
+    meta_path = "test_parse_file_meta.json"
+    f = open(meta_path, "w")
+    f.write(json.dumps(meta_info, indent=2))
+    f.close()
+
+
     # read in the data
     data_obj = ReadData()
-    data_obj.read_tunes(file_path=file_path)
+    data_obj.read_tunes(tunes_path=tunes_path, meta_path=meta_path)
     data, names = data_obj.rootAndDegrees()
 
     sequences = []
@@ -30,7 +38,7 @@ def test_chords():
         tune = data[i]
         seq = []
         for chord in tune:
-            formatted_chord = Chord(chord).toSymbol(key=key,
+            formatted_chord = Chord(chord).toSymbol(key=3,
                                                     includeRoot=True,
                                                     includeBass=False)
             seq += [formatted_chord]
