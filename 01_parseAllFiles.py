@@ -55,13 +55,13 @@ if __name__ == "__main__":
     keys = {}
     meta_info = {}
 
-    for i, file in enumerate(files):
+    for file in files:
         print(file)
-        out[i], info = parseFile(file)
-        meta_info[i] = info
-        meta_info[i]['title'] = os.path.splitext(os.path.basename(file))[0]
-        meta_info[i]['file_path'] = file
-        meta_info = __add_year_from_musicxml_and_clean(meta_info)
+        out[file], info = parseFile(file)
+        meta_info[file] = info
+        meta_info[file]['title'] = os.path.splitext(os.path.basename(file))[0]
+        meta_info[file]['file_path'] = file
+    	meta_info = __add_year_from_musicxml_and_clean(meta_info)
 
     f = open("dataset/chords.json", "w")
     f.write(json.dumps(out, indent=2))

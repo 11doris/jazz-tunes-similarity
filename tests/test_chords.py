@@ -10,9 +10,10 @@ def test_chords():
 
     out = {}
     meta_info = {}
-    for i, file in enumerate(files):
-        out[i], info = parseFile(file)
-        meta_info[i] = info
+
+    for file in files:
+        out[file], info = parseFile(file)
+        meta_info[file] = info
 
     assert info['num_bars'] == 28
     assert info['max_num_chords_per_bar'] == 1
