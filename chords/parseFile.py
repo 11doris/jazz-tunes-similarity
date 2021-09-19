@@ -67,7 +67,7 @@ def parseFile(file):
         if len(out[measure_num_real]) > max_num_chords_per_bar:
             max_num_chords_per_bar = len(out[measure_num_real])
 
-        for elem in measure.getchildren():
+        for elem in list(measure):
 
             # find section indicators A, B, C etc ('Rehearsal' xml tag)
             find_direction = elem.find('direction-type')
