@@ -53,9 +53,18 @@ class ReadData():
             seqs += [seq]
         return seqs, names
 
+    # return root, 'm' for minor, '7' for dominant, 'm7' for minor dominant, 'dim' for diminished TODO m7b5?
     def rootAndDegrees(self):
         return self.readData(lambda x: x)
 
+    # return only the root of the chord
+    def rootOnly(self):
+        def modifier(degrees):
+            return []
+
+        return self.readData(modifier)
+
+    # keep only the root and the 'm' for minor chords
     def rootAndDegreesBasic(self):
         def modifier(degrees):
             no7 = degrees[:]
@@ -73,6 +82,7 @@ class ReadData():
 
         return self.readData(modifier)
 
+    # return root, 'm' for minor, '7' for dominant, 'm7' for minor dominant
     def rootAndDegrees7(self):
         def modifier(degrees):
             no7 = degrees[:]
