@@ -48,7 +48,7 @@ class ReadData():
             for measure_num in song.keys():
                 measure = song[measure_num]
                 for chord in measure:
-                    chord['measure'] = measure_num
+                    chord['measure'] = int(measure_num)
                     seq += [represent(chord)]
             seqs += [seq]
         return seqs, names

@@ -33,7 +33,7 @@ class ChordSequence:
             data, names = self.data_obj.rootAndDegreesSimplified()
         else:
             data, names = self.data_obj.rootAndDegrees()
-        return data
+        return data, names
 
     def fill_up_bar(self, _seq, _beats):
         # get max number of chords per bar
@@ -118,7 +118,7 @@ class ChordSequence:
         f.close()
 
     def read_data(self):
-        data = self._simplify_chords()
+        data, names = self._simplify_chords()
 
         sequences = []
         for i in range(len(data)):
@@ -129,29 +129,30 @@ class ChordSequence:
                 seq.append([])
 
             # transpose a major tune to C major, and a minor tune to A minor
-            #### TODO key = 3 if mode_dict[i] == 'major' else 0
-            key = 3
+            song_key = self.data_obj.meta[names[i]]['default_key']['mode']
+            assert song_key in ['minor', 'major']
+            key = 3 if song_key == 'major' else 0
+
             for chord in tune:
                 formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
+
                 # delete all the chord extensions (+b9), (+#9), (+b11), (+#11), (+b13), (+#13)
-                formatted_chord = re.sub('\(\+[b#]?[0-9]+\)', '', formatted_chord)
+                #formatted_chord = re.sub('\(\+[b#]?[0-9]+\)', '', formatted_chord)
                 # replace mM9 chord by mM7 because it occurs only once
-                formatted_chord = re.sub('mM9$', 'mM7', formatted_chord)
+                #formatted_chord = re.sub('mM9$', 'mM7', formatted_chord)
                 # replace all maug chords; they occur only once minor-augmented =
+
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
-            print(self.data_obj.meta[str(i)]['title'])
-            seq = self.fill_up_bar(seq, self.data_obj.meta[str(i)]['beat-time']['beats'])
+            seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['beat-time']['beats'])
             sequences += [seq]
 
         assert (len(self.data_obj.meta) == len(sequences))
 
-        for _id, tune in enumerate(sequences):
-            # print(self.data_obj.meta[str(_id)]['title'])
-            # print(f'    {sequences[_id]}')
-            self.data_obj.meta[str(_id)]['out'] = {}
-            self.data_obj.meta[str(_id)]['out']['chords'] = tune
+        for i, tune in enumerate(sequences):
+            self.data_obj.meta[names[i]]['out'] = {}
+            self.data_obj.meta[names[i]]['out']['chords'] = tune
 
         self.write_seq(self.data_obj.meta)
         return self.data_obj.meta
