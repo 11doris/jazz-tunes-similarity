@@ -112,12 +112,12 @@ class ChordSequence:
             raise NotImplementedError("Unsupported Max Number of Chords per Measure!")
         return _seq
 
-    def write_seq(self, out):
+    def write_sequences(self, out):
         f = open(os.path.join(self.out_dir, 'chord_sequences.json'), "w")
         f.write(json.dumps(out, indent=None))
         f.close()
 
-    def read_data(self):
+    def generate_sequences(self):
         data, names = self._simplify_chords()
 
         sequences = []
@@ -154,5 +154,7 @@ class ChordSequence:
             self.data_obj.meta[names[i]]['out'] = {}
             self.data_obj.meta[names[i]]['out']['chords'] = tune
 
-        self.write_seq(self.data_obj.meta)
+        self.write_sequences(self.data_obj.meta)
         return self.data_obj.meta
+
+
