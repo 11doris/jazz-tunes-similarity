@@ -27,6 +27,8 @@ class ChordSequence:
         if not os.path.exists(self.out_dir):
             os.makedirs(self.out_dir)
 
+        self.chord_seq_file = os.path.join(self.out_dir, 'chord_sequences.json')
+
     def _simplify_chords(self):
         # use simplified basic chords - or full chords?
         if self.config['config']['use_basic_chords']:
@@ -113,9 +115,12 @@ class ChordSequence:
         return _seq
 
     def write_sequences(self, out):
-        f = open(os.path.join(self.out_dir, 'chord_sequences.json'), "w")
+        f = open(self.get_chord_sequences_path(), "w")
         f.write(json.dumps(out, indent=None))
         f.close()
+
+    def get_chord_sequences_path(self):
+        return self.chord_seq_file
 
     def generate_sequences(self):
         data, names = self._simplify_chords()
