@@ -43,7 +43,7 @@ def parseFile(file):
     # get the beat measure information
     beats = getChild(attribute, 'time')
     beat_time = {'beats': int(getChild(beats, "beats").text),
-                 'beat-time': int(getChild(beats, "beat-type").text)}
+                 'beat_time': int(getChild(beats, "beat-type").text)}
 
     out = {}
     sections = {}
@@ -118,7 +118,7 @@ def parseFile(file):
                   'style': style,
                   'sections': sections,
                   'num_bars': measure_num_real,
-                  'beat-time': beat_time,
+                  'time_signature': beat_time,
                   'max_num_chords_per_bar': max_num_chords_per_bar,
                   }
 

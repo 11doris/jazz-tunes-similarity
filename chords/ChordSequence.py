@@ -145,7 +145,7 @@ class ChordSequence:
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
-            seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['beat-time']['beats'])
+            seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['time_signature']['beats'])
             sequences += [seq]
 
         assert (len(self.data_obj.meta) == len(sequences))
