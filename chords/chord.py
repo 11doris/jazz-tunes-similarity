@@ -1,9 +1,6 @@
 from chords.symbol.getSymbol import Symbol
 from chords.symbol.parts.noteSymbol import Note
-from typing import Optional, List
-
-# TODO .toManyHotNotes()
-# TODO .toOneHotChords()
+from typing import Optional
 
 
 class Chord:

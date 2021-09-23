@@ -1,4 +1,4 @@
-from lib.chord import Chord
+from chords.chord import Chord
 
 def randomChord(r):
     components = []

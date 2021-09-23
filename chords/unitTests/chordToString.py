@@ -1,4 +1,4 @@
-from lib.chord import Chord
+from chords.chord import Chord
 
 chord = Chord(2, [4,10], 4)
 assert chord.toString() == "2: [4, 10]/4"
