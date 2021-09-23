@@ -4,6 +4,8 @@ import numpy as np
 import random
 from chords.chord import Chord
 
+# TODO THIS FILE IS NOT USED!
+
 class NGrams:
     def __init__(self, sequences):
         self.sequences = sequences
