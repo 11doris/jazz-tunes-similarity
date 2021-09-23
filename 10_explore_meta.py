@@ -50,7 +50,7 @@ if __name__ == "__main__":
     composer_tunes = df.groupby('composer').title.count().sort_values(ascending=False)
     print(composer_tunes.head(50))
 
-    composer_tunes.to_csv('composers.csv', sep='\t', index=True)
+    composer_tunes.to_csv('composers_before_cleaning.csv', sep='\t', index=True)
 
     # clean the composer names
     rename_list = rename_composers()
@@ -60,5 +60,6 @@ if __name__ == "__main__":
     composer_tunes = df.groupby('composer').title.count().sort_values(ascending=False)
     print(composer_tunes.head(50))
 
-    composer_tunes.to_csv('composers2.csv', sep='\t', index=True)
+    composer_tunes.to_csv('composers_after_cleaning.csv', sep='\t', index=True)
 
+    df.to_csv('meta.csv', sep='\t', index=True)
