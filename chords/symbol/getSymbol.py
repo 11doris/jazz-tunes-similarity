@@ -1,7 +1,7 @@
 import functools
 from typing import List, Optional
 from chords.symbol.parts.noteSymbol import Note
-import re
+
 
 class Symbol:
     def __init__(self, root:int, components:List[int], bass:Optional[int]):

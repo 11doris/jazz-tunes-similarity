@@ -1,6 +1,5 @@
 from typing import Optional, List
 
-
 class Quality:
     def __init__(self, quality:str):
         self.quality:str = quality

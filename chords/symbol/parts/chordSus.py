@@ -1,6 +1,5 @@
 from typing import Optional
 
-
 class Sus:
     def __init__(self, sus:str):
         self.sus:str = sus

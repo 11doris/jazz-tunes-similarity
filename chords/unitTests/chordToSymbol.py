@@ -1,4 +1,4 @@
-from lib.chord import Chord
+from chords.chord import Chord
 
 chord = Chord(3, [3,10], 6)
 assert chord.toSymbol() == "Cm7/Eb"
