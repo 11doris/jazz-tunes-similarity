@@ -27,6 +27,7 @@ def __add_year_from_musicxml_and_clean(meta):
 
         # clean composer names
         value['composer'] = value['composer'].replace("Van-Heusen", "Van Heusen")
+        value['composer'] = value['composer'].replace("VanHeusen", "Van Heusen")
         value['composer'] = value['composer'].replace("Armstroong", "Louis Armstrong")
         value['composer'] = value['composer'].replace("Antonio-Carlos", "Antonio Carlos")
         value['composer'] = value['composer'].replace("De-Rose", "DeRose")
@@ -60,22 +61,15 @@ if __name__ == "__main__":
 
     for file in files:
         print(file)
-        out[file], key, mode, composer, sections, num_bars, max_num_chords_per_bar = parseFile(file)
-        composers[file] = composer
-        keys[file] = {'key': key,
-                      'mode': mode}
-        meta_info[file] = {'title': os.path.splitext(os.path.basename(file))[0],
-                          'default_key': {'key': key,
-                                          'mode': mode
-                                          },
-                          'composer': composer,
-                          'sections': sections,
-                          'num_bars': num_bars,
-                          'max_num_chords_per_bar': max_num_chords_per_bar,
-                          }
+        out[file], info = parseFile(file)
+        meta_info[file] = info
+        meta_info[file]['title'] = os.path.splitext(os.path.basename(file))[0]
+        meta_info[file]['file_path'] = file
 
+    # extract the year from the Composer if available, do some cleaning
     meta_info = __add_year_from_musicxml_and_clean(meta_info)
 
+    # dump to files
     f = open("dataset/chords.json", "w")
     f.write(json.dumps(out, indent=2))
     f.close()
@@ -84,6 +78,3 @@ if __name__ == "__main__":
     f.write(json.dumps(meta_info, indent=2))
     f.close()
 
-    f = open("dataset/keys.json", "w")
-    f.write(json.dumps(keys, indent=2))
-    f.close()

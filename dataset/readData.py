@@ -4,13 +4,18 @@ import json
 class ReadData():
     def __init__(self):
         self.file_path = None
+        self.meta_path = None
         self.data = None
 
-    def read_tunes(self, file_path = None):
-        if file_path is not None:
-            self.file_path = file_path
+    def read_tunes(self, tunes_path = None, meta_path = None):
+        if tunes_path is not None:
+            self.file_path = tunes_path
         else:
             self.file_path = './dataset/chords.json'
+        if meta_path is not None:
+            self.meta_path = meta_path
+        else:
+            self.meta_path = './dataset/meta_info.json'
 
     def read_progressions(self):
         self.file_path = './dataset/chord_progressions/chord_progressions.json'
@@ -24,6 +29,8 @@ class ReadData():
         :return:
         """
         self.data = json.load(open(self.file_path))
+        self.meta = json.load(open(self.meta_path))
+
         represent = lambda chord: {'root': chord['root'],
                                    'components': modifier(chord['degrees']),
                                    'bass': chord['bass'],
@@ -41,14 +48,23 @@ class ReadData():
             for measure_num in song.keys():
                 measure = song[measure_num]
                 for chord in measure:
-                    chord['measure'] = measure_num
+                    chord['measure'] = int(measure_num)
                     seq += [represent(chord)]
             seqs += [seq]
         return seqs, names
 
+    # return root, 'm' for minor, '7' for dominant, 'm7' for minor dominant, 'dim' for diminished TODO m7b5?
     def rootAndDegrees(self):
         return self.readData(lambda x: x)
 
+    # return only the root of the chord
+    def rootOnly(self):
+        def modifier(degrees):
+            return []
+
+        return self.readData(modifier)
+
+    # keep only the root and the 'm' for minor chords
     def rootAndDegreesBasic(self):
         def modifier(degrees):
             no7 = degrees[:]
@@ -66,6 +82,7 @@ class ReadData():
 
         return self.readData(modifier)
 
+    # return root, 'm' for minor, '7' for dominant, 'm7' for minor dominant
     def rootAndDegrees7(self):
         def modifier(degrees):
             no7 = degrees[:]
