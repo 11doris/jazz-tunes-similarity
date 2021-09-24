@@ -18,8 +18,11 @@ def __add_year_from_musicxml_and_clean(meta):
         else:
             value['year'] = None
 
-        # clean title
-        pattern = re.compile("\(Dixieland Tunes\)", re.IGNORECASE)
+        # remove tailing number from title
+        pattern = re.compile("(\s[12])+$", re.IGNORECASE)
+        value['title'] = pattern.sub("", value['title'])
+        # remove the (Dixieland Tunes) from the title
+        pattern = re.compile("\(\s*Dixieland\s*Tunes\s*\)", re.IGNORECASE)
         value['title'] = pattern.sub("", value['title']).strip()
 
         # clean composer names
