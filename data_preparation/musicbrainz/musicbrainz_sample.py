@@ -1,12 +1,11 @@
 import musicbrainzngs
 import pandas as pd
 import re
+from  dataset.utils import set_pandas_display_options
 
 
-pd.set_option('display.max_rows', None)
-pd.set_option('display.max_columns', None)
-pd.set_option('display.width', None)
-pd.set_option('display.max_colwidth', None)
+# don't cut the display of data frames for debugging reasons
+set_pandas_display_options()
 
 
 # Tell musicbrainz what your app is, and how to contact you
