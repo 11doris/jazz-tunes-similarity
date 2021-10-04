@@ -3,6 +3,7 @@ from wikidata.client import Client
 
 
 ## Choose the Tune to query
+# tune = "A Blossom Fell"  # more information on webinterface available than on API! no composer on API.
 tune = "all of me"
 # tune = "all the things you are"
 # tune = "how insensitive"
@@ -27,6 +28,10 @@ WIKIDATA_TAG_TONALITY = client.get('P826')
 WIKIDATA_TAG_ALLMUSIC = client.get('P1994')
 
 work = musicbrainzngs.get_work_by_id(work_id, includes=['url-rels'])
+if 'url-relation-list' not in work['work'].keys():
+    print(f'No links found for tune {tune}. Exiting.')
+    quit()
+
 for _url in work['work']['url-relation-list']:
     print(f"+ {_url['type']}: {_url['target']} +")
     if _url['type'] == 'wikidata':
