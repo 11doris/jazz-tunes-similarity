@@ -72,29 +72,43 @@ def manual_title_cleaning(df):
 
     return df
 
-def merge_year_from_realbook(df):
+def merge_year_from_realbook(df) -> pd.DataFrame:
     original_order = list(df.columns)
 
     # add column with a simplified and stemmed title for easier matching of the two data sets
     df = add_title_simplified(df)
     df = manual_title_cleaning(df)
+    print(f'JSON meta input with missing years: {df.year.isnull().sum()}')
 
     # get the year information from RealBook and add simplified title
     realbook = read_realbook_data()
     realbook = add_title_simplified(realbook)
-    realbook = realbook[['title_simplified', 'year']]
+    realbook = realbook[['title', 'title_simplified', 'year']]
 
     # full outer join on the simplified title to match the tunes from the Real Books with the iRealPro tunes
     join_df = pd.merge(realbook, df, on='title_simplified', how='outer')
     # If the year from RealBooks is available, take this, otherwise take the year from iRealPro
     join_df['year'] = np.where(join_df['year_x'].isna() == False, join_df['year_x'], join_df['year_y'])
 
+    #
+    # Print summary
+    num_common = len(join_df[['title_x', 'title_y']].dropna())
+    num_ireal_only = join_df['title_x'].isna().sum()
+    num_realbook_only = join_df['title_y'].isna().sum()
+    na_per_col = join_df.dropna(subset=['title_y']).isna().sum()
+    print(f'Total number of tunes: {len(join_df)}')
+    print(f'Number of tunes common in realbook and ireal: {num_common}')
+    print(f'Number of tunes only in ireal: {num_ireal_only}')
+    print(f'Number of tunes only in realbook: {num_realbook_only}')
+    print(f'Number of chord sequences: common + ireal: {num_common + num_ireal_only}')
+    print(f'Number of missing years for iReal: {na_per_col["year"]}')
+
     # cleanup unused columns
-    join_df = join_df.drop(columns=['year_x', 'year_y', 'title_simplified'])
+    join_df = join_df.drop(columns=['title_x', 'year_x', 'year_y', 'title_simplified'])
+    join_df.rename(columns={'title_y': 'title'}, inplace=True)
 
     # sort the dataframe and drop the numbered index
-    join_df = join_df.sort_values('file_name').reset_index()
-    join_df = join_df.drop('index', axis=1)
+    join_df = join_df.sort_values('file_name').reset_index(drop=True)
 
     # drop all rows which have an empty value in 'file_name'; these are rows that were in RealBook but not in iRealPro
     join_df = join_df.dropna(subset=['file_name'])
@@ -103,6 +117,7 @@ def merge_year_from_realbook(df):
     join_df = join_df[original_order]
 
     return join_df
+
 
 def key_to_cycle_of_fifths_order(x):
     fifths_major = [3, -2, 5, 0, -5, 2, -3, 4, -1, -6, 1, -4]
@@ -137,10 +152,8 @@ if __name__ == "__main__":
     # get and merge the publishing year information from the realbook csv
     df = merge_year_from_realbook(df)
 
-
-
     print(df.columns)
-    print(df.head())
+    print(df.head(50))
 
     # save data frame to disk
     df.to_csv('tunes.csv', sep='\t')
