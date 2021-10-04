@@ -104,6 +104,17 @@ def merge_year_from_realbook(df):
 
     return join_df
 
+def key_to_cycle_of_fifths_order(x):
+    fifths_major = [3, -2, 5, 0, -5, 2, -3, 4, -1, -6, 1, -4]
+    fifths_minor = [0, -5, 2, -3, 4, -1, -6, 1, -4, 3, -2, 5]
+
+    if x['mode'] == 'minor':
+        return fifths_minor[x['key']]
+    elif x['mode'] == 'major':
+        return fifths_major[x['key']]
+    else:
+        print("weird mode!!: " + x['mode'])
+
 
 if __name__ == "__main__":
     set_pandas_display_options()
@@ -118,11 +129,15 @@ if __name__ == "__main__":
     df = pd.concat([df, df["time_signature"].apply(pd.Series)], axis=1)
     df = df.drop(columns=["default_key", "time_signature"])
 
+    df['cycle_fifths_order'] = df.apply(key_to_cycle_of_fifths_order, axis=1)
+
     # transform key number to note name
     df['key'] = df['key'].apply(lambda x: Note(x).toSymbol())
 
     # get and merge the publishing year information from the realbook csv
     df = merge_year_from_realbook(df)
+
+
 
     print(df.columns)
     print(df.head())
