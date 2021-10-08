@@ -157,4 +157,13 @@ if __name__ == "__main__":
 
     # save data frame to disk
     df.to_csv('tunes.csv', sep='\t')
+    print(df.columns)
+    df.rename(columns={'file_name': 'path_name',
+                         'key': 'tune_key',
+                         'mode': 'tune_mode'}, inplace=True)
 
+
+    # save a simplified table to disk for trials with mySQL
+    dd = df[['path_name', 'composer', 'style', 'num_bars', 'title', 'year', 'tune_key', 'tune_mode']]
+    dd.loc[:, 'year'].fillna(0, inplace=True)
+    dd.to_csv('tune_sql_import.csv', sep=',', header=True, index_label='Id')
