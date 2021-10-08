@@ -101,6 +101,9 @@ def merge_year_from_manual_list(df) -> pd.DataFrame:
                             'file_name_y': 'file_name'}, inplace=True)
     join_df = join_df.drop(columns=['title_x', 'year_x', 'year_y', 'title_simplified', 'file_name_x'])
 
+    # drop all rows which have an empty value in 'file_name'; these are rows that were in the List of Manually Curated Years but not in iRealPro
+    join_df = join_df.dropna(subset=['file_name'])
+
     # sort the dataframe and drop the numbered index
     join_df = join_df.sort_values('file_name').reset_index(drop=True)
 
@@ -195,10 +198,10 @@ if __name__ == "__main__":
     df = merge_year_from_manual_list(df)
 
     print(df.columns)
-    print(df.head(50))
+    print(df.head(10))
 
     # save data frame to disk
-    df.to_csv('tunes.csv', sep='\t')
+    df.to_csv('02_tunes_raw.csv', sep='\t')
     print(df.columns)
     df.rename(columns={'file_name': 'path_name',
                          'key': 'tune_key',
@@ -208,5 +211,5 @@ if __name__ == "__main__":
     # save a simplified table to disk for trials with mySQL
     dd = df.loc[:, ['path_name', 'composer', 'style', 'num_bars', 'title', 'year', 'tune_key', 'tune_mode']]
     dd['year'].fillna(0, inplace=True)
-    dd.to_csv('tune_sql_import.csv', sep=',', header=True, index_label='Id')
+    dd.to_csv('02_tune_sql_import.csv', sep=',', header=True, index_label='Id')
 
