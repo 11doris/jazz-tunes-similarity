@@ -41,7 +41,7 @@ for index, row in df.iterrows():
 
 
     for work in result['work-list']:
-        found_composer_in_work = False
+        found_contributor = False
 
         if 'artist-relation-list' in work.keys():
             for artist in work['artist-relation-list']:
@@ -50,14 +50,15 @@ for index, row in df.iterrows():
                         print(f"\t\tfound {search_composer}, {artist['artist']['name']}, {artist['type']}")
                         if artist['type'] in ['composer', 'writer']:
                             composer_set.add(artist['artist']['name'])
-                            found_composer_in_work = True
+                            found_contributor = True
                         elif artist['type'] == 'lyricist':
                             lyricist_set.add(artist['artist']['name'])
+                            found_contributor = True
                         else:
                             print(f"!!! warning: found {search_composer} but is a {artist['type']}.")
 
             # fallback: if the composer was found in this work, check if there is another composer or lyricist
-            if found_composer_in_work:
+            if found_contributor:
                 for artist in work['artist-relation-list']:
                     if artist['type'] in ['composer', 'writer']:
                         composer_set.add(artist['artist']['name'])
