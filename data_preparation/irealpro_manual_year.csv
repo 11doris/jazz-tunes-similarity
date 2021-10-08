@@ -518,7 +518,7 @@ index	file_name	title	composer	year
 522	dataset/xml/Zoltan.xml	Zoltan	Woody Shaw	1965
 523	dataset/xml2/Amazing Grace.xml	Amazing Grace	Rev. John Newton	1799
 524	dataset/xml2/Annivesary Waltz.xml	Annivesary Waltz	Unknown Composer
-525	dataset/xml2/At The Cross 1.xml	At The Cross 1	Wilson, Watts	1707
+525	dataset/xml2/At The Cross 1.xml	At The Cross	Wilson, Watts	1707
 526	dataset/xml2/Barefoot Boy, The.xml	Barefoot Boy, The	Johnny S Black	
 527	dataset/xml2/Beale Street Blues.xml	Beale Street Blues	W C Handy	1917
 528	dataset/xml2/Beautiful Dreamer.xml	Beautiful Dreamer	Stephen Collins Foster	1864
@@ -544,8 +544,8 @@ index	file_name	title	composer	year
 547	dataset/xml2/I Go Out Walking After Midnight.xml	I Go Out Walking After Midnight	Unknown Composer	
 548	dataset/xml2/I Wonder What's Become Of Sally.xml	I Wonder What's Become Of Sally	Unknown Composer	
 549	dataset/xml2/I've Been Working On The Railroad.xml	I've Been Working On The Railroad	Trad.	
-550	dataset/xml2/In The Upper Garden 1.xml	In The Upper Garden 1	Charles Austin Miles	
-551	dataset/xml2/In Your Own Sweet Way 2.xml	In Your Own Sweet Way 2	Dave Brubeck	
+550	dataset/xml2/In The Upper Garden 1.xml	In The Upper Garden	Charles Austin Miles	
+551	dataset/xml2/In Your Own Sweet Way 2.xml	In Your Own Sweet Way	Dave Brubeck	
 552	dataset/xml2/Indian Red.xml	Indian Red	Wild Tchoupitoulas	
 553	dataset/xml2/It Shouldn't Happen To A Dream.xml	It Shouldn't Happen To A Dream	Duke Ellington	
 554	dataset/xml2/Jesus On The Mainline.xml	Jesus On The Mainline	Trad.	
@@ -557,9 +557,9 @@ index	file_name	title	composer	year
 560	dataset/xml2/Last Night On The Back Porch.xml	Last Night On The Back Porch	Lew Brown, Carl Schraubstader	
 561	dataset/xml2/Lead Me, Saviour.xml	Lead Me, Saviour	Traditional	
 562	dataset/xml2/Let The World Keep On Turning.xml	Let The World Keep On Turning	Unknown Composer	
-563	dataset/xml2/Lord, Lord, Lord You've Sure Been Good To Me 1.xml	Lord, Lord, Lord You've Sure Been Good To Me 1	Traditional	
+563	dataset/xml2/Lord, Lord, Lord You've Sure Been Good To Me 1.xml	Lord, Lord, Lord You've Sure Been Good To Me	Traditional	
 564	dataset/xml2/Louise.xml	Louise	Richard A. Whiting, Leo Robin	
-565	dataset/xml2/Mack The Knife 1.xml	Mack The Knife 1	Weill, Brecht	
+565	dataset/xml2/Mack The Knife 1.xml	Mack The Knife	Weill, Brecht	
 566	dataset/xml2/Magnolia's Wedding Day.xml	Magnolia's Wedding Day	Jimmy McHugh, Dorothy Fields	
 567	dataset/xml2/Mama Don't Allow.xml	Mama Don't Allow	Trad.	
 568	dataset/xml2/Mardi Gras Parade.xml	Mardi Gras Parade	Joseph Mares	

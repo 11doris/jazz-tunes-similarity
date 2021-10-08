@@ -16,7 +16,7 @@ class ChordSequence:
 
         # read the raw data as a data object
         self.data_obj = ReadData()
-        self.data_obj.read_tunes()
+        self.data_obj.set_json_paths()
 
         # define output directory and create if not available
         directory = self.config['config']['output_directory']

@@ -31,7 +31,7 @@ def test_chords():
 
     # read in the data
     data_obj = ReadData()
-    data_obj.read_tunes(tunes_path=tunes_path, meta_path=meta_path)
+    data_obj.set_json_paths(tunes_path=tunes_path, meta_path=meta_path)
     data, names = data_obj.rootAndDegrees()
 
     sequences = []
