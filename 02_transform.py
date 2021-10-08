@@ -12,6 +12,13 @@ def read_realbook_data():
 
     return realbook
 
+def read_manual_years_data():
+    df = pd.read_csv('./data_preparation/irealpro_manual_year.csv', sep='\t', quotechar='|')
+    df = df[['title', 'file_name', 'year']]
+    df = df.drop_duplicates()
+
+    return df
+
 def add_title_simplified(df):
     stop = ['a', 'the']
 
@@ -71,6 +78,38 @@ def manual_title_cleaning(df):
         df['title_simplified'] = df['title_simplified'].str.replace(_from, _to, regex=False)
 
     return df
+
+def merge_year_from_manual_list(df) -> pd.DataFrame:
+    original_order = list(df.columns)
+
+    manual = read_manual_years_data()
+    manual = add_title_simplified(manual)
+    df = add_title_simplified(df)
+
+    # full outer join on the simplified title to match the tunes from the Real Books with the iRealPro tunes
+    join_df = pd.merge(manual, df, on='title_simplified', how='outer')
+    # If the year from the manually curated list is available, take this, otherwise take the year from iRealPro
+    join_df['year'] = np.where(join_df['year_x'].isna() == False, join_df['year_x'], join_df['year_y'])
+
+    # Print summary
+    na_per_col = join_df.dropna(subset=['title_y']).isna().sum()
+    print(f'Total number of tunes: {len(join_df)}')
+    print(f'Number of missing years for iReal: {na_per_col["year"]}')
+
+    # cleanup unused columns
+    join_df.rename(columns={'title_y': 'title',
+                            'file_name_y': 'file_name'}, inplace=True)
+    join_df = join_df.drop(columns=['title_x', 'year_x', 'year_y', 'title_simplified', 'file_name_x'])
+
+    # sort the dataframe and drop the numbered index
+    join_df = join_df.sort_values('file_name').reset_index(drop=True)
+
+    # restore the original order of the data frame
+    join_df = join_df[original_order]
+
+    return join_df
+
+
 
 def merge_year_from_realbook(df) -> pd.DataFrame:
     original_order = list(df.columns)
@@ -152,6 +191,9 @@ if __name__ == "__main__":
     # get and merge the publishing year information from the realbook csv
     df = merge_year_from_realbook(df)
 
+    # get and merge the manually curated list of publishing years
+    df = merge_year_from_manual_list(df)
+
     print(df.columns)
     print(df.head(50))
 
@@ -164,6 +206,7 @@ if __name__ == "__main__":
 
 
     # save a simplified table to disk for trials with mySQL
-    dd = df[['path_name', 'composer', 'style', 'num_bars', 'title', 'year', 'tune_key', 'tune_mode']]
-    dd.loc[:, 'year'].fillna(0, inplace=True)
+    dd = df.loc[:, ['path_name', 'composer', 'style', 'num_bars', 'title', 'year', 'tune_key', 'tune_mode']]
+    dd['year'].fillna(0, inplace=True)
     dd.to_csv('tune_sql_import.csv', sep=',', header=True, index_label='Id')
+
