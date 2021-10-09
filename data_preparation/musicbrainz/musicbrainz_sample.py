@@ -17,7 +17,7 @@ musicbrainzngs.set_useragent("Jazz Maestro", "0.1", "http://example.com/music")
 #musicbrainzngs.set_hostname("beta.musicbrainz.org")
 
 # read in the CSV file with the
-df = pd.read_csv('../tunes_year.csv', sep='\t', encoding='utf8')
+df = pd.read_csv('../../tunes.csv', sep='\t', encoding='utf8')
 
 df['composer_musicbrainz'] = ""
 df['lyricist_musicbrainz'] = ""
@@ -41,7 +41,7 @@ for index, row in df.iterrows():
 
 
     for work in result['work-list']:
-        found_composer_in_work = False
+        found_contributor = False
 
         if 'artist-relation-list' in work.keys():
             for artist in work['artist-relation-list']:
@@ -50,14 +50,15 @@ for index, row in df.iterrows():
                         print(f"\t\tfound {search_composer}, {artist['artist']['name']}, {artist['type']}")
                         if artist['type'] in ['composer', 'writer']:
                             composer_set.add(artist['artist']['name'])
-                            found_composer_in_work = True
+                            found_contributor = True
                         elif artist['type'] == 'lyricist':
                             lyricist_set.add(artist['artist']['name'])
+                            found_contributor = True
                         else:
                             print(f"!!! warning: found {search_composer} but is a {artist['type']}.")
 
             # fallback: if the composer was found in this work, check if there is another composer or lyricist
-            if found_composer_in_work:
+            if found_contributor:
                 for artist in work['artist-relation-list']:
                     if artist['type'] in ['composer', 'writer']:
                         composer_set.add(artist['artist']['name'])
@@ -68,8 +69,8 @@ for index, row in df.iterrows():
                 break  # continue to the next tune
 
 
-    df.at[index, 'composer_musicbrainz'] = list(composer_set)
-    df.at[index, 'lyricist_musicbrainz'] = list(lyricist_set)
+    df.at[index, 'composer_musicbrainz'] = list(composer_set).sort()
+    df.at[index, 'lyricist_musicbrainz'] = list(lyricist_set).sort()
 
 df.to_csv('tunes_musicbrainz.csv', sep='\t', encoding='utf8')
 
