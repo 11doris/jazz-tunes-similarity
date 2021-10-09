@@ -17,7 +17,7 @@ musicbrainzngs.set_useragent("Jazz Maestro", "0.1", "http://example.com/music")
 #musicbrainzngs.set_hostname("beta.musicbrainz.org")
 
 # read in the CSV file with the
-df = pd.read_csv('../tunes_year.csv', sep='\t', encoding='utf8')
+df = pd.read_csv('../../tunes.csv', sep='\t', encoding='utf8')
 
 df['composer_musicbrainz'] = ""
 df['lyricist_musicbrainz'] = ""
@@ -69,8 +69,8 @@ for index, row in df.iterrows():
                 break  # continue to the next tune
 
 
-    df.at[index, 'composer_musicbrainz'] = list(composer_set)
-    df.at[index, 'lyricist_musicbrainz'] = list(lyricist_set)
+    df.at[index, 'composer_musicbrainz'] = list(composer_set).sort()
+    df.at[index, 'lyricist_musicbrainz'] = list(lyricist_set).sort()
 
 df.to_csv('tunes_musicbrainz.csv', sep='\t', encoding='utf8')
 
