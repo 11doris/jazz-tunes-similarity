@@ -2,7 +2,7 @@ import musicbrainzngs
 from wikidata.client import Client
 import pandas as pd
 import re
-from  dataset.utils import set_pandas_display_options
+from dataset.utils import set_pandas_display_options
 
 
 def _get_external_links(work_id):
@@ -134,5 +134,6 @@ if __name__ == "__main__":
             df.at[index, 'wikidata_allmusic'] = wiki_meta['allmusic'] if 'allmusic' in wiki_meta.keys() else ""
             df.at[index, 'wiki_link'] = wiki_meta['wiki_link'] if 'wiki_link' in wiki_meta.keys() else ""
 
-    df.to_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8')
+    df['year'].astype('float')
+    df.to_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8', index=False)
 
