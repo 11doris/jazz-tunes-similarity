@@ -200,12 +200,16 @@ if __name__ == "__main__":
     print(df.columns)
     print(df.head(10))
 
+    #
+    #df['year'] = df['year'].astype('str')
+
     # save data frame to disk
-    df.to_csv('02_tunes_raw.csv', sep='\t')
+    df.to_csv('02_tunes_raw.csv', sep='\t', index_label="id")
     print(df.columns)
     df.rename(columns={'file_name': 'path_name',
                          'key': 'tune_key',
                          'mode': 'tune_mode'}, inplace=True)
+
 
 
     # save a simplified table to disk for trials with mySQL
