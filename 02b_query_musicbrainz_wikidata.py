@@ -8,8 +8,6 @@ from dataset.utils import set_pandas_display_options
 def _get_external_links(work_id):
 
     # WikiData Tags
-    WIKIDATA_TAG_PUBLICATION = client.get('P577')
-    WIKIDATA_TAG_TONALITY = client.get('P826')
     WIKIDATA_TAG_ALLMUSIC = client.get('P1994')
 
     _work = musicbrainzngs.get_work_by_id(work_id, includes=['url-rels'])
@@ -25,15 +23,10 @@ def _get_external_links(work_id):
             wiki_entity = client.get(wikidata_id, load=True)
             meta['wikidata_id'] = wikidata_id
             meta['description'] = wiki_entity.description
-            meta['publi_year'] = wiki_entity[WIKIDATA_TAG_PUBLICATION] if WIKIDATA_TAG_PUBLICATION in wiki_entity.keys() else None
-            tonality = wiki_entity[WIKIDATA_TAG_TONALITY] if WIKIDATA_TAG_TONALITY in wiki_entity.keys() else None
-            meta['tonality'] = tonality.label if tonality is not None else None
             meta['allmusic'] = wiki_entity[WIKIDATA_TAG_ALLMUSIC] if WIKIDATA_TAG_ALLMUSIC in wiki_entity.keys() else None
             meta['wiki_link'] = wiki_entity.data['sitelinks']['enwiki']['url'] if 'enwiki' in wiki_entity.data['sitelinks'] else None
 
             print(f"\t{meta['description']}") if meta['description'] is not None else None
-            print(f"\tPublication Date: {meta['publi_year']}") if meta['publi_year'] is not None else None
-            print(f"\tTonality: {meta['tonality']}") if meta['tonality'] is not None else None
             print(f"\tAllMusic: https://www.allmusic.com/composition/{meta['allmusic']}") if meta['allmusic'] is not None else None
             print(f"\t{meta['wiki_link']}") if meta['wiki_link'] is not None else None
 
@@ -66,8 +59,6 @@ if __name__ == "__main__":
     df['musicbrainz_type'] = ""
     df['wikidata_id'] = ""
     df['wikidata_description'] = ""
-    df['wikidata_year'] = ""
-    df['wikidata_tonality'] = ""
     df['wikidata_allmusic'] = ""
     df['wiki_link'] = ""
 
@@ -129,8 +120,6 @@ if __name__ == "__main__":
         if wiki_meta is not None:
             df.at[index, 'wikidata_id'] = wiki_meta['wikidata_id'] if 'wikidata_id' in wiki_meta.keys() else ""
             df.at[index, 'wikidata_description'] = wiki_meta['description'] if 'description' in wiki_meta.keys() else ""
-            df.at[index, 'wikidata_year'] = wiki_meta['publi_year'] if 'publi_year' in wiki_meta.keys() else ""
-            df.at[index, 'wikidata_tonality'] = wiki_meta['tonality'] if 'tonality' in wiki_meta.keys() else ""
             df.at[index, 'wikidata_allmusic'] = wiki_meta['allmusic'] if 'allmusic' in wiki_meta.keys() else ""
             df.at[index, 'wiki_link'] = wiki_meta['wiki_link'] if 'wiki_link' in wiki_meta.keys() else ""
 
