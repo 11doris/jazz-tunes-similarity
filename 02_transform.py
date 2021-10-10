@@ -12,12 +12,14 @@ def read_realbook_data():
 
     return realbook
 
+
 def read_manual_years_data():
     df = pd.read_csv('./data_preparation/irealpro_manual_year.csv', sep='\t', quotechar='|')
     df = df[['title', 'file_name', 'year']]
     df = df.drop_duplicates()
 
     return df
+
 
 def add_title_simplified(df):
     stop = ['a', 'the']
@@ -79,6 +81,7 @@ def manual_title_cleaning(df):
 
     return df
 
+
 def merge_year_from_manual_list(df) -> pd.DataFrame:
     original_order = list(df.columns)
 
@@ -111,7 +114,6 @@ def merge_year_from_manual_list(df) -> pd.DataFrame:
     join_df = join_df[original_order]
 
     return join_df
-
 
 
 def merge_year_from_realbook(df) -> pd.DataFrame:
@@ -173,6 +175,10 @@ def key_to_cycle_of_fifths_order(x):
         print("weird mode!!: " + x['mode'])
 
 
+def get_section_pattern(input: dict):
+    return "".join([val[1] for val in input.items()])
+
+
 if __name__ == "__main__":
     set_pandas_display_options()
 
@@ -197,23 +203,21 @@ if __name__ == "__main__":
     # get and merge the manually curated list of publishing years
     df = merge_year_from_manual_list(df)
 
+    # write section format into a new column
+    df['structure'] = df['sections'].apply(get_section_pattern)
+
+    # write the time signature as a string
+    df['time_signature'] = df['beats'].astype('int').astype('str') + "/" + df['beat_time'].astype('int').astype('str')
+
+    # concatenate the key and mode
+    df['tonality'] = df['key'].str.strip() + " " + df['mode'].str.strip()
+
+    df.rename(columns={'file_name': 'path_name',
+                       'key': 'tune_key',
+                       'mode': 'tune_mode'}, inplace=True)
+
     print(df.columns)
     print(df.head(10))
 
-    #
-    #df['year'] = df['year'].astype('str')
-
     # save data frame to disk
     df.to_csv('02_tunes_raw.csv', sep='\t', index_label="id")
-    print(df.columns)
-    df.rename(columns={'file_name': 'path_name',
-                         'key': 'tune_key',
-                         'mode': 'tune_mode'}, inplace=True)
-
-
-
-    # save a simplified table to disk for trials with mySQL
-    dd = df.loc[:, ['path_name', 'composer', 'style', 'num_bars', 'title', 'year', 'tune_key', 'tune_mode']]
-    dd['year'].fillna(0, inplace=True)
-    dd.to_csv('02_tune_sql_import.csv', sep=',', header=True, index_label='Id')
-
