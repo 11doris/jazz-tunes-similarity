@@ -52,6 +52,7 @@ if __name__ == "__main__":
 
     # read in the CSV file with the
     df = pd.read_csv('02_tunes_raw.csv', sep='\t', encoding='utf8')
+    df = df.loc[:, ['id', 'file_name', 'title', 'composer']]
 
     df['musicbrainz_id'] = ""
     df['musicbrainz_composer'] = ""
@@ -123,6 +124,5 @@ if __name__ == "__main__":
             df.at[index, 'wikidata_allmusic'] = wiki_meta['allmusic'] if 'allmusic' in wiki_meta.keys() else ""
             df.at[index, 'wiki_link'] = wiki_meta['wiki_link'] if 'wiki_link' in wiki_meta.keys() else ""
 
-    df['year'].astype('float')
     df.to_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8', index=False)
 
