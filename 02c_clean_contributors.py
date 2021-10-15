@@ -5,11 +5,13 @@ from dataset.utils import set_pandas_display_options
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    df = pd.read_csv('02b_tunes_musicbrainz.csv', sep='\t', index_col="id")
+    # load the data from the previous steps
+    df_brainz = pd.read_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8')
+    df_brainz = df_brainz.drop(['title', 'composer'], axis=1)
+    df_transform = pd.read_csv('02_tunes_raw.csv', sep='\t', encoding='utf8', index_col="id")
 
-    # TODO temp remove this, it's in 02_transform
-    df['time_signature'] = df['beats'].astype('int').astype('str') + "/" + df['beat_time'].astype('int').astype('str')
-
+    # merge the two sources together
+    df = df_transform.merge(df_brainz, on='file_name')
 
     # if musicbrainz found no composer, use the information from iRealPro
     df.rename(columns={'composer': 'ireal_composer'}, inplace=True)
@@ -20,12 +22,13 @@ if __name__ == "__main__":
     df = df.drop(['ireal_composer', 'composer_tmp'], axis=1)
 
     print(df.columns)
-    df.to_csv('02c_tune_composers.csv', sep=',', header=True, index_label='Id')
+    df.to_csv('02c_tune_composers.csv', sep=',', header=True, index_label='id')
 
-    dd = df.loc[:, ['path_name',
+    dd = df.loc[:, ['file_name',
                     'title',
                     'composer',
                     'year',
+                    'year_truncated',
                     'tonality',
                     'tune_key',
                     'tune_mode',
@@ -36,4 +39,4 @@ if __name__ == "__main__":
                     'style',
                     ]]
 
-    dd.to_csv('02c_tune_sql_import.csv', sep=',', header=True, index_label='Id')
+    dd.to_csv('02c_tune_sql_import.csv', sep='\t', header=True, encoding='utf8', index_label='id')
