@@ -56,7 +56,7 @@ if __name__ == '__main__':
     engine = using_alchemy()
 
     table_name = "tunes"
-    df = pd.read_csv('02c_tune_sql_import.csv')
+    df = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
 
     dbConnection    = engine.connect()
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         frame = df.to_sql(table_name,
                           dbConnection,
                           index=False,
-                          index_label='Id',
+                          index_label='id',
                           if_exists='replace')
     except ValueError as vx:
         print(vx)
