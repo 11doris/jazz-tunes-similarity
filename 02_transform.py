@@ -203,6 +203,9 @@ if __name__ == "__main__":
     # get and merge the manually curated list of publishing years
     df = merge_year_from_manual_list(df)
 
+    # add a column which combines all year prior to 1900 to 1900 for easier visualization
+    df['year_truncated'] = np.where(df['year'] < 1900, 1900, df['year'])
+
     # write section format into a new column
     df['structure'] = df['sections'].apply(get_section_pattern)
 
@@ -212,8 +215,7 @@ if __name__ == "__main__":
     # concatenate the key and mode
     df['tonality'] = df['key'].str.strip() + " " + df['mode'].str.strip()
 
-    df.rename(columns={'file_name': 'path_name',
-                       'key': 'tune_key',
+    df.rename(columns={'key': 'tune_key',
                        'mode': 'tune_mode'}, inplace=True)
 
     print(df.columns)
