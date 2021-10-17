@@ -3,7 +3,7 @@ import os
 import re
 from chords.chord import Chord
 from dataset.readData import ReadData
-
+import pandas as pd
 
 class ChordSequence:
     def __init__(self, config=None, meta=None):
@@ -150,16 +150,36 @@ class ChordSequence:
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
-            seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['time_signature']['beats'])
+            #seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['time_signature']['beats'])
             sequences += [seq]
 
         assert (len(self.data_obj.meta) == len(sequences))
 
+        data = []
         for i, tune in enumerate(sequences):
-            self.data_obj.meta[names[i]]['out'] = {}
-            self.data_obj.meta[names[i]]['out']['chords'] = tune
+            # generate a list with the section label for each measure
+            section_labels = []
+            section_name = None
+            start_measure = 1
+            for section_start, next_section_name in self.data_obj.meta[names[i]]['sections'].items():
+                section_start = int(section_start)
+                for n in range(start_measure, len(tune)):
+                    if n < section_start:
+                        section_labels.append(section_name)
+                    else:
+                        start_measure = n
+                        section_name = next_section_name
+                        break
+            for n in range(start_measure, len(tune)+1):
+                section_labels.append(section_name)
 
-        self.write_sequences(self.data_obj.meta)
-        return self.data_obj.meta
+            assert len(tune) == len(section_labels)
+
+            list_of_tuples = list(zip([names[i]]*len(tune), list(range(1, len(tune)+1)), tune, section_labels))
+            data.extend(list_of_tuples)
+
+        df = pd.DataFrame(data, columns=['file_name', 'MeasureNum', 'Chords', 'SectionLabel'])
+        return df
+
 
 
