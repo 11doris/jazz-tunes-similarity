@@ -5,7 +5,7 @@ from dataset.utils import set_pandas_display_options
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    df = pd.read_csv('02b_tunes_musicbrainz_full.csv', sep='\t', index_col="id")
+    df = pd.read_csv('02b_tunes_musicbrainz_full.csv', sep='\t')
 
     ##
     # create a column which indicates whether there is a year mismatch between what we gathered so far and Wikidata
