@@ -22,7 +22,7 @@ if __name__ == "__main__":
     df = df.drop(['ireal_composer', 'composer_tmp'], axis=1)
 
     print(df.columns)
-    df.to_csv('02c_tune_composers.csv', sep=',', header=True, index_label='id')
+    df.to_csv('02c_tune_composers.csv', sep='\t', header=True, index_label='id')
 
     dd = df.loc[:, ['file_name',
                     'title',
