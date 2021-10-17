@@ -35,8 +35,8 @@ class ReadData():
         # store the chord sequences
         seqs = []
         # loop over all tunes
-        for key in self.data.keys():
-            song = self.data[key]
+        for tune in self.data.keys():
+            song = self.data[tune]
             seq = []
             for measure_num in song.keys():
                 measure = song[measure_num]
