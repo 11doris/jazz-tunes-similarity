@@ -2,6 +2,7 @@ from database.api import using_alchemy
 from sqlalchemy import text
 from chords.ChordSequence import ChordSequence
 from dataset.utils import set_pandas_display_options
+import pandas as pd
 
 
 def insert_to_sql(df):
@@ -41,39 +42,19 @@ if __name__ == "__main__":
     df = cs.generate_sequences()
     df['ChordsDisplay'] = df['Chords'].apply(lambda x: ", ".join(x))
 
+    meta = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
+    meta = meta.loc[:, ['id', 'file_name', 'title']]
+    meta = meta.drop_duplicates()
+
     df_sql = df.drop(columns=['Chords'])
+    num_rows = len(df_sql)
+
+    df_sql = df_sql.merge(meta, on='file_name', how='inner')
+
+    # make sure that we did not loose any rows while merging
+    assert num_rows == len(df_sql)
 
     insert_to_sql(df_sql)
 
     print(df_sql.head(50))
 
-    #meta = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
-
-    file_name = 'dataset/test3/500 Miles High.xml'
-    file_name = 'dataset/test3/Take Five.xml'
-
-    dd = df_sql.query(f'file_name == "{file_name}"')
-
-    ## Write Lead Sheet as a Dictionary which can be used by he Dash DataTable
-
-    # define number of bars per line
-    num_bars_per_line = 4
-
-    leadsheet = []
-    line = {}
-
-    # generate table content
-    for index, row in dd.iterrows():
-        # last measure per line
-        if row['MeasureNum'] % num_bars_per_line == 0:
-            chords = row['ChordsDisplay']
-            colname = f"col{row['MeasureNum'] % num_bars_per_line}"
-            line[colname] = chords
-            leadsheet.append(line)
-            line = {}
-        else:
-            chords = row['ChordsDisplay']
-            colname = f"col{row['MeasureNum'] % num_bars_per_line}"
-            line[colname] = chords
-
-    print(leadsheet)
