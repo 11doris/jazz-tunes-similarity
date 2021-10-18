@@ -122,9 +122,7 @@ class ChordSequence:
     def get_chord_sequences_path(self):
         return self.chord_seq_file
 
-    def generate_sequences(self):
-        data, names = self._simplify_chords()
-
+    def create_sequence(self, data, names, mode='relative'):
         sequences = []
         for i in range(len(data)):
             tune = data[i]
@@ -133,10 +131,16 @@ class ChordSequence:
             for n in range(tune[len(tune) - 1]['measure']):
                 seq.append([])
 
-            # transpose a major tune to C major, and a minor tune to A minor
-            song_key = self.data_obj.meta[names[i]]['default_key']['mode']
-            assert song_key in ['minor', 'major']
-            key = 3 if song_key == 'major' else 0
+            if mode == 'relative':
+                # transpose a major tune to C major, and a minor tune to A minor
+                song_key = self.data_obj.meta[names[i]]['default_key']['mode']
+                assert song_key in ['minor', 'major']
+                key = 3 if song_key == 'major' else 0
+            elif mode == 'default':
+                # use the default key
+                key = self.data_obj.meta[names[i]]['default_key']['key']
+            else:
+                quit(f'Unknown mode "{mode}" to generate the chord sequence.')
 
             for chord in tune:
                 formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
@@ -152,11 +156,19 @@ class ChordSequence:
 
             #seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['time_signature']['beats'])
             sequences += [seq]
+        return sequences
 
-        assert (len(self.data_obj.meta) == len(sequences))
+
+    def generate_sequence_df(self):
+        data, names = self._simplify_chords()
+
+        sequences_relative = self.create_sequence(data, names, mode='relative')
+        sequences_default = self.create_sequence(data, names, mode='default')
+
+        assert (len(self.data_obj.meta) == len(sequences_default))
 
         data = []
-        for i, tune in enumerate(sequences):
+        for i, tune in enumerate(sequences_default):
             # generate a list with the section label for each measure
             section_labels = []
             section_name = None
@@ -182,13 +194,15 @@ class ChordSequence:
             list_of_tuples = list(zip([names[i]]*len(tune),
                                       list(range(1, len(tune)+1)),
                                       tune,
+                                      sequences_relative[i],
                                       section_labels,
                                       start_of_section))
             data.extend(list_of_tuples)
 
         df = pd.DataFrame(data, columns=['file_name',
                                          'MeasureNum',
-                                         'Chords',
+                                         'ChordsDefault',
+                                         'ChordsRelative',
                                          'SectionLabel',
                                          'StartOfSection'])
         return df

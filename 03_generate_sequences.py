@@ -39,14 +39,15 @@ if __name__ == "__main__":
     set_pandas_display_options()
 
     cs = ChordSequence()
-    df = cs.generate_sequences()
-    df['ChordsDisplay'] = df['Chords'].apply(lambda x: ", ".join(x))
+    df = cs.generate_sequence_df()
+    df['ChordsRelativeDisplay'] = df['ChordsRelative'].apply(lambda x: ", ".join(x))
+    df['ChordsDefaultDisplay'] = df['ChordsDefault'].apply(lambda x: ", ".join(x))
 
     meta = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
     meta = meta.loc[:, ['id', 'file_name', 'title']]
     meta = meta.drop_duplicates()
 
-    df_sql = df.drop(columns=['Chords'])
+    df_sql = df.drop(columns=['ChordsRelative', 'ChordsDefault'])
     num_rows = len(df_sql)
 
     df_sql = df_sql.merge(meta, on='file_name', how='inner')
@@ -58,3 +59,4 @@ if __name__ == "__main__":
 
     print(df_sql.head(50))
 
+    df_sql.to_csv('03_chords_sql_import.csv', sep='\t', header=True, encoding='utf8')
