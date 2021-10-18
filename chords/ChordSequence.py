@@ -175,10 +175,22 @@ class ChordSequence:
 
             assert len(tune) == len(section_labels)
 
-            list_of_tuples = list(zip([names[i]]*len(tune), list(range(1, len(tune)+1)), tune, section_labels))
+            start_of_section = [False] * len(tune)
+            for measure, section_name in self.data_obj.meta[names[i]]['sections'].items():
+                start_of_section[int(measure)-1] = True
+
+            list_of_tuples = list(zip([names[i]]*len(tune),
+                                      list(range(1, len(tune)+1)),
+                                      tune,
+                                      section_labels,
+                                      start_of_section))
             data.extend(list_of_tuples)
 
-        df = pd.DataFrame(data, columns=['file_name', 'MeasureNum', 'Chords', 'SectionLabel'])
+        df = pd.DataFrame(data, columns=['file_name',
+                                         'MeasureNum',
+                                         'Chords',
+                                         'SectionLabel',
+                                         'StartOfSection'])
         return df
 
 
