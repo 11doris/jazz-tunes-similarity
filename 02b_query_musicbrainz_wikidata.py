@@ -76,9 +76,18 @@ if __name__ == "__main__":
         print(f"\t searching for {composers}")
         composer_set = set()
         lyricist_set = set()
+        id = ""
+        type = ""
 
         wiki_meta = {}
-        result = musicbrainzngs.search_works(query=f"work:{row['title']}", strict=False)
+
+        # if the title has an addition in round brackets, leave them away for the search query
+        # e.g. Always (I'll be loving you) from Irving Berlin is not found, but Always from Irving Berlin is found
+        # remove the (Dixieland Tunes) from the title
+        pattern = re.compile("\(.*\)", re.IGNORECASE)
+        title_cleaned = pattern.sub("", row['title']).strip()
+        print(f"\t'{title_cleaned}'")
+        result = musicbrainzngs.search_works(work=title_cleaned, type='song', strict=False)
 
         for work in result['work-list']:
             found_contributor = False
