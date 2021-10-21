@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     print(df.columns)
     df.to_csv('02c_tune_composers.csv', sep='\t', header=True, index_label='id')
+    df['lyricist'] = df['musicbrainz_lyricist'].apply(lambda x: x[1:-1]).str.replace("'", "").str.strip("][")
 
     dd = df.loc[:, ['file_name',
                     'title',
@@ -37,6 +38,12 @@ if __name__ == "__main__":
                     'time_signature',
                     'cycle_fifths_order',
                     'style',
+                    'musicbrainz_id',
+                    'wikidata_id',
+                    'wikidata_allmusic',
+                    'wiki_link',
+                    'wikidata_description',
+                    'lyricist',
                     ]]
 
     dd.to_csv('02c_tune_sql_import.csv', sep='\t', header=True, encoding='utf8', index_label='id')
