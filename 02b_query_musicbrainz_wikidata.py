@@ -63,75 +63,80 @@ if __name__ == "__main__":
     df['wikidata_allmusic'] = ""
     df['wiki_link'] = ""
 
-    for index, row in df.iterrows():
-        print("*** " + row['title'] + " ***")
-        if row['composer'] != 'nan':
-            composers = re.split(' |, |,|-', row['composer'])
-            composers = [composer.lower().strip() for composer in composers]
-            # remove all elements with 2 or less characters
-            composers = [i for i in composers if len(i) > 2]
-        else:
-            composers = []
+    try:
+        for index, row in df.iterrows():
+            print("*** " + row['title'] + " ***")
+            if row['composer'] != 'nan':
+                composers = re.split(' |, |,|-', row['composer'])
+                composers = [composer.lower().strip() for composer in composers]
+                # remove all elements with 2 or less characters
+                composers = [i for i in composers if len(i) > 2]
+            else:
+                composers = []
 
-        print(f"\t searching for {composers}")
-        composer_set = set()
-        lyricist_set = set()
-        id = ""
-        type = ""
+            print(f"\t searching for {composers}")
+            composer_set = set()
+            lyricist_set = set()
+            id = ""
+            type = ""
 
-        wiki_meta = {}
+            wiki_meta = {}
 
-        # if the title has an addition in round brackets, leave them away for the search query
-        # e.g. Always (I'll be loving you) from Irving Berlin is not found, but Always from Irving Berlin is found
-        # remove the (Dixieland Tunes) from the title
-        pattern = re.compile("\(.*\)", re.IGNORECASE)
-        title_cleaned = pattern.sub("", row['title']).strip()
-        print(f"\t'{title_cleaned}'")
-        result = musicbrainzngs.search_works(work=title_cleaned, type='song', strict=False)
+            # if the title has an addition in round brackets, leave them away for the search query
+            # e.g. Always (I'll be loving you) from Irving Berlin is not found, but Always from Irving Berlin is found
+            # remove the (Dixieland Tunes) from the title
+            pattern = re.compile("\(.*\)", re.IGNORECASE)
+            title_cleaned = pattern.sub("", row['title']).strip()
+            print(f"\t'{title_cleaned}'")
+            result = musicbrainzngs.search_works(work=title_cleaned, type='song', strict=False)
 
-        for work in result['work-list']:
-            found_contributor = False
+            for work in result['work-list']:
+                found_contributor = False
 
-            if 'artist-relation-list' in work.keys():
-                for artist in work['artist-relation-list']:
-                    for search_composer in composers:
-                        if search_composer in artist['artist']['name'].lower():
-                            print(f"\t\tfound {search_composer}, {artist['artist']['name']}, {artist['type']}")
+                if 'artist-relation-list' in work.keys():
+                    for artist in work['artist-relation-list']:
+                        for search_composer in composers:
+                            if search_composer in artist['artist']['name'].lower():
+                                print(f"\t\tfound {search_composer}, {artist['artist']['name']}, {artist['type']}")
+                                if artist['type'] in ['composer', 'writer']:
+                                    composer_set.add(artist['artist']['name'])
+                                    found_contributor = True
+                                elif artist['type'] == 'lyricist':
+                                    lyricist_set.add(artist['artist']['name'])
+                                    found_contributor = True
+                                else:
+                                    print(f"!!! warning: found {search_composer} but is a {artist['type']}.")
+
+                    # fallback: if the composer was found in this work, check if there is another composer or lyricist
+                    if found_contributor:
+                        id = work['id']
+                        type = work['type'] if 'type' in work.keys() else ""
+                        wiki_meta = _get_external_links(id)
+                        if wiki_meta is None:
+                            print(f"\tNo links found for tune {row['title']}.")
+
+                        for artist in work['artist-relation-list']:
                             if artist['type'] in ['composer', 'writer']:
                                 composer_set.add(artist['artist']['name'])
-                                found_contributor = True
-                            elif artist['type'] == 'lyricist':
+                                print(f"\t\tadditionally found {artist['artist']['name']}, {artist['type']}")
+                            if artist['type'] == 'lyricist':
                                 lyricist_set.add(artist['artist']['name'])
-                                found_contributor = True
-                            else:
-                                print(f"!!! warning: found {search_composer} but is a {artist['type']}.")
+                                print(f"\t\tadditionally found {artist['artist']['name']}, {artist['type']}")
+                        break  # continue to the next tune
 
-                # fallback: if the composer was found in this work, check if there is another composer or lyricist
-                if found_contributor:
-                    id = work['id']
-                    type = work['type'] if 'type' in work.keys() else ""
-                    wiki_meta = _get_external_links(id)
-                    if wiki_meta is None:
-                        print(f"\tNo links found for tune {row['title']}.")
+            df.at[index, 'musicbrainz_id'] = id
+            df.at[index, 'musicbrainz_composer'] = sorted(list(composer_set))
+            df.at[index, 'musicbrainz_lyricist'] = sorted(list(lyricist_set))
+            df.at[index, 'musicbrainz_type'] = type
+            if wiki_meta is not None:
+                df.at[index, 'wikidata_id'] = wiki_meta['wikidata_id'] if 'wikidata_id' in wiki_meta.keys() else ""
+                df.at[index, 'wikidata_description'] = wiki_meta['description'] if 'description' in wiki_meta.keys() else ""
+                df.at[index, 'wikidata_allmusic'] = wiki_meta['allmusic'] if 'allmusic' in wiki_meta.keys() else ""
+                df.at[index, 'wiki_link'] = wiki_meta['wiki_link'] if 'wiki_link' in wiki_meta.keys() else ""
 
-                    for artist in work['artist-relation-list']:
-                        if artist['type'] in ['composer', 'writer']:
-                            composer_set.add(artist['artist']['name'])
-                            print(f"\t\tadditionally found {artist['artist']['name']}, {artist['type']}")
-                        if artist['type'] == 'lyricist':
-                            lyricist_set.add(artist['artist']['name'])
-                            print(f"\t\tadditionally found {artist['artist']['name']}, {artist['type']}")
-                    break  # continue to the next tune
+        df.to_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8', index=False)
+    except Exception as ex:
+        print(ex.message)
+        df.to_csv('02b_tunes_musicbrainz_partial.csv', sep='\t', encoding='utf8', index=False)
 
-        df.at[index, 'musicbrainz_id'] = id
-        df.at[index, 'musicbrainz_composer'] = sorted(list(composer_set))
-        df.at[index, 'musicbrainz_lyricist'] = sorted(list(lyricist_set))
-        df.at[index, 'musicbrainz_type'] = type
-        if wiki_meta is not None:
-            df.at[index, 'wikidata_id'] = wiki_meta['wikidata_id'] if 'wikidata_id' in wiki_meta.keys() else ""
-            df.at[index, 'wikidata_description'] = wiki_meta['description'] if 'description' in wiki_meta.keys() else ""
-            df.at[index, 'wikidata_allmusic'] = wiki_meta['allmusic'] if 'allmusic' in wiki_meta.keys() else ""
-            df.at[index, 'wiki_link'] = wiki_meta['wiki_link'] if 'wiki_link' in wiki_meta.keys() else ""
-
-    df.to_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8', index=False)
 
