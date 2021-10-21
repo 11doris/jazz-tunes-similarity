@@ -90,7 +90,7 @@ def merge_year_from_manual_list(df) -> pd.DataFrame:
     df = add_title_simplified(df)
 
     # full outer join on the simplified title to match the tunes from the Real Books with the iRealPro tunes
-    join_df = pd.merge(manual, df, on='title_simplified', how='outer')
+    join_df = pd.merge(manual, df, on='file_name', how='right')
     # If the year from the manually curated list is available, take this, otherwise take the year from iRealPro
     join_df['year'] = np.where(join_df['year_x'].isna() == False, join_df['year_x'], join_df['year_y'])
 
@@ -102,7 +102,7 @@ def merge_year_from_manual_list(df) -> pd.DataFrame:
     # cleanup unused columns
     join_df.rename(columns={'title_y': 'title',
                             'file_name_y': 'file_name'}, inplace=True)
-    join_df = join_df.drop(columns=['title_x', 'year_x', 'year_y', 'title_simplified', 'file_name_x'])
+    join_df = join_df.drop(columns=['title_x', 'year_x', 'year_y'])
 
     # drop all rows which have an empty value in 'file_name'; these are rows that were in the List of Manually Curated Years but not in iRealPro
     join_df = join_df.dropna(subset=['file_name'])
@@ -218,8 +218,9 @@ if __name__ == "__main__":
     df.rename(columns={'key': 'tune_key',
                        'mode': 'tune_mode'}, inplace=True)
 
-    print(df.columns)
-    print(df.head(10))
+    print()
+    print(f"Full data frame: {len(df)} rows.")
+    print(f"Dropping composer: {len(df.drop(columns=['composer']).drop_duplicates('file_name'))} rows.")
 
     # save data frame to disk
     df.to_csv('02_tunes_raw.csv', sep='\t', index_label="id")
