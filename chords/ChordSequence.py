@@ -158,8 +158,7 @@ class ChordSequence:
             sequences += [seq]
         return sequences
 
-
-    def generate_sequence_df(self):
+    def create_leadsheet_chords(self):
         data, names = self._simplify_chords()
 
         sequences_relative = self.create_sequence(data, names, mode='relative')
