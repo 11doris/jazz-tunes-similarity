@@ -206,5 +206,9 @@ class ChordSequence:
                                          'StartOfSection'])
         return df
 
+    def create_embedding_input(self):
+        data, names = self._simplify_chords()
 
+        seq = self.create_sequence(data, names, mode='relative')
 
+        return seq
