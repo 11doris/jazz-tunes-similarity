@@ -12,6 +12,7 @@ if __name__ == "__main__":
 
     # merge the two sources together
     df = df_transform.merge(df_brainz, on='file_name')
+    assert(len(df_transform) == len(df))
 
     # if musicbrainz found no composer, use the information from iRealPro
     df.rename(columns={'composer': 'ireal_composer'}, inplace=True)
@@ -47,3 +48,7 @@ if __name__ == "__main__":
                     ]]
 
     dd.to_csv('02c_tune_sql_import.csv', sep='\t', header=True, encoding='utf8', index_label='id')
+
+    print(f"{len(df_transform)} tunes")
+    print(f"{len(df)} rows with composers exploded")
+

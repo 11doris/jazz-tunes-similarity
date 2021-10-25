@@ -78,3 +78,4 @@ if __name__ == "__main__":
     f.write(json.dumps(meta_info, indent=2))
     f.close()
 
+    print(f"{len(files)} files parsed.")

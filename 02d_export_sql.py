@@ -64,10 +64,16 @@ if __name__ == '__main__':
             ORDER BY year;"
         )
     )
-    print(f"Found {result.rowcount} rows.")
+    print(f"Found {result.rowcount} rows for {composer_name}.")
 
     #rows = [dict(row) for row in result.fetchall()]
     for row in result.fetchall():
         print(row)
+
+    result = engine.execute(f"SELECT count(*) FROM {table_name}").fetchall()
+
+    print()
+    print(f"Total rows read from csv file: {len(df)}")
+    print(f"Total rows inserted in database: {result[0]}")
 
     dbConnection.close()
