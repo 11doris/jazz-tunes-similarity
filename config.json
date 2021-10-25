@@ -1,8 +1,8 @@
 {
   "xmldirectory": {
-    "full": ["dataset/xml/", "dataset/xml2/"],
+    "full": ["dataset/jazz1350/", "dataset/trad/"],
     "sample": ["dataset/sample_tunes/"],
-    "test": ["dataset/test2/"]
+    "test": ["dataset/test/"]
   },
   "config": {
     "input": "full",
