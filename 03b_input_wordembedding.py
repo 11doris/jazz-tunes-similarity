@@ -13,7 +13,7 @@ if __name__ == "__main__":
     print("Write generated chord sequence to file...")
     with open('03b_input_word_embedding.txt', 'w') as f:
         for tune in seq:
-            line = ", ".join([", ".join(x) for x in tune])
+            line = " ".join([" ".join(x) for x in tune])
             f.write(f"{line}\n")
 
     print("Done.")

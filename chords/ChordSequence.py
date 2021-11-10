@@ -159,7 +159,7 @@ class ChordSequence:
         return sequences
 
     def create_leadsheet_chords(self):
-        data, names = self._simplify_chords()
+        data, names = self.data_obj.rootAndDegrees()
 
         sequences_relative = self.create_sequence(data, names, mode='relative')
         sequences_default = self.create_sequence(data, names, mode='default')
@@ -207,7 +207,10 @@ class ChordSequence:
         return df
 
     def create_embedding_input(self):
-        data, names = self._simplify_chords()
+        #data, names = self._simplify_chords()
+        #data, names = self.data_obj.rootAndDegrees()    # full suff incl extensions
+        #data, names = self.data_obj.rootAndDegrees7()  # no dim, no m7b5
+        data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
 
         seq = self.create_sequence(data, names, mode='relative')
 
