@@ -99,6 +99,7 @@ class ReadData():
         Reduce aug, sus to 7 chords
         Keep 6 chords and m7b5
         Note: (+13) will be kept since it is the same as the 6
+
         """
         def modifier(degrees):
             no7 = degrees[:]
@@ -107,7 +108,9 @@ class ReadData():
             if 3 not in no7 and 4 not in no7: no7 += [4]
             if 3 in no7 and 4 in no7: no7.remove(3)
             if 5 in no7: no7.remove(5)
+            if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
             if 8 in no7: no7.remove(8)
+            if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
             no7.sort()
             return no7
 
