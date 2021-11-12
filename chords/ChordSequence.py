@@ -144,13 +144,6 @@ class ChordSequence:
 
             for chord in tune:
                 formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
-
-                # delete all the chord extensions (+b9), (+#9), (+b11), (+#11), (+b13), (+#13)
-                #formatted_chord = re.sub('\(\+[b#]?[0-9]+\)', '', formatted_chord)
-                # replace mM9 chord by mM7 because it occurs only once
-                #formatted_chord = re.sub('mM9$', 'mM7', formatted_chord)
-                # replace all maug chords; they occur only once minor-augmented =
-
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
@@ -211,7 +204,30 @@ class ChordSequence:
         #data, names = self.data_obj.rootAndDegrees()    # full suff incl extensions
         #data, names = self.data_obj.rootAndDegrees7()  # no dim, no m7b5
         data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
+        seq = self.create_sequence(data, names, mode='relative')
+        return seq
+
+
+    def create_topics_input(self):
+        data, names = self.data_obj.rootAndDegrees()  # full chords
 
         seq = self.create_sequence(data, names, mode='relative')
 
-        return seq
+        remove_repetitions = True
+        out = []
+        if remove_repetitions:
+            out = []
+            for tune in seq:
+                last_chord = None
+                tune_norep = []
+                flattened_chords = [chord for bar in tune for chord in bar]
+                for chord in flattened_chords:
+                    if chord != last_chord:
+                        tune_norep.append(chord)
+                        last_chord = chord
+                out.append(tune_norep)
+        else:
+            for tune in seq:
+                out.append([chord for bar in tune for chord in bar])
+
+        return out
