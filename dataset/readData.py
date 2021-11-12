@@ -87,6 +87,7 @@ class ReadData():
             if 6 in no7: no7.remove(6)
             if 8 in no7: no7.remove(8)
             if 9 in no7: no7.remove(9)
+            if 11 in no7: no7.remove(11)
             no7.sort()
             return no7
 
