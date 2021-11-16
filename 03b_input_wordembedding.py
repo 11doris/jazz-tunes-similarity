@@ -8,12 +8,17 @@ if __name__ == "__main__":
 
     cs = ChordSequence()
 
+    # get data including section info
+    df = cs.split_tunes_in_sections()
+    df.to_csv('03b_input_wordembedding_sections.csv', sep='\t', encoding='utf-8')
+
+    # embedding input
     seq = cs.create_embedding_input()
 
     print("Write generated chord sequence to file...")
     with open('03b_input_word_embedding.txt', 'w') as f:
         for tune in seq:
-            line = " ".join([" ".join(x) for x in tune])
+            line = " ".join(tune)
             f.write(f"{line}\n")
 
     # get data for Topics
@@ -25,4 +30,7 @@ if __name__ == "__main__":
             f.write(f"{line}\n")
 
     print("Done.")
+
+
+
 

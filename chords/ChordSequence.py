@@ -199,35 +199,88 @@ class ChordSequence:
                                          'StartOfSection'])
         return df
 
+    def split_tunes_in_sections(self):
+        data, names = self.data_obj.rootAndDegreesSimplified()
+
+        seq = self.create_sequence(data, names, mode='relative')
+
+        df = pd.DataFrame(columns=['file_name', 'title', 'tune_mode', 'section_name', 'section_id', 'chords'])
+
+        for i, tune in enumerate(seq):
+            meta = self.data_obj.meta[names[i]]
+            meta_row = [meta['file_path'], meta['title'], meta['default_key']['mode']]
+
+            # generate a list with the chords for each section
+            sections = self.data_obj.meta[names[i]]['sections']
+            tune_name = self.data_obj.meta[names[i]]['title']
+            print(f"{tune_name}")
+            if len(sections) > 0:
+                section_bar_num = [int(num) for num in sections.keys()]
+                section_names = list(sections.values())
+                idx = 0
+                first_section = True
+                section_chords = []
+                for measure, chords in enumerate(tune, start=1):
+                    #print(f'{measure}: {", ".join(chords)}')
+
+                    if idx < len(section_bar_num):
+                        if measure == section_bar_num[idx]:
+                            if first_section:
+                                first_section = False
+                                row = meta_row[:]
+                            else:
+                                #print(f'Section {section_names[idx-1]}, {", ".join(section_chords)}')
+                                row.extend([section_names[idx-1], idx, " ".join(section_chords)])
+                                df.loc[len(df)] = row
+                                section_chords = []
+                                row = meta_row[:]
+                            idx += 1
+                    section_chords.extend(chords)
+                #print(f'Last Section {section_names[-1]}, {" ".join(section_chords)}')
+                row.extend([section_names[-1], idx, " ".join(section_chords)])
+                df.loc[len(df)] = row
+                row = meta_row[:]
+            else:
+                flatten_chords = [chord for bar in tune for chord in bar]
+                #print(f'No Sections. {" ".join(flatten_chords)}')
+                row = meta_row[:]
+                row.extend([None, 0, " ".join(flatten_chords)])
+                df.loc[len(df)] = row
+
+
+        return df
+
+
+
+    def remove_repeated_chords(self, seq):
+        out = []
+        for tune in seq:
+            last_chord = None
+            tune_norep = []
+            flattened_chords = [chord for bar in tune for chord in bar]
+            for chord in flattened_chords:
+                if chord != last_chord:
+                    tune_norep.append(chord)
+                    last_chord = chord
+            out.append(tune_norep)
+        return out
+
+
     def create_embedding_input(self):
         #data, names = self._simplify_chords()
-        #data, names = self.data_obj.rootAndDegrees()    # full suff incl extensions
-        #data, names = self.data_obj.rootAndDegrees7()  # no dim, no m7b5
-        data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
+        #data, names = self.data_obj.rootAndDegrees()            # full suff incl extensions
+        data, names = self.data_obj.rootAndDegrees7()            # no dim, no m7b5
+        #data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
         seq = self.create_sequence(data, names, mode='relative')
-        return seq
+        out = self.remove_repeated_chords(seq)
+
+        return out
 
 
     def create_topics_input(self):
         data, names = self.data_obj.rootAndDegrees()  # full chords
 
         seq = self.create_sequence(data, names, mode='relative')
-
-        remove_repetitions = True
-        out = []
-        if remove_repetitions:
-            out = []
-            for tune in seq:
-                last_chord = None
-                tune_norep = []
-                flattened_chords = [chord for bar in tune for chord in bar]
-                for chord in flattened_chords:
-                    if chord != last_chord:
-                        tune_norep.append(chord)
-                        last_chord = chord
-                out.append(tune_norep)
-        else:
-            for tune in seq:
-                out.append([chord for bar in tune for chord in bar])
+        out = self.remove_repeated_chords(seq)
 
         return out
