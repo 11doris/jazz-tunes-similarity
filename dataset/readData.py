@@ -88,6 +88,7 @@ class ReadData():
             if 8 in no7: no7.remove(8)
             if 9 in no7: no7.remove(9)
             if 11 in no7: no7.remove(11)
+            if 3 in no7 and 10 in no7: no7.remove(10)
             no7.sort()
             return no7
 
@@ -116,3 +117,33 @@ class ReadData():
             return no7
 
         return self.readData(modifier)
+
+    def rootAndDegreesPlus(self):
+        """
+        Reduce 9, 11, 13 chords to 7 chords
+        Reduce aug, sus to 7 chords
+        Reduce M7, 6 to major triads
+        Reduce m7, m6 to minor triads
+        Keep m7b5, dim, dim7
+        Note: (+13) will be kept since it is the same as the 6
+
+        """
+        def modifier(degrees):
+            no7 = degrees[:]
+            if 1 in no7: no7.remove(1)
+            if 2 in no7: no7.remove(2)
+            if 3 not in no7 and 4 not in no7: no7 += [4]
+            if 3 in no7 and 4 in no7: no7.remove(3)
+            if 5 in no7: no7.remove(5)
+            if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
+            if 8 in no7: no7.remove(8)
+            if 9 in no7 and not 6 in no7: no7.remove(9)  # reduce m6 and 6, leave dim7
+            if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
+            if 9 in no7 and 6 in no7: no7.remove(9)  # reduce dim7 to dim
+            if 11 in no7: no7.remove(11)  # remove M7
+            if 3 in no7 and 7 in no7 and 10 in no7: no7.remove(10) # reduce m7 to m
+            no7.sort()
+            return no7
+
+        return self.readData(modifier)
+
