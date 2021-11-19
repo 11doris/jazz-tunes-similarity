@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     # get data including section info
     df = cs.split_tunes_in_sections()
-    df.to_csv('03b_input_wordembedding_sections.csv', sep='\t', encoding='utf-8')
+    df.to_csv('03b_input_wordembedding_sections.csv', sep='\t', encoding='utf-8', index=True, index_label="id")
 
     # embedding input
     seq = cs.create_embedding_input()
@@ -30,7 +30,3 @@ if __name__ == "__main__":
             f.write(f"{line}\n")
 
     print("Done.")
-
-
-
-
