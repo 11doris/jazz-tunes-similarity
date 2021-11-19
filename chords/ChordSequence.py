@@ -200,11 +200,13 @@ class ChordSequence:
         return df
 
     def split_tunes_in_sections(self):
-        data, names = self.data_obj.rootAndDegreesSimplified()
+        data, names = self.data_obj.rootAndDegreesPlus()
+        #data, names = self.data_obj.rootAndDegreesSimplified()
+        #data, names = self.data_obj.rootAndDegrees7()
 
         seq = self.create_sequence(data, names, mode='relative')
 
-        df = pd.DataFrame(columns=['file_name', 'title', 'tune_mode', 'section_name', 'section_id', 'chords'])
+        df = pd.DataFrame(columns=['file_name', 'title', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
 
         for i, tune in enumerate(seq):
             meta = self.data_obj.meta[names[i]]
@@ -230,21 +232,21 @@ class ChordSequence:
                                 row = meta_row[:]
                             else:
                                 #print(f'Section {section_names[idx-1]}, {", ".join(section_chords)}')
-                                row.extend([section_names[idx-1], idx, " ".join(section_chords)])
+                                row.extend([i, section_names[idx-1], idx, " ".join(section_chords)])
                                 df.loc[len(df)] = row
                                 section_chords = []
                                 row = meta_row[:]
                             idx += 1
                     section_chords.extend(chords)
                 #print(f'Last Section {section_names[-1]}, {" ".join(section_chords)}')
-                row.extend([section_names[-1], idx, " ".join(section_chords)])
+                row.extend([i, section_names[-1], idx, " ".join(section_chords)])
                 df.loc[len(df)] = row
                 row = meta_row[:]
             else:
                 flatten_chords = [chord for bar in tune for chord in bar]
                 #print(f'No Sections. {" ".join(flatten_chords)}')
                 row = meta_row[:]
-                row.extend([None, 0, " ".join(flatten_chords)])
+                row.extend([i, None, 0, " ".join(flatten_chords)])
                 df.loc[len(df)] = row
 
 
@@ -269,7 +271,8 @@ class ChordSequence:
     def create_embedding_input(self):
         #data, names = self._simplify_chords()
         #data, names = self.data_obj.rootAndDegrees()            # full suff incl extensions
-        data, names = self.data_obj.rootAndDegrees7()            # no dim, no m7b5
+        #data, names = self.data_obj.rootAndDegrees7()            # no dim, no m7b5
+        data, names = self.data_obj.rootAndDegreesPlus()  # no M7, 6, m7, m6, with m7b5, dim, dim7
         #data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
         seq = self.create_sequence(data, names, mode='relative')
         out = self.remove_repeated_chords(seq)
