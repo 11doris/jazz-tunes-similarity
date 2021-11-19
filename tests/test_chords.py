@@ -77,3 +77,80 @@ def test_chords():
                 print(num + 1, chord)
 
     assert errors == 0
+
+
+def test_chords_rootAndDegreesPlus():
+    files = ['./fixtures/All Chords Part1.xml',
+             './fixtures/All Chords Part2.xml']
+
+    out = {}
+    meta_info = {}
+
+    for file in files:
+        out[file], info = parseFile(file)
+        meta_info[file] = info
+
+    assert info['num_bars'] == 28
+    assert info['max_num_chords_per_bar'] == 1
+
+    tunes_path = "test_parse_file_chords.json"
+    f = open(tunes_path, "w")
+    f.write(json.dumps(out, indent=2))
+    f.close()
+
+    meta_path = "test_parse_file_meta.json"
+    f = open(meta_path, "w")
+    f.write(json.dumps(meta_info, indent=2))
+    f.close()
+
+
+    # read in the data
+    data_obj = ReadData()
+    data_obj.set_json_paths(tunes_path=tunes_path, meta_path=meta_path)
+
+    # generate the chord sequence
+    data, names = data_obj.rootAndDegreesPlus()
+
+    sequences = []
+    for i in range(len(data)):
+        tune = data[i]
+        seq = []
+        for chord in tune:
+            formatted_chord = Chord(chord).toSymbol(key=3,
+                                                    includeRoot=True,
+                                                    includeBass=False)
+            seq += [formatted_chord]
+        sequences += [seq]
+
+    correct_chords = [
+        [
+            'C', 'C', 'Cm', 'C7',
+            'C7', 'C', 'Cm', 'C7(+b5)',
+            'C', 'C', 'Cm', 'Cdim',
+            'Cm7b5', 'C', 'Cm', 'C7',
+            'C7', 'C', 'Cm', 'C7',
+            'C7', 'C', 'Cm', 'Cm',
+            'Cm', 'C', 'C', 'Cm'
+        ],
+        [
+            'Cm', 'Cdim', 'C', 'C',
+            'Cm', 'Cm7b5', 'Cm7b5', 'C',
+            'C', 'C', 'Cdim', 'Cm7b5',
+            'C7', 'C7', 'C7(+b5)', 'C7',
+            'C7', 'C7', 'C7', 'C7',
+            'C7', 'C7', 'C7(+b5)', 'C7',
+            'C7', 'C7(+b5)', 'C7', 'C7'
+        ]
+    ]
+
+    print()
+    errors = 0
+    for i in range(len(sequences)):
+        for num, chord in enumerate(sequences[i]):
+            if chord != correct_chords[i][num]:
+                errors += 1
+                print(num + 1, chord, f'!! Wrong - should be {correct_chords[i][num]}')
+            else:
+                print(num + 1, chord)
+
+    assert errors == 0
