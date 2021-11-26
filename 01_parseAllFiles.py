@@ -25,6 +25,13 @@ def __add_year_from_musicxml_and_clean(meta):
         pattern = re.compile("\(\s*Dixieland\s*Tunes\s*\)", re.IGNORECASE)
         value['title'] = pattern.sub("", value['title']).strip()
 
+        #
+        text = value['file_path']
+        m = re.search('dataset\/(\w+)\/', text)
+        txt = m.group(1) if m else ""
+        value['playlist'] = txt
+        value['title_playlist'] = value['title'] + ' [' + value['playlist'] + ']'
+
         # clean composer names
         value['composer'] = value['composer'].replace("Van-Heusen", "Van Heusen")
         value['composer'] = value['composer'].replace("VanHeusen", "Van Heusen")
@@ -65,6 +72,14 @@ if __name__ == "__main__":
         meta_info[file] = info
         meta_info[file]['title'] = os.path.splitext(os.path.basename(file))[0]
         meta_info[file]['file_path'] = file
+
+        # text = meta_info[file]['file_path']
+        # m = re.search('dataset\/(\w+)\/', text)
+        # txt = m.group(1) if m else ""
+        # meta_info[file]['playlist'] = txt
+        # meta_info[file]['title_playlist'] = meta_info[file]['title'] + ' [' + meta_info[file]['playlist'] + ']'
+
+
 
     # extract the year from the Composer if available, do some cleaning
     meta_info = __add_year_from_musicxml_and_clean(meta_info)
