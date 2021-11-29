@@ -136,6 +136,7 @@ class ReadData():
             if 3 in no7 and 4 in no7: no7.remove(3)
             if 5 in no7: no7.remove(5)
             if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
+            if 6 in no7 and 4 in no7: no7.remove(6)  # remove b5 for major chords
             if 8 in no7: no7.remove(8)
             if 9 in no7 and not 6 in no7: no7.remove(9)  # reduce m6 and 6, leave dim7
             if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
