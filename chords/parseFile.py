@@ -57,10 +57,14 @@ def parseFile(file):
     # loop over all bars
     for measure in part1:
         measure_num_real += 1
-
         measure_num_xml = int(measure.attrib["number"])
         out[measure_num_real] = {}
         # print(f'Measure XML file: {measure_num_xml}, Real Measure: {measure_num_real}----- ')
+
+        # make sure that the first bar is labeled with section 'A'
+        if measure_num_real == 1:
+            sections[measure_num_real] = 'A'
+            sections_xml[measure_num_xml] = 'A'
 
         out[measure_num_real], keynumber = get_chords(measure=measure, key=key)
 
