@@ -368,12 +368,7 @@
           <root-step>G</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="7"/>
-        <degree>
-          <degree-value>5</degree-value>
-          <degree-alter>1</degree-alter>
-          <degree-type>alter</degree-type>
-        </degree>
+        <kind text="*7+*"/>
       </harmony>
       <note>
         <pitch>

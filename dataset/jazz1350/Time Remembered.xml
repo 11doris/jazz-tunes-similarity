@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2019-10-30</encoding-date>
+            <encoding-date>2021-12-01</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -85,19 +85,17 @@
         </clef>
       </attributes>
       <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>A</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>B</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -170,7 +168,7 @@
           <root-step>E</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -191,7 +189,7 @@
           <root-step>A</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -207,7 +205,7 @@
           <root-step>D</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -228,7 +226,7 @@
           <root-step>G</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -270,6 +268,9 @@
     <measure number="8">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>A</root-step>
@@ -296,12 +297,17 @@
     <measure number="9">
       <print new-system="yes"/>
       <attributes/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>B</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>A</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -322,7 +328,7 @@
           <root-step>D</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -343,7 +349,7 @@
           <root-step>G</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -364,7 +370,7 @@
           <root-step>C</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -406,7 +412,7 @@
           <root-step>E</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -427,7 +433,7 @@
           <root-step>B</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -443,12 +449,15 @@
     <measure number="16">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>B</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -464,12 +473,17 @@
     <measure number="17">
       <print new-system="yes"/>
       <attributes/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>C</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>E</root-step>
           <root-alter>-1</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -490,7 +504,7 @@
           <root-step>A</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -511,7 +525,7 @@
           <root-step>C</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -532,7 +546,7 @@
           <root-step>F</root-step>
           <root-alter>1</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -553,7 +567,7 @@
           <root-step>B</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -574,7 +588,7 @@
           <root-step>G</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -642,7 +656,7 @@
           <root-step>C</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
@@ -658,22 +672,6 @@
     <measure number="26">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
         <bar-style>light-heavy</bar-style>
       </barLine>
@@ -682,7 +680,7 @@
           <root-step>C</root-step>
           <root-alter>0</root-alter>
         </root>
-        <kind text="m9">minor-ninth</kind>
+        <kind text="m9">minor-add-ninth</kind>
       </harmony>
       <note>
         <pitch>
