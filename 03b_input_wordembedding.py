@@ -16,22 +16,4 @@ if __name__ == "__main__":
     df = cs.get_tunes_data()
     df.to_csv('03b_input_model_tunes.csv', sep='\t', encoding='utf-8', index=True, index_label="id")
 
-
-    # # embedding input
-    # seq = cs.create_embedding_input()
-    #
-    # print("Write generated chord sequence to file...")
-    # with open('03b_input_word_embedding.txt', 'w') as f:
-    #     for tune in seq:
-    #         line = " ".join(tune)
-    #         f.write(f"{line}\n")
-    #
-    # # get data for Topics
-    # seq = cs.create_topics_input()
-    # print("Write generated chord sequence for Topics to file...")
-    # with open('03c_input_topics.txt', 'w') as f:
-    #     for tune in seq:
-    #         line = " ".join(tune)
-    #         f.write(f"{line}\n")
-
     print("Done.")

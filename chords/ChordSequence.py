@@ -268,28 +268,6 @@ class ChordSequence:
         return out
 
 
-    def create_embedding_input(self):
-        #data, names = self._simplify_chords()
-        #data, names = self.data_obj.rootAndDegrees()            # full suff incl extensions
-        #data, names = self.data_obj.rootAndDegrees7()            # no dim, no m7b5
-        #data, names = self.data_obj.rootAndDegreesPlus()  # no M7, 6, m7, m6, with m7b5, dim, dim7
-        data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
-        seq = self.create_sequence(data, names, mode='relative')
-        out = self.remove_repeated_chords(seq)
-
-        return out
-
-
-    def create_topics_input(self):
-        data, names = self.data_obj.rootAndDegrees()  # full chords
-
-        seq = self.create_sequence(data, names, mode='relative')
-        out = self.remove_repeated_chords(seq)
-
-        return out
-
-
-
     def get_tunes_data(self):
         #data, names = self.data_obj.rootAndDegreesPlus()
         data, names = self.data_obj.rootAndDegreesSimplified()
