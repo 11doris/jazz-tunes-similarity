@@ -200,9 +200,8 @@ class ChordSequence:
         return df
 
     def split_tunes_in_sections(self):
-        data, names = self.data_obj.rootAndDegreesPlus()
-        #data, names = self.data_obj.rootAndDegreesSimplified()
-        #data, names = self.data_obj.rootAndDegrees7()
+        #data, names = self.data_obj.rootAndDegreesPlus()
+        data, names = self.data_obj.rootAndDegreesSimplified()
 
         seq = self.create_sequence(data, names, mode='relative')
 
