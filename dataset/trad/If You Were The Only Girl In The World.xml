@@ -1124,7 +1124,6 @@
       <attributes/>
       <barLine location="right">
         <bar-style>light-heavy</bar-style>
-        <repeat direction="backward"/>
       </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
