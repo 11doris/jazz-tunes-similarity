@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2019-10-30</encoding-date>
+            <encoding-date>2021-12-01</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -85,16 +85,6 @@
         </clef>
       </attributes>
       <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine location="left">
-        <bar-style>heavy-light</bar-style>
-        <repeat direction="forward"/>
-      </barLine>
       <direction placement="above">
         <direction-type>
           <rehearsal>A</rehearsal>
@@ -254,6 +244,9 @@
     <measure number="8">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>B</root-step>
@@ -274,14 +267,13 @@
     </measure>
     <!--=========================================================-->
     <measure number="9">
-      <barLine location="right">
-        <ending type="discontinue" number="1"/>
-      </barLine>
-      <barLine location="left">
-        <ending type="start" number="1"/>
-      </barLine>
       <print new-system="yes"/>
       <attributes/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>B</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>E</root-step>
@@ -453,35 +445,8 @@
     <measure number="16">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
-        <bar-style>light-heavy</bar-style>
-        <repeat direction="backward"/>
+        <bar-style>light-light</bar-style>
       </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
@@ -530,14 +495,197 @@
     </measure>
     <!--=========================================================-->
     <measure number="17">
-      <barLine location="right">
-        <ending type="discontinue" number="2"/>
-      </barLine>
-      <barLine location="left">
-        <ending type="start" number="2"/>
-      </barLine>
       <print new-system="yes"/>
       <attributes/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>A</rehearsal>
+        </direction-type>
+      </direction>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>F</root-step>
+          <root-alter>0</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="18">
+      <print/>
+      <attributes/>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>F</root-step>
+          <root-alter>0</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="19">
+      <print/>
+      <attributes/>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>F</root-step>
+          <root-alter>0</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="20">
+      <print/>
+      <attributes/>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>F</root-step>
+          <root-alter>0</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="21">
+      <print new-system="yes"/>
+      <attributes/>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="22">
+      <print/>
+      <attributes/>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="23">
+      <print/>
+      <attributes/>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="24">
+      <print/>
+      <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
+      <harmony print-frame="no" default-y="25" relative-x="10">
+        <root>
+          <root-step>B</root-step>
+          <root-alter>-1</root-alter>
+        </root>
+        <kind text="7">dominant</kind>
+      </harmony>
+      <note>
+        <pitch>
+          <step>B</step>
+          <alter>-1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>3072</duration>
+        <type>whole</type>
+        <notehead>diamond</notehead>
+      </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="25">
+      <print new-system="yes"/>
+      <attributes/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>C</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>F</root-step>
@@ -557,7 +705,7 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="18">
+    <measure number="26">
       <print/>
       <attributes/>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -606,7 +754,7 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="19">
+    <measure number="27">
       <print/>
       <attributes/>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -628,7 +776,7 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="20">
+    <measure number="28">
       <print/>
       <attributes/>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -667,7 +815,7 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="21">
+    <measure number="29">
       <print new-system="yes"/>
       <attributes/>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -706,7 +854,7 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="22">
+    <measure number="30">
       <print/>
       <attributes/>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -745,7 +893,7 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="23">
+    <measure number="31">
       <print/>
       <attributes/>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -784,25 +932,9 @@
       </note>
     </measure>
     <!--=========================================================-->
-    <measure number="24">
+    <measure number="32">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
         <bar-style>light-heavy</bar-style>
       </barLine>
