@@ -206,11 +206,11 @@ class ChordSequence:
 
         seq = self.create_sequence(data, names, mode='relative')
 
-        df = pd.DataFrame(columns=['file_name', 'title', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
+        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
 
         for i, tune in enumerate(seq):
             meta = self.data_obj.meta[names[i]]
-            meta_row = [meta['file_path'], meta['title'], meta['default_key']['mode']]
+            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
 
             # generate a list with the chords for each section
             sections = self.data_obj.meta[names[i]]['sections']
@@ -272,8 +272,8 @@ class ChordSequence:
         #data, names = self._simplify_chords()
         #data, names = self.data_obj.rootAndDegrees()            # full suff incl extensions
         #data, names = self.data_obj.rootAndDegrees7()            # no dim, no m7b5
-        data, names = self.data_obj.rootAndDegreesPlus()  # no M7, 6, m7, m6, with m7b5, dim, dim7
-        #data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
+        #data, names = self.data_obj.rootAndDegreesPlus()  # no M7, 6, m7, m6, with m7b5, dim, dim7
+        data, names = self.data_obj.rootAndDegreesSimplified()  # incl dim, m7b5
         seq = self.create_sequence(data, names, mode='relative')
         out = self.remove_repeated_chords(seq)
 
@@ -287,3 +287,31 @@ class ChordSequence:
         out = self.remove_repeated_chords(seq)
 
         return out
+
+
+
+    def get_tunes_data(self):
+        #data, names = self.data_obj.rootAndDegreesPlus()
+        data, names = self.data_obj.rootAndDegreesSimplified()
+        #data, names = self.data_obj.rootAndDegrees7()
+
+        seq = self.create_sequence(data, names, mode='relative')
+
+        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
+
+        for i, tune in enumerate(seq):
+            meta = self.data_obj.meta[names[i]]
+            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
+
+            # generate a list with the chords for each section
+            sections = self.data_obj.meta[names[i]]['sections']
+            tune_name = self.data_obj.meta[names[i]]['title']
+            print(f"{tune_name}")
+
+            flatten_chords = [chord for bar in tune for chord in bar]
+            #print(f'No Sections. {" ".join(flatten_chords)}')
+            row = meta_row[:]
+            row.extend([i, None, 0, " ".join(flatten_chords)])
+            df.loc[len(df)] = row
+
+        return df

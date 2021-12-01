@@ -2,11 +2,11 @@
   "xmldirectory": {
     "full": ["dataset/jazz1350/", "dataset/trad/"],
     "sample": ["dataset/sample_tunes/"],
-    "test": ["dataset/test/"]
+    "test": ["dataset/test3/"]
   },
   "config": {
-    "input": "full",
-	"use_basic_chords": false,
+    "input": "test",
+	"use_basic_chords": true,
     "reduce_consecutive_chords": true,
 	"N_ngrams": 4,
     "output_directory": "./chord_sequences"
