@@ -100,6 +100,7 @@ class ReadData():
         Reduce 9, 11, 13 chords to 7 chords
         Reduce aug, sus to 7 chords
         Keep 6 chords and m7b5
+        Keep sus and sus7, reduce sus11 and sus13 to sus7   
         Note: (+13) will be kept since it is the same as the 6
 
         """
@@ -107,12 +108,13 @@ class ReadData():
             no7 = degrees[:]
             if 1 in no7: no7.remove(1)
             if 2 in no7: no7.remove(2)
-            if 3 not in no7 and 4 not in no7: no7 += [4]
             if 3 in no7 and 4 in no7: no7.remove(3)
-            if 5 in no7: no7.remove(5)
+            if no7 == [7]: no7 += [4] # extend C5 to C
             if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
             if 8 in no7: no7.remove(8)
             if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
+            if 3 in no7 and 5 in no7 and 7 in no7 and 10 in no7: no7.remove(5)  # reduce m11 to m
+            if 5 in no7 and 9 in no7: no7.remove(9)
             no7.sort()
             return no7
 
@@ -121,10 +123,10 @@ class ReadData():
     def rootAndDegreesPlus(self):
         """
         Reduce 9, 11, 13 chords to 7 chords
-        Reduce aug, sus to 7 chords
+        Reduce aug to 7 chords
         Reduce M7, 6 to major triads
         Reduce m7, m6 to minor triads
-        Keep m7b5, dim, dim7
+        Keep m7b5, dim, dim7, sus, sus7
         Note: (+13) will be kept since it is the same as the 6
 
         """
@@ -132,9 +134,8 @@ class ReadData():
             no7 = degrees[:]
             if 1 in no7: no7.remove(1)
             if 2 in no7: no7.remove(2)
-            if 3 not in no7 and 4 not in no7: no7 += [4]
             if 3 in no7 and 4 in no7: no7.remove(3)
-            if 5 in no7: no7.remove(5)
+            if no7 == [7]: no7 += [4] # extend C5 to C
             if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
             if 6 in no7 and 4 in no7: no7.remove(6)  # remove b5 for major chords
             if 8 in no7: no7.remove(8)
@@ -142,7 +143,10 @@ class ReadData():
             if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
             if 9 in no7 and 6 in no7: no7.remove(9)  # reduce dim7 to dim
             if 11 in no7: no7.remove(11)  # remove M7
+            if 3 in no7 and 5 in no7 and 7 in no7 and 10 in no7: no7.remove(5)  # reduce m11 to m
             if 3 in no7 and 7 in no7 and 10 in no7: no7.remove(10) # reduce m7 to m
+
+
             no7.sort()
             return no7
 
