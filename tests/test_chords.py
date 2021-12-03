@@ -125,11 +125,11 @@ def test_chords_rootAndDegreesSimplified():
     correct_chords = [
         [
             'C', 'CM7', 'Cm7', 'C7',
-            'C7', 'CM7', 'Cm', 'C7(+b5)',
-            'C', 'C6', 'Cm6', 'Cdim7',
+            'C7sus4', 'CM7', 'Cm', 'C7(+b5)',
+            'Csus4', 'C6', 'Cm6', 'Cdim7',
             'Cm7b5', 'CM7', 'Cm7', 'C7',
-            'C7', 'CM7', 'Cm7', 'C13',
-            'C13', 'C6', 'Cm6', 'CmM7',
+            'C7sus4', 'CM7', 'Cm7', 'C13',
+            'C7sus4', 'C6', 'Cm6', 'CmM7',
             'CmM7', 'CM7', 'CM7', 'Cm'
         ],
         [
@@ -189,6 +189,10 @@ def test_chords_rootAndDegreesPlus():
     # generate the chord sequence
     data, names = data_obj.rootAndDegreesPlus()
 
+    # print()
+    # for i in data[1]:
+    #     print(i)
+
     sequences = []
     for i in range(len(data)):
         tune = data[i]
@@ -203,11 +207,11 @@ def test_chords_rootAndDegreesPlus():
     correct_chords = [
         [
             'C', 'C', 'Cm', 'C7',
-            'C7', 'C', 'Cm', 'C7',
-            'C', 'C', 'Cm', 'Cdim',
+            'C7sus4', 'C', 'Cm', 'C7',
+            'Csus4', 'C', 'Cm', 'Cdim',
             'Cm7b5', 'C', 'Cm', 'C7',
-            'C7', 'C', 'Cm', 'C7',
-            'C7', 'C', 'Cm', 'Cm',
+            'C7sus4', 'C', 'Cm', 'C7',
+            'C7sus4', 'C', 'Cm', 'Cm',
             'Cm', 'C', 'C', 'Cm'
         ],
         [
