@@ -4,6 +4,7 @@ import re
 from chords.chord import Chord
 from dataset.readData import ReadData
 import pandas as pd
+from tqdm import tqdm
 
 class ChordSequence:
     def __init__(self, config=None, meta=None):
@@ -199,22 +200,27 @@ class ChordSequence:
                                          'StartOfSection'])
         return df
 
-    def split_tunes_in_sections(self):
-        #data, names = self.data_obj.rootAndDegreesPlus()
-        data, names = self.data_obj.rootAndDegreesSimplified()
+    def split_tunes_in_sections(self, chords='rootAndDegreesPlus'):
+
+        if chords == 'rootAndDegreesPlus':
+            data, names = self.data_obj.rootAndDegreesPlus()
+            filename = '03b_input_wordembedding_sections_rootAndDegreesPlus.csv'
+        else:
+            data, names = self.data_obj.rootAndDegreesSimplified()
+            filename = '03b_input_wordembedding_sections_simplified.csv'
 
         seq = self.create_sequence(data, names, mode='relative')
 
         df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
 
-        for i, tune in enumerate(seq):
+        for i, tune in tqdm(enumerate(seq)):
             meta = self.data_obj.meta[names[i]]
             meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
 
             # generate a list with the chords for each section
             sections = self.data_obj.meta[names[i]]['sections']
             tune_name = self.data_obj.meta[names[i]]['title']
-            print(f"{tune_name}")
+            #print(f"{tune_name}")
             if len(sections) > 0:
                 section_bar_num = [int(num) for num in sections.keys()]
                 section_names = list(sections.values())
@@ -248,9 +254,11 @@ class ChordSequence:
                 row.extend([i, None, 0, " ".join(flatten_chords)])
                 df.loc[len(df)] = row
 
+        # save result to csv file
+        df.to_csv(filename, sep='\t', encoding='utf-8', index=True, index_label="id")
+        print(f'Wrote dataframe to {filename}.')
 
         return df
-
 
 
     def remove_repeated_chords(self, seq):
