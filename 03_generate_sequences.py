@@ -39,7 +39,7 @@ if __name__ == "__main__":
     set_pandas_display_options()
 
     cs = ChordSequence()
-    df = cs.generate_sequence_df()
+    df = cs.create_leadsheet_chords()
     df['ChordsRelativeDisplay'] = df['ChordsRelative'].apply(lambda x: ", ".join(x))
     df['ChordsDefaultDisplay'] = df['ChordsDefault'].apply(lambda x: ", ".join(x))
 

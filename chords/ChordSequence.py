@@ -4,6 +4,7 @@ import re
 from chords.chord import Chord
 from dataset.readData import ReadData
 import pandas as pd
+from tqdm import tqdm
 
 class ChordSequence:
     def __init__(self, config=None, meta=None):
@@ -144,13 +145,6 @@ class ChordSequence:
 
             for chord in tune:
                 formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
-
-                # delete all the chord extensions (+b9), (+#9), (+b11), (+#11), (+b13), (+#13)
-                #formatted_chord = re.sub('\(\+[b#]?[0-9]+\)', '', formatted_chord)
-                # replace mM9 chord by mM7 because it occurs only once
-                #formatted_chord = re.sub('mM9$', 'mM7', formatted_chord)
-                # replace all maug chords; they occur only once minor-augmented =
-
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
@@ -158,9 +152,8 @@ class ChordSequence:
             sequences += [seq]
         return sequences
 
-
-    def generate_sequence_df(self):
-        data, names = self._simplify_chords()
+    def create_leadsheet_chords(self):
+        data, names = self.data_obj.rootAndDegrees()
 
         sequences_relative = self.create_sequence(data, names, mode='relative')
         sequences_default = self.create_sequence(data, names, mode='default')
@@ -207,5 +200,103 @@ class ChordSequence:
                                          'StartOfSection'])
         return df
 
+    def split_tunes_in_sections(self, chords='rootAndDegreesPlus'):
+
+        if chords == 'rootAndDegreesPlus':
+            data, names = self.data_obj.rootAndDegreesPlus()
+            filename = '03b_input_wordembedding_sections_rootAndDegreesPlus.csv'
+        else:
+            data, names = self.data_obj.rootAndDegreesSimplified()
+            filename = '03b_input_wordembedding_sections_simplified.csv'
+
+        seq = self.create_sequence(data, names, mode='relative')
+
+        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
+
+        for i, tune in tqdm(enumerate(seq)):
+            meta = self.data_obj.meta[names[i]]
+            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
+
+            # generate a list with the chords for each section
+            sections = self.data_obj.meta[names[i]]['sections']
+            tune_name = self.data_obj.meta[names[i]]['title']
+            #print(f"{tune_name}")
+            if len(sections) > 0:
+                section_bar_num = [int(num) for num in sections.keys()]
+                section_names = list(sections.values())
+                idx = 0
+                first_section = True
+                section_chords = []
+                for measure, chords in enumerate(tune, start=1):
+                    #print(f'{measure}: {", ".join(chords)}')
+
+                    if idx < len(section_bar_num):
+                        if measure == section_bar_num[idx]:
+                            if first_section:
+                                first_section = False
+                                row = meta_row[:]
+                            else:
+                                #print(f'Section {section_names[idx-1]}, {", ".join(section_chords)}')
+                                row.extend([i, section_names[idx-1], idx, " ".join(section_chords)])
+                                df.loc[len(df)] = row
+                                section_chords = []
+                                row = meta_row[:]
+                            idx += 1
+                    section_chords.extend(chords)
+                #print(f'Last Section {section_names[-1]}, {" ".join(section_chords)}')
+                row.extend([i, section_names[-1], idx, " ".join(section_chords)])
+                df.loc[len(df)] = row
+                row = meta_row[:]
+            else:
+                flatten_chords = [chord for bar in tune for chord in bar]
+                #print(f'No Sections. {" ".join(flatten_chords)}')
+                row = meta_row[:]
+                row.extend([i, None, 0, " ".join(flatten_chords)])
+                df.loc[len(df)] = row
+
+        # save result to csv file
+        df.to_csv(filename, sep='\t', encoding='utf-8', index=True, index_label="id")
+        print(f'Wrote dataframe to {filename}.')
+
+        return df
 
 
+    def remove_repeated_chords(self, seq):
+        out = []
+        for tune in seq:
+            last_chord = None
+            tune_norep = []
+            flattened_chords = [chord for bar in tune for chord in bar]
+            for chord in flattened_chords:
+                if chord != last_chord:
+                    tune_norep.append(chord)
+                    last_chord = chord
+            out.append(tune_norep)
+        return out
+
+
+    def get_tunes_data(self):
+        #data, names = self.data_obj.rootAndDegreesPlus()
+        data, names = self.data_obj.rootAndDegreesSimplified()
+        #data, names = self.data_obj.rootAndDegrees7()
+
+        seq = self.create_sequence(data, names, mode='relative')
+
+        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
+
+        for i, tune in enumerate(seq):
+            meta = self.data_obj.meta[names[i]]
+            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
+
+            # generate a list with the chords for each section
+            sections = self.data_obj.meta[names[i]]['sections']
+            tune_name = self.data_obj.meta[names[i]]['title']
+            print(f"{tune_name}")
+
+            flatten_chords = [chord for bar in tune for chord in bar]
+            #print(f'No Sections. {" ".join(flatten_chords)}')
+            row = meta_row[:]
+            row.extend([i, None, 0, " ".join(flatten_chords)])
+            df.loc[len(df)] = row
+
+        return df

@@ -47,6 +47,7 @@ def parseFile(file):
 
     out = {}
     sections = {}
+    sections_xml = {}
     repeat_from = None
     ending1 = None
     measure_num_real = 0
@@ -56,14 +57,18 @@ def parseFile(file):
     # loop over all bars
     for measure in part1:
         measure_num_real += 1
-
         measure_num_xml = int(measure.attrib["number"])
         out[measure_num_real] = {}
         # print(f'Measure XML file: {measure_num_xml}, Real Measure: {measure_num_real}----- ')
 
+        # make sure that the first bar is labeled with section 'A'
+        if measure_num_real == 1:
+            sections[measure_num_real] = 'A'
+            sections_xml[measure_num_xml] = 'A'
+
         out[measure_num_real], keynumber = get_chords(measure=measure, key=key)
 
-        # retrieve the maximum number of chords per bar for this tune
+        # update the variable to contain the maximum number of chords per bar for this tune
         if len(out[measure_num_real]) > max_num_chords_per_bar:
             max_num_chords_per_bar = len(out[measure_num_real])
 
@@ -76,6 +81,7 @@ def parseFile(file):
                 if find_section is not None:
                     # print(f"Bar {measure_num_real}, Section {find_section.text}")
                     sections[measure_num_real] = find_section.text
+                    sections_xml[measure_num_xml] = find_section.text
 
             # handle repetitions
             # print(f'    {elem}')
@@ -103,9 +109,9 @@ def parseFile(file):
                     for i in range(repeat_from, repeat_end):
                         measure_num_real += 1
                         out[measure_num_real] = out[i]
-                        if i in sections.keys():
-                            # print(f"Bar {measure_num_real}, Section {sections[i]}")
-                            sections[measure_num_real] = sections[i]
+                        if i in sections_xml.keys():
+                            # print(f"Bar real {measure_num_real}, xml {measure_num_xml}, Section {sections_xml[i]}")
+                            sections[measure_num_real] = sections_xml[i]
 
                     find_section = None
                     repeat_from = None

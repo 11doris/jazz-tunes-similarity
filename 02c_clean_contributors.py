@@ -28,6 +28,8 @@ if __name__ == "__main__":
 
     dd = df.loc[:, ['file_name',
                     'title',
+                    'title_playlist',
+                    'playlist',
                     'composer',
                     'year',
                     'year_truncated',
@@ -52,3 +54,5 @@ if __name__ == "__main__":
     print(f"{len(df_transform)} tunes")
     print(f"{len(df)} rows with composers exploded")
 
+    ff = dd.drop(columns=['composer']).drop_duplicates()
+    ff.to_csv('02c_tune_unique.csv', sep='\t', header=True, encoding='utf8', index_label='id')
