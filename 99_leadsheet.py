@@ -7,7 +7,7 @@ set_pandas_display_options()
 df = pd.read_csv('03_chords_sql_import.csv', sep='\t')
 df.head()
 
-dd = df.query(f'id == 58')
+dd = df.query(f'id == 1060')
 
 last_measure = 1
 last_beat = 1
@@ -24,6 +24,7 @@ for index, row in dd.iterrows():
             bar += f'html.Div("", className="beat b{last_beat}"),'
 
         bar += f'html.Div("{row["ChordRelative"]}", className="beat b{row["Beat"]}"),'
+        last_beat += 1
         print("Bar: ", bar)
 
     elif row['MeasureNum'] != last_measure:
