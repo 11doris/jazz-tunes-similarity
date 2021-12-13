@@ -3,7 +3,7 @@ from dataset.xmlChildren import getChild, getChildren
 from dataset.chordFromXML import ChordXML
 
 
-def get_chords(measure, key):
+def get_chords(measure, key, beat_time):
     # each measure (beat) has multiple harmonies (chords)
     harmonies = getChildren(measure, "harmony")
     notes = getChildren(measure, 'note')
@@ -16,7 +16,68 @@ def get_chords(measure, key):
         chords += [chord.toJson()]
     # chords = [Chord(harmony, key).toJson() for harmony in harmonies]
 
-    return chords, keynumber
+    # parse the length of the chord to determine on which beat it is played
+    beats = []
+
+    if beat_time['beats'] == 4 and beat_time['beat_time'] == 4:
+        for note in notes:
+            d = int(getChild(note, 'duration').text)
+            assert (d % 768 == 0)
+
+            current_beat = 1 if len(beats) == 0 else next_beat
+            next_beat = int(current_beat + d/768)
+
+            beats += [current_beat]
+
+    elif beat_time['beats'] == 3 and beat_time['beat_time'] == 4:
+        # the distribution of chords to beats in a 3/4 time signature is buggy in musicXML since the 3 beats are distributed to 4 beats.
+        # pragmatic approach: if 2 chords in a bar, first one takes 2 bars, second one 1 bar.
+        if len(notes) == 1:
+            beats = [1]
+        elif len(notes) == 2:
+            beats = [1, 2]
+        elif len(notes) == 3:
+            beats = [1, 2, 3]
+        else:
+            raise NotImplementedError('unsupported time signature for 3/4.')
+
+    elif beat_time['beats'] == 5 and beat_time['beat_time'] == 4:
+        # the distribution of chords to beats in a 5/4 time signature is buggy in musicXML.
+        # pragmatic approach: if 2 chords in a bar, first one takes 2 bars, second one 1 bar.
+        if len(notes) == 1:
+            beats = [1]
+        elif len(notes) == 2:
+            beats = [1, 3]
+        elif len(notes) == 3:
+            beats = [1, 3, 4]
+        elif len(notes) == 4:
+            beats = [1, 2, 3, 4]
+        else:
+            raise NotImplementedError(f'unsupported number of chords {len(notes)} per bar for 5/4.')
+
+    elif beat_time['beats'] == 6 and beat_time['beat_time'] in [4, 8]:
+        # the distribution of chords to beats in a 5/4 time signature is buggy in musicXML.
+        # pragmatic approach: if 2 chords in a bar, first one takes 2 bars, second one 1 bar.
+        if len(notes) == 1:
+            beats = [1]
+        elif len(notes) == 2:
+            beats = [1, 3]
+        elif len(notes) == 3:
+            beats = [1, 3, 4]
+        else:
+            raise NotImplementedError(f'unsupported number of chords {len(notes)} per bar for 5/4.')
+
+    else:
+        raise NotImplementedError('unsupported beat.')
+
+    if (len(beats) != len(chords)):
+        print("bla")
+
+    out = {}
+    for i in range(len(beats)):
+        out[beats[i]] = chords[i]
+
+    return out, keynumber
 
 
 def parseFile(file):
@@ -46,6 +107,7 @@ def parseFile(file):
                  'beat_time': int(getChild(beats, "beat-type").text)}
 
     out = {}
+    beats = {}
     sections = {}
     sections_xml = {}
     repeat_from = None
@@ -66,7 +128,7 @@ def parseFile(file):
             sections[measure_num_real] = 'A'
             sections_xml[measure_num_xml] = 'A'
 
-        out[measure_num_real], keynumber = get_chords(measure=measure, key=key)
+        out[measure_num_real], keynumber = get_chords(measure=measure, key=key, beat_time=beat_time)
 
         # update the variable to contain the maximum number of chords per bar for this tune
         if len(out[measure_num_real]) > max_num_chords_per_bar:

@@ -34,17 +34,25 @@ class ReadData():
 
         # store the chord sequences
         seqs = []
+        # store the information about which beat the chords are
+        beats = []
         # loop over all tunes
         for tune in self.data.keys():
             song = self.data[tune]
             seq = []
+            beats_tune = []
             for measure_num in song.keys():
                 measure = song[measure_num]
-                for chord in measure:
+                beats_bar = []
+                for beat, chord in measure.items():
                     chord['measure'] = int(measure_num)
                     seq += [represent(chord)]
+                    beats_bar += beat
+                beats_tune += [beats_bar]
             seqs += [seq]
-        return seqs, names
+            beats += [beats_tune]
+
+        return seqs, names, beats
 
     # return root, 'm' for minor, '7' for dominant, 'm7' for minor dominant, 'dim' for diminished TODO m7b5?
     def rootAndDegrees(self):
