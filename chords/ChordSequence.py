@@ -28,6 +28,7 @@ class ChordSequence:
         if not os.path.exists(self.out_dir):
             os.makedirs(self.out_dir)
 
+        # TODO: clean this up, not needed anymore
         self.chord_seq_file = os.path.join(self.out_dir, 'chord_sequences.json')
 
     def _simplify_chords(self):
@@ -127,6 +128,7 @@ class ChordSequence:
         sequences = []
         for i in range(len(data)):
             tune = data[i]
+
             seq = []
             # initialize the chord sequence with an empty list per measure
             for n in range(tune[len(tune) - 1]['measure']):
@@ -144,7 +146,8 @@ class ChordSequence:
                 quit(f'Unknown mode "{mode}" to generate the chord sequence.')
 
             for chord in tune:
-                formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
+                #formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
+                formatted_chord = Chord(chord).toHtmlLeadSheet(key=key, includeBass=False)
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
@@ -153,11 +156,13 @@ class ChordSequence:
         return sequences
 
     def create_leadsheet_chords(self):
-        data, names = self.data_obj.rootAndDegrees()
+        data, names, beats = self.data_obj.rootAndDegrees()
 
         sequences_relative = self.create_sequence(data, names, mode='relative')
         sequences_default = self.create_sequence(data, names, mode='default')
 
+        assert len(beats) == len(sequences_relative)
+        assert len(beats) == len(sequences_default)
         assert (len(self.data_obj.meta) == len(sequences_default))
 
         data = []
@@ -184,21 +189,44 @@ class ChordSequence:
             for measure, section_name in self.data_obj.meta[names[i]]['sections'].items():
                 start_of_section[int(measure)-1] = True
 
+            # TODO
+            # split up sequences_relative and _default in one chord per row and add the beat number
+
+
             list_of_tuples = list(zip([names[i]]*len(tune),
                                       list(range(1, len(tune)+1)),
                                       tune,
                                       sequences_relative[i],
+                                      beats[i],
                                       section_labels,
                                       start_of_section))
             data.extend(list_of_tuples)
 
         df = pd.DataFrame(data, columns=['file_name',
                                          'MeasureNum',
-                                         'ChordsDefault',
-                                         'ChordsRelative',
+                                         'ChordDefault',
+                                         'ChordRelative',
+                                         'Beat',
                                          'SectionLabel',
                                          'StartOfSection'])
+
+        # explode multiple chords per measure to one chord per row and add the beat count
+        #df['ChordsRelativeDisplay'] = df['ChordRelative'].apply(lambda x: ", ".join(x))
+        #df['ChordsDefaultDisplay'] = df['ChordDefault'].apply(lambda x: ", ".join(x))
+        df = df.explode(['ChordDefault', 'ChordRelative', 'Beat'])
+        df['Beat'] = pd.to_numeric(df['Beat'])
+
+        df['default_Root1'] = [d.get('root1') for d in df['ChordDefault']]
+        df['default_Root2'] = [d.get('root2') for d in df['ChordDefault']]
+        df['relative_Root1'] = [d.get('root1') for d in df['ChordRelative']]
+        df['relative_Root2'] = [d.get('root2') for d in df['ChordRelative']]
+        df['chord_down'] = [d.get('down') for d in df['ChordDefault']]
+        df['chord_alt_up'] = [d.get('alt-up') for d in df['ChordDefault']]
+        df['chord_alt_down'] = [d.get('alt-down') for d in df['ChordDefault']]
+        df = df.drop(columns=['ChordDefault', 'ChordRelative'])
+
         return df
+
 
     def split_tunes_in_sections(self, chords='rootAndDegreesPlus'):
 

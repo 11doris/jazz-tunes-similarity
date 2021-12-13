@@ -1,7 +1,7 @@
 import functools
 from typing import List, Optional
 from chords.symbol.parts.noteSymbol import Note
-
+import re
 
 class Symbol:
     def __init__(self, root:int, components:List[int], bass:Optional[int]):
@@ -29,6 +29,7 @@ class Symbol:
                 bass = f"/{Note(self.bass).toSymbol()}"
 
         chord_formatted = note + minmaj + augdim + seventh + additions + sus + bass
+        #print(f"\nnote: {note}\nminmaj: {minmaj}\naugdim: {augdim}\nseventh: {seventh}\nadditions: {additions}\nsus: {sus}\nbass: {bass}")
 
         # fix for chords
         chord_formatted = chord_formatted.replace('5sus4', 'sus4')
@@ -36,6 +37,90 @@ class Symbol:
         chord_formatted = chord_formatted.replace('7(+b5)(+b9)(+#9)(+b13)', '7alt')
 
         return chord_formatted
+
+
+    def toLeadSheetStyle(self, includeRoot=True, keyLess=False, includeBass=True) -> str:
+        self.notesLeft = self.components.copy()
+
+        # each method takes notes away the relevant note(s) from notesLeft
+        sus =       self.getSus()
+        augdim =    self.getAugDim()
+        seventh =   self.getSeventh()
+        minmaj =    self.getMinMaj()
+
+        additions = self.getAdditions()
+        additions = "alt" if additions == "(+b5)(+b9)(+#9)(+b13)" else additions
+
+        note = ""
+        if includeRoot: note = Note(self.root).toSymbol()
+        if includeRoot and keyLess: note = str(self.root)
+        bass = ""
+        if includeBass:
+            if self.bass is not None:
+                bass = f"/{Note(self.bass).toSymbol()}"
+
+        #print()
+        #print(f"{note}, {minmaj}, {augdim}, {seventh}, {additions}, {sus}, {bass}")
+
+        root = note
+        if 'b' in note:
+            root1 = note.replace('b', '')
+            root2 = 'flat'
+        elif '#' in note:
+            root1 = note.replace('#', '')
+            root2 = 'sharp'
+        else:
+            root1 = note
+            root2 = 'natural'
+
+        aug = augdim if 'aug' in augdim else ''
+        dim = augdim if ('dim' in augdim) or ('m7b5' in augdim) else ''
+
+        add = []
+        add = additions.split(')(')                     # split multiple alteratons
+        add = [re.sub(r'\(|\)', '', el) for el in add]  # remove brackets
+        add.append('+#5') if aug != '' else add
+        add = [el for el in add if el != '']
+
+        if len(add) == 2:
+            down = minmaj + dim + seventh + sus + bass
+            alt = add
+        else:
+            down = minmaj + dim + seventh + sus + ''.join(add) + bass
+            alt = []
+
+        #print(f"before: {down}, {alt}")
+
+        down = "m+b6" if down == 'm+b13' else down
+        down = re.sub(r'm7b5\+9', 'ø9', down)
+        down = re.sub(r'dim', 'o', down)
+        down = re.sub(r'M', 'Δ', down)
+        down = re.sub(r'm', '–', down)
+        down = re.sub(r'b', '♭', down)
+        down = re.sub(r'#', '♯', down)
+        down = re.sub(r'6\+9', '6/9', down)
+        down = re.sub(r'\+9', 'add9', down)
+        down = re.sub(r'\+', '', down)
+        down = re.sub(r'aug', '♯5', down)
+        down = re.sub(r'sus4', 'sus', down)
+        down = "sus" if down == '5sus' else down
+
+        alt = [re.sub(r'b', '♭', el) for el in alt]
+        alt = [re.sub(r'#', '♯', el) for el in alt]
+        alt = [re.sub(r'\+', '', el) for el in alt]
+
+        #print(f"after:  {down}, {alt}")
+
+        chord_parts = {
+            'root1': root1,
+            'root2': root2,
+            'down': down,
+            'alt-up': alt[0] if len(alt) == 2 else "",
+            'alt-down': alt[1] if len(alt) == 2 else "",
+        }
+        #print(chord_parts)
+
+        return chord_parts
 
 
     def getSus(self) -> str:

@@ -45,6 +45,9 @@ class Chord:
     def toSymbol(self, key=0, includeRoot=True, keyLess=False, includeBass=True) -> str:
         return Symbol((self.root + key) % 12, self.components, self.bass).toString(includeRoot, keyLess, includeBass)
 
+    def toHtmlLeadSheet(self, key=0, includeRoot=True, keyLess=False, includeBass=True) -> str:
+        return Symbol((self.root + key) % 12, self.components, self.bass).toLeadSheetStyle(includeRoot, keyLess, includeBass)
+
     def getNotes(self, key=0):
         notes = []
         notes += [Note((self.root + key) % 12).toSymbol() + "4"]
