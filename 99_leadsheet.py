@@ -38,14 +38,17 @@ def generate_html_leadsheet(df: pd.DataFrame, relative=True):
     lines = ""
     html_str = ""
 
+    debug = True
+
     # Add first section label
     section_label = df['SectionLabel'].iloc[0] if df['StartOfSection'].iloc[0] else ""
     s = f'html.Div("{section_label}", className="section"),'
     lines += s
 
     for index, row in df.iterrows():
-        #    print(row['SectionLabel'], row['StartOfSection'])
-        #    print(row['MeasureNum'], row['Beat'])
+        if debug:
+            print(row['SectionLabel'], row['StartOfSection'])
+            print(row['MeasureNum'], row['Beat'])
 
         if row['MeasureNum'] == last_measure:
             while row["Beat"] - 1 > last_beat:
@@ -54,14 +57,16 @@ def generate_html_leadsheet(df: pd.DataFrame, relative=True):
 
             bar += f'html.Div({get_html_chord_format(row, relative)} className="beat b{row["Beat"]}"),'
             last_beat += 1
-            # print("Bar: ", bar)
+            if debug:
+                print("Bar: ", bar)
 
         elif row['MeasureNum'] != last_measure:
             # finish the previous measure
             measure_num = last_measure % 4
             measure_num = 4 if measure_num == 0 else measure_num
             m = f'html.Div(html.Div([{bar}],className="beat-wrapper",),className="measure m{measure_num}",),'
-            #        print(m)
+            if debug:
+                print(m)
             lines += m
             last_beat = 1
 
@@ -98,11 +103,12 @@ if __name__ == "__main__":
     all = pd.read_csv('03_chords_sql_import.csv', sep='\t')
     all.head()
 
-    #dd = df.query(f'id == 1060')  # Someday you'll be sorry
-    df = all.query(f'id == 685')   # Laurie
+    #df = all.query(f'id == 1060')  # Someday you'll be sorry
+    #df = all.query(f'id == 685')   # Laurie
+    df = all.query(f'id == 69')    # Alone Together
 
     html_str = generate_html_leadsheet(df, relative=True)
 
     print("Result:")
-    print(html_str)
+    #print(html_str)
 
