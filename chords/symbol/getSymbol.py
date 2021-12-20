@@ -95,7 +95,9 @@ class Symbol:
         down = re.sub(r'm7b5\+9', 'ø9', down)
         down = re.sub(r'dim', 'o', down)
         down = re.sub(r'M', 'Δ', down)
-        down = re.sub(r'm', '–', down)
+        down = re.sub(r'm7b5', 'ø7', down)
+        #down = re.sub(r'm', '–', down) # use the longer dash
+        down = re.sub(r'm', '-', down)  # use the normal dash
         down = re.sub(r'b', '♭', down)
         down = re.sub(r'#', '♯', down)
         down = re.sub(r'6\+9', '6/9', down)
