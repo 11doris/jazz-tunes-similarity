@@ -38,7 +38,7 @@ def insert_to_sql(df):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    cs = ChordSequence()
+    cs = ChordSequence(chord_style='leadsheet')
     df = cs.create_leadsheet_chords()
 
     meta = pd.read_csv('02c_tune_sql_import.csv', sep='\t')

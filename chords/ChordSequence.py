@@ -7,7 +7,13 @@ import pandas as pd
 from tqdm import tqdm
 
 class ChordSequence:
-    def __init__(self, config=None, meta=None):
+    def __init__(self, chord_style='leadsheet', config=None, meta=None):
+
+        if chord_style not in ['leadsheet', 'ascii']:
+            raise NotImplementedError(f'Unsupported style to generate chord sequences: {chord_style}')
+
+        self.chord_style = chord_style
+
         if config is None:
             _config_file = 'config.json'
         else:
@@ -146,8 +152,11 @@ class ChordSequence:
                 quit(f'Unknown mode "{mode}" to generate the chord sequence.')
 
             for chord in tune:
-                #formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
-                formatted_chord = Chord(chord).toHtmlLeadSheet(key=key, includeBass=False)
+                if self.chord_style == 'leadsheet':
+                    formatted_chord = Chord(chord).toHtmlLeadSheet(key=key, includeBass=False)
+                else:
+                    formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
+
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
@@ -231,10 +240,10 @@ class ChordSequence:
     def split_tunes_in_sections(self, chords='rootAndDegreesPlus'):
 
         if chords == 'rootAndDegreesPlus':
-            data, names = self.data_obj.rootAndDegreesPlus()
+            data, names, beats = self.data_obj.rootAndDegreesPlus()
             filename = '03b_input_wordembedding_sections_rootAndDegreesPlus.csv'
         else:
-            data, names = self.data_obj.rootAndDegreesSimplified()
+            data, names, beats = self.data_obj.rootAndDegreesSimplified()
             filename = '03b_input_wordembedding_sections_simplified.csv'
 
         seq = self.create_sequence(data, names, mode='relative')

@@ -6,7 +6,7 @@ import pandas as pd
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    cs = ChordSequence()
+    cs = ChordSequence(chord_style='ascii')
 
     # get data including section info
     cs.split_tunes_in_sections(chords='rootAndDegreesPlus')
