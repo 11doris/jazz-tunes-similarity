@@ -21,7 +21,7 @@ This needs a config file with the database connect information, in the style of:
 
 def using_alchemy():
 
-    filename = "database/db_config_TEST.json"
+    filename = "database/db_config_PROD.json"
     if not os.path.isfile(filename):
         print(f"ERROR: File {filename} is missing.")
         exit()
