@@ -7,17 +7,26 @@ import pandas as pd
 from tqdm import tqdm
 
 class ChordSequence:
-    def __init__(self, config=None, meta=None):
+    def __init__(self, chord_style='leadsheet', config=None, meta=None):
+
+        if chord_style not in ['leadsheet', 'ascii']:
+            raise NotImplementedError(f'Unsupported style to generate chord sequences: {chord_style}')
+
+        self.chord_style = chord_style
+
         if config is None:
             _config_file = 'config.json'
         else:
             _config_file = config
+
         # read config file
         self.config = json.load(open(_config_file))
 
         # read the raw data as a data object
         self.data_obj = ReadData()
         self.data_obj.set_json_paths()
+
+        # TODO output the csv result files to this directory
 
         # define output directory and create if not available
         directory = self.config['config']['output_directory']
@@ -28,105 +37,12 @@ class ChordSequence:
         if not os.path.exists(self.out_dir):
             os.makedirs(self.out_dir)
 
-        self.chord_seq_file = os.path.join(self.out_dir, 'chord_sequences.json')
-
-    def _simplify_chords(self):
-        # use simplified basic chords - or full chords?
-        if self.config['config']['use_basic_chords']:
-            data, names = self.data_obj.rootAndDegreesSimplified()
-        else:
-            data, names = self.data_obj.rootAndDegrees()
-        return data, names
-
-    def fill_up_bar(self, _seq, _beats):
-        # get max number of chords per bar
-        max_chords = max([len(set(i)) for i in _seq])
-
-        # _seq is modified in this function!! create a copy of _seq and return this. Or change the test.
-
-        # fill up the chords to have the same number of chords in each bar
-        if max_chords == 1:
-            pass
-        elif max_chords == 2:
-            if _beats == 4:
-                for index, measure in enumerate(_seq):
-                    if len(measure) == 2:
-                        continue
-                    _seq[index].append(measure[0])
-            elif _beats == 3 or _beats == 6:
-                for index, measure in enumerate(_seq):
-                    if len(measure) == 1:
-                        new_seq = [measure[0]] * 3
-                        _seq[index] = new_seq
-                    elif len(measure) == 2:
-                        new_seq = [measure[0]] * 2
-                        new_seq.append(measure[1])
-                        _seq[index] = new_seq
-            elif _beats == 2:
-                for index, measure in enumerate(_seq):
-                    if len(measure) == 2:
-                        continue
-                    _seq[index].append(measure[0])
-            elif _beats == 5:
-                for index, measure in enumerate(_seq):
-                    if len(measure) == 1:
-                        new_seq = [measure[0]] * 2
-                        _seq[index] = new_seq
-                    elif len(measure) == 2:
-                        new_seq = [measure[0]]
-                        new_seq.append(measure[1])
-                        _seq[index] = new_seq
-                    else:
-                        raise NotImplementedError('Unsupported number of chords for 5 beats')
-            else:
-                raise NotImplementedError("Unsupported number of beats for 2 chords!")
-        elif max_chords == 4 or max_chords == 3:
-            if _beats == 4:
-                for index, measure in enumerate(_seq):
-                    if len(measure) == 4:
-                        continue
-                    if len(measure) == 1:
-                        new_seq = [measure[0]] * 4
-                        _seq[index] = new_seq
-                    elif len(measure) == 2:
-                        new_seq = [measure[0]] * 2
-                        new_seq.append(measure[1])
-                        new_seq.append(measure[1])
-                        _seq[index] = new_seq
-                    elif len(measure) == 3:
-                        new_seq = [measure[0]] * 2
-                        new_seq.append(measure[1])
-                        new_seq.append(measure[2])
-                        _seq[index] = new_seq
-            elif _beats == 3 or _beats == 5:
-                for index, measure in enumerate(_seq):
-                    if len(measure) == 3:
-                        continue
-                    elif len(measure) == 2:
-                        new_seq = [measure[0]] * 2
-                        new_seq.append(measure[1])
-                        _seq[index] = new_seq
-                    elif len(measure) == 1:
-                        new_seq = [measure[0]] * 3
-                        _seq[index] = new_seq
-            else:
-                raise NotImplementedError(f"Unsupported Beat with max_chords={max_chords}")
-        else:
-            raise NotImplementedError("Unsupported Max Number of Chords per Measure!")
-        return _seq
-
-    def write_sequences(self, out):
-        f = open(self.get_chord_sequences_path(), "w")
-        f.write(json.dumps(out, indent=None))
-        f.close()
-
-    def get_chord_sequences_path(self):
-        return self.chord_seq_file
 
     def create_sequence(self, data, names, mode='relative'):
         sequences = []
         for i in range(len(data)):
             tune = data[i]
+
             seq = []
             # initialize the chord sequence with an empty list per measure
             for n in range(tune[len(tune) - 1]['measure']):
@@ -144,20 +60,25 @@ class ChordSequence:
                 quit(f'Unknown mode "{mode}" to generate the chord sequence.')
 
             for chord in tune:
-                formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
+                if self.chord_style == 'leadsheet':
+                    formatted_chord = Chord(chord).toHtmlLeadSheet(key=key, includeBass=False)
+                else:
+                    formatted_chord = Chord(chord).toSymbol(key=key, includeBass=False)
+
                 seq[chord['measure'] - 1].append(formatted_chord)
                 # print("Bar {}: {}".format(chord['measure'], formatted_chord))
 
-            #seq = self.fill_up_bar(seq, self.data_obj.meta[names[i]]['time_signature']['beats'])
             sequences += [seq]
         return sequences
 
     def create_leadsheet_chords(self):
-        data, names = self.data_obj.rootAndDegrees()
+        data, names, beats = self.data_obj.rootAndDegrees()
 
         sequences_relative = self.create_sequence(data, names, mode='relative')
         sequences_default = self.create_sequence(data, names, mode='default')
 
+        assert len(beats) == len(sequences_relative)
+        assert len(beats) == len(sequences_default)
         assert (len(self.data_obj.meta) == len(sequences_default))
 
         data = []
@@ -188,25 +109,42 @@ class ChordSequence:
                                       list(range(1, len(tune)+1)),
                                       tune,
                                       sequences_relative[i],
+                                      beats[i],
                                       section_labels,
                                       start_of_section))
             data.extend(list_of_tuples)
 
         df = pd.DataFrame(data, columns=['file_name',
                                          'MeasureNum',
-                                         'ChordsDefault',
-                                         'ChordsRelative',
+                                         'ChordDefault',
+                                         'ChordRelative',
+                                         'Beat',
                                          'SectionLabel',
                                          'StartOfSection'])
+
+        # explode multiple chords per measure to one chord per row and add the beat count
+        df = df.explode(['ChordDefault', 'ChordRelative', 'Beat'])
+        df['Beat'] = pd.to_numeric(df['Beat'])
+
+        df['default_Root1'] = [d.get('root1') for d in df['ChordDefault']]
+        df['default_Root2'] = [d.get('root2') for d in df['ChordDefault']]
+        df['relative_Root1'] = [d.get('root1') for d in df['ChordRelative']]
+        df['relative_Root2'] = [d.get('root2') for d in df['ChordRelative']]
+        df['chord_down'] = [d.get('down') for d in df['ChordDefault']]
+        df['chord_alt_up'] = [d.get('alt-up') for d in df['ChordDefault']]
+        df['chord_alt_down'] = [d.get('alt-down') for d in df['ChordDefault']]
+        df = df.drop(columns=['ChordDefault', 'ChordRelative'])
+
         return df
+
 
     def split_tunes_in_sections(self, chords='rootAndDegreesPlus'):
 
         if chords == 'rootAndDegreesPlus':
-            data, names = self.data_obj.rootAndDegreesPlus()
+            data, names, beats = self.data_obj.rootAndDegreesPlus()
             filename = '03b_input_wordembedding_sections_rootAndDegreesPlus.csv'
         else:
-            data, names = self.data_obj.rootAndDegreesSimplified()
+            data, names, beats = self.data_obj.rootAndDegreesSimplified()
             filename = '03b_input_wordembedding_sections_simplified.csv'
 
         seq = self.create_sequence(data, names, mode='relative')
@@ -261,6 +199,7 @@ class ChordSequence:
         return df
 
 
+    # TODO this is probably not used; repeated chords are removed in the colab file.
     def remove_repeated_chords(self, seq):
         out = []
         for tune in seq:
@@ -274,29 +213,3 @@ class ChordSequence:
             out.append(tune_norep)
         return out
 
-
-    def get_tunes_data(self):
-        #data, names = self.data_obj.rootAndDegreesPlus()
-        data, names = self.data_obj.rootAndDegreesSimplified()
-        #data, names = self.data_obj.rootAndDegrees7()
-
-        seq = self.create_sequence(data, names, mode='relative')
-
-        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
-
-        for i, tune in enumerate(seq):
-            meta = self.data_obj.meta[names[i]]
-            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
-
-            # generate a list with the chords for each section
-            sections = self.data_obj.meta[names[i]]['sections']
-            tune_name = self.data_obj.meta[names[i]]['title']
-            print(f"{tune_name}")
-
-            flatten_chords = [chord for bar in tune for chord in bar]
-            #print(f'No Sections. {" ".join(flatten_chords)}')
-            row = meta_row[:]
-            row.extend([i, None, 0, " ".join(flatten_chords)])
-            df.loc[len(df)] = row
-
-        return df

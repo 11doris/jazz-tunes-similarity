@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2021-12-01</encoding-date>
+            <encoding-date>2021-12-06</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -169,8 +169,8 @@
           <alter>-1</alter>
           <octave>4</octave>
         </pitch>
-        <duration>2457</duration>
-        <type>whole</type>
+        <duration>1536</duration>
+        <type>half</type>
         <notehead>diamond</notehead>
       </note>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -186,8 +186,8 @@
           <alter>-1</alter>
           <octave>4</octave>
         </pitch>
-        <duration>614</duration>
-        <type>whole</type>
+        <duration>1536</duration>
+        <type>half</type>
         <notehead>diamond</notehead>
       </note>
     </measure>

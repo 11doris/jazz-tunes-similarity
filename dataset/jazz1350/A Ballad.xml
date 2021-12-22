@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2019-10-29</encoding-date>
+            <encoding-date>2021-12-06</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -84,13 +84,6 @@
           <line>2</line>
         </clef>
       </attributes>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="left">
         <bar-style>heavy-light</bar-style>
         <repeat direction="forward"/>
@@ -492,32 +485,6 @@
     <measure number="11">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
         <bar-style>light-heavy</bar-style>
         <repeat direction="backward"/>
@@ -770,6 +737,9 @@
     <measure number="17">
       <print new-system="yes"/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>C</root-step>
@@ -1104,13 +1074,6 @@
     <measure number="26">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine/>
       <direction placement="above">
         <direction-type>
@@ -1545,6 +1508,9 @@
     <measure number="37">
       <print new-system="yes"/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>D</root-step>
@@ -1576,13 +1542,6 @@
           <coda/>
         </direction-type>
       </direction>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine/>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
@@ -1773,42 +1732,6 @@
     <measure number="42">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine location="right">
-        <bar-style>light-heavy</bar-style>
-      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>C</root-step>
@@ -1821,8 +1744,8 @@
           <step>B</step>
           <octave>4</octave>
         </pitch>
-        <duration>512</duration>
-        <type>whole</type>
+        <duration>1536</duration>
+        <type>half</type>
         <notehead>diamond</notehead>
       </note>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -1837,10 +1760,18 @@
           <step>B</step>
           <octave>4</octave>
         </pitch>
-        <duration>1024</duration>
-        <type>whole</type>
+        <duration>1536</duration>
+        <type>half</type>
         <notehead>diamond</notehead>
       </note>
+    </measure>
+    <!--=========================================================-->
+    <measure number="43">
+      <print/>
+      <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>C</root-step>
@@ -1853,8 +1784,8 @@
           <step>B</step>
           <octave>4</octave>
         </pitch>
-        <duration>1536</duration>
-        <type>half</type>
+        <duration>3072</duration>
+        <type>whole</type>
         <notehead>diamond</notehead>
       </note>
     </measure>

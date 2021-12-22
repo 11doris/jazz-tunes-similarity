@@ -38,19 +38,16 @@ def insert_to_sql(df):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    cs = ChordSequence()
+    cs = ChordSequence(chord_style='leadsheet')
     df = cs.create_leadsheet_chords()
-    df['ChordsRelativeDisplay'] = df['ChordsRelative'].apply(lambda x: ", ".join(x))
-    df['ChordsDefaultDisplay'] = df['ChordsDefault'].apply(lambda x: ", ".join(x))
 
     meta = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
     meta = meta.loc[:, ['id', 'file_name', 'title']]
     meta = meta.drop_duplicates()
 
-    df_sql = df.drop(columns=['ChordsRelative', 'ChordsDefault'])
-    num_rows = len(df_sql)
+    num_rows = len(df)
 
-    df_sql = df_sql.merge(meta, on='file_name', how='inner')
+    df_sql = df.merge(meta, on='file_name', how='inner')
 
     # make sure that we did not loose any rows while merging
     assert num_rows == len(df_sql)
