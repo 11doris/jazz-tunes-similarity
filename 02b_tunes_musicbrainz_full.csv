@@ -467,7 +467,7 @@ id	file_name	title	composer	musicbrainz_id	musicbrainz_composer	musicbrainz_lyri
 465	dataset/jazz1350/Heyoke.xml	Heyoke	Kenny Wheeler	2f228edc-9fa4-4819-b18e-a1b491b435ba	['Kenny Wheeler']	[]	Song				
 466	dataset/jazz1350/High Fly.xml	High Fly	Randy Weston		[]	[]					
 467	dataset/jazz1350/High Hopes.xml	High Hopes	Jimmy Van Heusen	db8b12bf-952d-4c37-ba07-dd86af362329	['Jimmy Van Heusen']	['Sammy Cahn']	Song	Q5755670	"original song written and composed by Jimmy Van Heusen, lyrics by Sammy Cahn; from the 1959 film ""A Hole in the Head"""		https://en.wikipedia.org/wiki/High_Hopes_(Frank_Sinatra_song)
-468	dataset/jazz1350/Hocus-Pocus.xml	Hocus-Pocus	Lee Morgan	354dc9bf-48a1-3c31-8cde-00a462dfa70f	['Jan Akkerman', 'Thijs van Leer']	[]	Song	Q2429715	1973 single by Focus		https://en.wikipedia.org/wiki/Hocus_Pocus_(song)
+468	dataset/jazz1350/Hocus-Pocus.xml	Hocus-Pocus	Lee Morgan	c7d9dacd-1367-35bc-a672-f6a811a02acc	['Lee Morgan']	[]	Song				
 469	dataset/jazz1350/Home At Last.xml	Home At Last	Hank Mobley		[]	[]					
 470	dataset/jazz1350/Home Cookin'.xml	Home Cookin'	Horace Silver	ee9ed5c3-4c84-4eab-a571-e9aee5bfe23f	['Horace Silver']	[]	Song				
 471	dataset/jazz1350/Homecoming.xml	Homecoming	Dave Holland	6bf9f34b-f2cf-364d-a5d9-cd340f6540fc	['Dave Holland']	[]					
@@ -486,7 +486,7 @@ id	file_name	title	composer	musicbrainz_id	musicbrainz_composer	musicbrainz_lyri
 484	dataset/jazz1350/Humpty Dumpty.xml	Humpty Dumpty	Chick Corea	a2cd3cf6-2d08-32b0-b085-c507a768db39	['Chick Corea']	[]	Song				
 485	dataset/jazz1350/Hungaria.xml	Hungaria	Django Reinhardt	9dd0ba91-8f4b-4efd-a61b-dd606cde6f88	['Django Reinhardt']	[]	Song				
 486	dataset/jazz1350/I Ain't Got Nobody.xml	I Ain't Got Nobody	Graham-Williams	6d9a8ccc-c63e-31fd-bc78-6d070b525408	['Spencer Williams']	['Roger Graham']	Song	Q5975844	song composed by Spencer Williams performed by Bessie Smith		https://en.wikipedia.org/wiki/I_Ain%27t_Got_Nobody
-487	dataset/jazz1350/I Believe In You.xml	I Believe In You	Frank Loesser	14ac30f5-fead-4304-b534-2d4e702af097	['Cozy Powell', 'Dave Ball', 'Dennis “Denny” Ball', 'Frank Aiello']	[]	Song				
+487	dataset/jazz1350/I Believe In You.xml	I Believe In You	Frank Loesser	68b118c4-9b55-4d2a-a582-ca8e40a50a65	['Frank Loesser']	[]	Song	Q17150303	original show tune written and composed by Frank Loesser; from the 1961 musical """How to Succeed in Business Without Really Trying"""		
 488	dataset/jazz1350/I Can't Believe...You're In Love....xml	I Can't Believe...You're In Love...	Jimmy McHugh	c950d847-df02-4b0c-a512-74fd8e17a015	['Jimmy McHugh']	['Clarence Gaskill']	Song	Q17011778	original song composed by Jimmy McHugh, lyrics by Clarence Gaskill	mc0002459682	https://en.wikipedia.org/wiki/I_Can%27t_Believe_That_You%27re_in_Love_with_Me
 489	dataset/jazz1350/I Can't Get Started.xml	I Can't Get Started	Vernon Duke	fc4b0fb3-8b63-3d8c-a61c-a43e1c427d73	['Vernon Duke']	['Ira Gershwin']	Song	Q1133119	"original show tune composed by Vernon Duke, lyrics by Ira Gershwin; from the 1936 musical ""Ziegfeld Follies"""	mc0002373323	https://en.wikipedia.org/wiki/I_Can%27t_Get_Started
 490	dataset/jazz1350/I Can't Give You Anything But Love.xml	I Can't Give You Anything But Love	Jimmy McHugh	386f9269-0195-30d5-ac56-48be1aa438e3	['Jimmy McHugh']	['Dorothy Fields']	Song	Q1027522	song by Jimmy McHugh e Dorothy Fields.		https://en.wikipedia.org/wiki/I_Can%27t_Give_You_Anything_but_Love,_Baby
