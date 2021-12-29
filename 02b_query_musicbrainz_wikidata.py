@@ -3,6 +3,7 @@ from wikidata.client import Client
 import pandas as pd
 import re
 from dataset.utils import set_pandas_display_options
+from data_preparation.utils import output_preprocessing_directory
 
 
 def _get_external_links(work_id):
@@ -51,7 +52,7 @@ if __name__ == "__main__":
     #musicbrainzngs.set_hostname("beta.musicbrainz.org")
 
     # read in the CSV file with the
-    df = pd.read_csv('02_tunes_raw.csv', sep='\t', encoding='utf8')
+    df = pd.read_csv(f'{output_preprocessing_directory}/02_tunes_raw.csv', sep='\t', encoding='utf8')
     df = df.loc[:, ['id', 'file_name', 'title', 'composer']]
 
     df['musicbrainz_id'] = ""
@@ -134,9 +135,9 @@ if __name__ == "__main__":
                 df.at[index, 'wikidata_allmusic'] = wiki_meta['allmusic'] if 'allmusic' in wiki_meta.keys() else ""
                 df.at[index, 'wiki_link'] = wiki_meta['wiki_link'] if 'wiki_link' in wiki_meta.keys() else ""
 
-        df.to_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8', index=False)
+        df.to_csv(f'{output_preprocessing_directory}/02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8', index=False)
     except Exception as ex:
         print(ex.message)
-        df.to_csv('02b_tunes_musicbrainz_partial.csv', sep='\t', encoding='utf8', index=False)
+        df.to_csv(f'{output_preprocessing_directory}/02b_tunes_musicbrainz_partial.csv', sep='\t', encoding='utf8', index=False)
 
 

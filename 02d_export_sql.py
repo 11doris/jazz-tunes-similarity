@@ -3,6 +3,7 @@ from sqlalchemy import text
 import pandas as pd
 import json
 import os
+from data_preparation.utils import output_preprocessing_directory
 
 
 """
@@ -26,7 +27,7 @@ if __name__ == '__main__':
     engine = using_alchemy()
 
     table_name = "tunes"
-    df = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
+    df = pd.read_csv(f'{output_preprocessing_directory}/02c_tune_sql_import.csv', sep='\t')
 
     dbConnection    = engine.connect()
 
