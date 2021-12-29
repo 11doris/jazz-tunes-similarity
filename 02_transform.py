@@ -3,7 +3,8 @@ import numpy as np
 from dataset.readData import ReadData
 from dataset.utils import set_pandas_display_options
 from chords.symbol.parts.noteSymbol import Note
-
+import os
+from data_preparation.utils import output_preprocessing_directory
 
 def read_realbook_data():
     realbook = pd.read_csv('./data_preparation/real_books/songlist_year.csv', sep=',', quotechar='|')
@@ -182,6 +183,11 @@ def get_section_pattern(input: dict):
 if __name__ == "__main__":
     set_pandas_display_options()
 
+    if not os.path.exists('output'):
+        os.makedirs('output')
+    if not os.path.exists('output/preprocessing'):
+        os.makedirs('output/preprocessing')
+
     read_obj = ReadData()
 
     df = pd.read_json(read_obj.meta_path, orient='index')
@@ -223,4 +229,4 @@ if __name__ == "__main__":
     print(f"Dropping composer: {len(df.drop(columns=['composer']).drop_duplicates('file_name'))} rows.")
 
     # save data frame to disk
-    df.to_csv('02_tunes_raw.csv', sep='\t', index_label="id")
+    df.to_csv(f'{output_preprocessing_directory}/02_tunes_raw.csv', sep='\t', index_label="id")

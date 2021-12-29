@@ -3,6 +3,7 @@ from sqlalchemy import text
 from chords.ChordSequence import ChordSequence
 from dataset.utils import set_pandas_display_options
 import pandas as pd
+from data_preparation.utils import output_preprocessing_directory
 
 
 def insert_to_sql(df):
@@ -41,7 +42,7 @@ if __name__ == "__main__":
     cs = ChordSequence(chord_style='leadsheet')
     df = cs.create_leadsheet_chords()
 
-    meta = pd.read_csv('02c_tune_sql_import.csv', sep='\t')
+    meta = pd.read_csv(f'{output_preprocessing_directory}/02c_tune_sql_import.csv', sep='\t')
     meta = meta.loc[:, ['id', 'file_name', 'title']]
     meta = meta.drop_duplicates()
 
@@ -56,4 +57,4 @@ if __name__ == "__main__":
 
     print(df_sql.head(50))
 
-    df_sql.to_csv('03_chords_sql_import.csv', sep='\t', header=True, encoding='utf8')
+    df_sql.to_csv(f'{output_preprocessing_directory}/03_chords_sql_import.csv', sep='\t', header=True, encoding='utf8')

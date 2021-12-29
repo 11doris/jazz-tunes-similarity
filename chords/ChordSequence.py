@@ -5,6 +5,7 @@ from chords.chord import Chord
 from dataset.readData import ReadData
 import pandas as pd
 from tqdm import tqdm
+from data_preparation.utils import output_preprocessing_directory
 
 class ChordSequence:
     def __init__(self, chord_style='leadsheet', config=None, meta=None):
@@ -193,7 +194,7 @@ class ChordSequence:
                 df.loc[len(df)] = row
 
         # save result to csv file
-        df.to_csv(filename, sep='\t', encoding='utf-8', index=True, index_label="id")
+        df.to_csv(f'{output_preprocessing_directory}/{filename}', sep='\t', encoding='utf-8', index=True, index_label="id")
         print(f'Wrote dataframe to {filename}.')
 
         return df

@@ -1,14 +1,15 @@
 import pandas as pd
 import numpy as np
 from dataset.utils import set_pandas_display_options
+from data_preparation.utils import output_preprocessing_directory
 
 if __name__ == "__main__":
     set_pandas_display_options()
 
     # load the data from the previous steps
-    df_brainz = pd.read_csv('02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8')
+    df_brainz = pd.read_csv(f'{output_preprocessing_directory}/02b_tunes_musicbrainz.csv', sep='\t', encoding='utf8')
     df_brainz = df_brainz.drop(['title', 'composer'], axis=1)
-    df_transform = pd.read_csv('02_tunes_raw.csv', sep='\t', encoding='utf8', index_col="id")
+    df_transform = pd.read_csv(f'{output_preprocessing_directory}/02_tunes_raw.csv', sep='\t', encoding='utf8', index_col="id")
 
     # merge the two sources together
     df = df_transform.merge(df_brainz, on='file_name')
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     df = df.drop(['ireal_composer', 'composer_tmp'], axis=1)
 
     print(df.columns)
-    df.to_csv('02c_tune_composers.csv', sep='\t', header=True, index_label='id')
+    df.to_csv(f'{output_preprocessing_directory}/02c_tune_composers.csv', sep='\t', header=True, index_label='id')
     df['lyricist'] = df['musicbrainz_lyricist'].apply(lambda x: x[1:-1]).str.replace("'", "").str.strip("][")
 
     dd = df.loc[:, ['file_name',
@@ -49,10 +50,10 @@ if __name__ == "__main__":
                     'lyricist',
                     ]]
 
-    dd.to_csv('02c_tune_sql_import.csv', sep='\t', header=True, encoding='utf8', index_label='id')
+    dd.to_csv(f'{output_preprocessing_directory}/02c_tune_sql_import.csv', sep='\t', header=True, encoding='utf8', index_label='id')
 
     print(f"{len(df_transform)} tunes")
     print(f"{len(df)} rows with composers exploded")
 
     ff = dd.drop(columns=['composer']).drop_duplicates()
-    ff.to_csv('02c_tune_unique.csv', sep='\t', header=True, encoding='utf8', index_label='id')
+    ff.to_csv(f'{output_preprocessing_directory}/02c_tune_unique.csv', sep='\t', header=True, encoding='utf8', index_label='id')
