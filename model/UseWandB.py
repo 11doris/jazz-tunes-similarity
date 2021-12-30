@@ -43,10 +43,17 @@ class UseWandB:
                     'topN': test_topN,
                     'success': matches / len(get_test_tunes()),
                     'results': wandb.Table(data=df_sim),
-                    'score_histogram': wandb.Image('plot.png'),
+                    #'score_histogram': wandb.Image('plot.png'),
                 },
                 'model': {
                     'remove_tokens_below': no_below,
                 }
             },
             })
+
+
+    def finish(self):
+        if not self.use:
+            return
+
+        wandb.finish()
