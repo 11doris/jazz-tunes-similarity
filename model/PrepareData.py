@@ -1,20 +1,22 @@
-from model.config import input_files, get_test_tunes
+from model.config import input_files, get_test_tunes, ngrams, remove_repetitions
 import pandas as pd
 import logging
 import os
 
 
 def _remove_chord_repetitions(chords):
-  previous = ''
-  chords_norep = []
-  for c in chords:
-    if c != previous:
-      chords_norep.append(c)
-      previous = c
-  return chords_norep
+    previous = ''
+    chords_norep = []
+    for c in chords:
+        if c != previous:
+            chords_norep.append(c)
+            previous = c
+    return chords_norep
+
 
 def _make_ngrams(tokens, n=2, sep='-'):
     return [sep.join(ngram) for ngram in zip(*[tokens[i:] for i in range(n)])]
+
 
 def _get_list_of_test_tunes():
     test_tunes = []
@@ -32,19 +34,28 @@ class PrepareData:
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
         self.chords_preprocessing = chords_preprocessing
-        self.ngrams = [1,2]
-        self.remove_repetitions = False
+        self.ngrams = ngrams
+        self.remove_repetitions = remove_repetitions
 
         self.input_file = input_files[chords_preprocessing]
 
-        df = pd.read_csv(self.input_file, sep='\t', index_col="id")
-        df = df.reset_index()
-        self.df = df
+        self.df = pd.read_csv(self.input_file, sep='\t', index_col="id")
+        self.df = self.df.reset_index()
 
-        titles = df.loc[:, ['id', 'tune_id', 'section_id', 'section_name', 'title', 'title_playlist', 'tune_mode']]
+        # if multiple sections with same label, reduce dataset to just one
+        self.df_section = (self.df
+                    .sort_values(['tune_id', 'section_name', 'section_id'])
+                    .drop_duplicates(['tune_id', 'section_name'], keep='first')
+                    .loc[:, ['id', 'chords', 'title_playlist']]
+                    )
+        self.df_section['chords'] = self.df_section['chords'].str.split(' ')
+        self.df_section.reset_index(inplace=True, drop=True)
+
+
+        titles = self.df.loc[:, ['id', 'tune_id', 'section_id', 'section_name', 'title', 'title_playlist', 'tune_mode']]
         self.titles_dict = titles.to_dict()
 
-        tunes = df.loc[:, ['tune_id', 'title_playlist']].drop_duplicates()
+        tunes = self.df.loc[:, ['tune_id', 'title_playlist']].drop_duplicates()
         self.tunes = tunes.set_index('tune_id').to_dict()
 
         titles_rows = titles.to_dict(orient='records')
@@ -65,15 +76,23 @@ class PrepareData:
             else:
                 self._title_to_sectionid[title].append(row[1]['id'])
 
+        self._title_to_sectionid_unique_section = {}
+        for row in self.df_section.iterrows():
+            title = row[1]['title_playlist']
+            if title not in self._title_to_sectionid_unique_section:
+                self._title_to_sectionid_unique_section[title] = [row[1]['id']]
+            else:
+                self._title_to_sectionid_unique_section[title].append(row[1]['id'])
+
+        # prepare a list of all sectionids under test
         self.test_tune_sectionid = []
         for title in _get_list_of_test_tunes():
-            self.test_tune_sectionid.extend(self.title_to_sectionid(title))
+            self.test_tune_sectionid.extend(self._title_to_sectionid_unique_section[title])
 
         if not os.path.exists('output'):
             os.makedirs('output')
         if not os.path.exists('output/model'):
             os.makedirs('output/model')
-
 
     def sectionid_to_title(self, id):
         return self.titles_dict['title_playlist'][id]
@@ -96,31 +115,41 @@ class PrepareData:
     def title_to_sectionid(self, id):
         return self._title_to_sectionid[id]
 
+    def sectionid_to_row_id(self, id):
+        # return the row index of the given section id
+        return self.df_section.index[self.df_section['id'] == id].tolist()[0]
+
+    def row_id_to_sectionid(self, id):
+        # return the sectionid of the given rowid
+        return self.df_section.iloc[id]['id']
 
     def corpus(self):
-        lines = self.df.loc[:, 'chords'].tolist()
-        data = [line.split(' ') for line in lines]
+        self.processed_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
+        self.test_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
 
-        self.processed_corpus = []
-        self.test_corpus = []
+        full_corpus_chords = []
+        test_corpus_chords = []
 
         # for line in data:
-        for id, line in enumerate(data):
+        for id, line in self.df_section.iterrows():
             tune_n = []
             if self.remove_repetitions:
-                line = _remove_chord_repetitions(line)
+                chords = _remove_chord_repetitions(line['chords'])
             for n in self.ngrams:
-                tune_n.extend(_make_ngrams(line, n=n))
-            self.processed_corpus.append(tune_n)
+                tune_n.extend(_make_ngrams(line['chords'], n=n))
+            full_corpus_chords.append(tune_n)
             if id not in self.test_tune_sectionid:
-                self.test_corpus.append(tune_n)
+                test_corpus_chords.append(tune_n)
 
-        for line in self.processed_corpus[:5]:
-            print(line)
+        self.processed_corpus = pd.DataFrame(list(zip(self.df_section['id'], full_corpus_chords)),
+                                             columns=['sectionid', 'chords'])
+        self.test_corpus = pd.DataFrame(list(zip(self.df_section['id'], test_corpus_chords)),
+                                        columns=['sectionid', 'chords'])
+
+        self.processed_corpus.head()
 
     def get_processed_corpus(self):
         return self.processed_corpus
 
     def get_test_corpus(self):
         return self.test_corpus
-
