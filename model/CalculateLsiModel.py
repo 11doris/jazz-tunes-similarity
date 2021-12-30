@@ -2,7 +2,7 @@ from model.BowModel import BowModel
 from model.config import lsi_config, test_topN
 from gensim.models.lsimodel import LsiModel
 from gensim import similarities
-import os
+
 
 class CalculateLsiModel(BowModel):
     pass
@@ -12,6 +12,12 @@ class CalculateLsiModel(BowModel):
         print('\n*** Calculate LSI Model ***')
         self.test_dictionary, self.test_bow_corpus = self.prepare_corpus(self.test_corpus)
         self.dictionary, self.bow_corpus = self.prepare_corpus(self.processed_corpus)
+
+        #***
+        ### here we're using the dictionary of the full dataset! Gives a bit better results!
+        #self.test_bow_corpus = [self.dictionary.doc2bow(text) for text in self.test_corpus]
+        #***
+
 
         num_topics = lsi_config['num_topics']
 
