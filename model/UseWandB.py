@@ -51,6 +51,23 @@ class UseWandB:
             },
             })
 
+    def store_artifacts(self):
+        if not self.use:
+            return
+
+        model_artifact = wandb.Artifact(
+            "model_lsi",
+            type="model",
+            description="LSI model",
+            metadata="")
+
+        #model_artifact.add_file("output/model/index/lsi.model")
+        model_artifact.add_file("output/model/lsi_matrixsim.index")
+        model_artifact.add_file("output/model/lsi.model.projection")
+        model_artifact.add_file("output/model/recommender_lsi.zip")
+
+        wandb.log_artifact(model_artifact)
+
 
     def finish(self):
         if not self.use:

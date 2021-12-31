@@ -7,7 +7,7 @@ import zipfile
 
 if __name__ == "__main__":
     set_pandas_display_options()
-    prep = CalculateLsiModel('rootAndDegreesPlus')
+    prep = CalculateLsiModel('rootAndDegreesSimplified')
 
     print(prep.sectionid_to_title(1370))
 
@@ -44,11 +44,13 @@ if __name__ == "__main__":
 
         # save to file
         (df_webapp
-         .loc[:, ['reference_titleid',
-                  'similar_titleid',
+         .loc[:, ['reference_title',
+                  'reference_titleid',
                   'ref_sectionid',
-                  'similar_sectionid',
                   'ref_section_label',
+                  'similar_titleid',
+                  'similar_title',
+                  'similar_sectionid',
                   'similar_section_label',
                   'score'
                  ]]
@@ -59,6 +61,6 @@ if __name__ == "__main__":
         with zipfile.ZipFile(f'output/model/recommender_lsi.zip', 'w') as zf:
             zf.write(f'output/model/recommender_lsi.csv')
 
-
+    wandb.store_artifacts()
 
     wandb.finish()

@@ -29,29 +29,30 @@ class BowModel(PrepareData):
 
     def get_sim_scores(self, topn=50):
 
-        df_sim = pd.DataFrame(columns=['reference_title',
-                                       'reference_titleid',
-                                       'similar_title',
-                                       'similar_titleid',
-                                       'ref_section',
-                                       'ref_section_label',
-                                       'ref_sectionid',
-                                       'similar_section',
-                                       'similar_section_label',
-                                       'similar_sectionid',
-                                       'score',
-                                       ])
+        dict_sim = {
+            'reference_title': [],
+            'reference_titleid': [],
+            'ref_sectionid': [],
+            'ref_section': [],
+            'ref_section_label': [],
+            'similar_title': [],
+            'similar_titleid': [],
+            'similar_sectionid': [],
+            'similar_section': [],
+            'similar_section_label': [],
+            'score': [],
+        }
 
         tunes = list(self.tunes['title_playlist'].values())
 		
-        # TODO for debugging only
-        tunes = [
-            "Sweet Sue, Just You [jazz1350]",
-            "On The Sunny Side Of The Street [jazz1350]",
-            "These Foolish Things [jazz1350]",
-            "Blue Moon [jazz1350]",
-            "I Got Rhythm [jazz1350]",
-        ]
+        # # for debugging only
+        # tunes = [
+        #     "Sweet Sue, Just You [jazz1350]",
+        #     "On The Sunny Side Of The Street [jazz1350]",
+        #     "These Foolish Things [jazz1350]",
+        #     "Blue Moon [jazz1350]",
+        #     "I Got Rhythm [jazz1350]",
+        # ]
 
         for tune in tqdm(tunes):
             for s1 in self._title_to_sectionid_unique_section[tune]:
@@ -73,18 +74,21 @@ class BowModel(PrepareData):
                     if s2 not in self.title_to_sectionid(tune):
                         # print(f"\t{s2_score:.3f} {sectionid_to_section[s2]}")
                         n += 1
-                        df_sim.loc[len(df_sim)] = [tune,
-                                                   self.title_to_titleid(tune),
-                                                   self.sectionid_to_title(s2),
-                                                   self.sectionid_to_titleid(s2),
-                                                   self.sectionid_to_section(s1),
-                                                   self.sectionid_to_sectionlabel(s1),
-                                                   s1,
-                                                   self.sectionid_to_section(s2),
-                                                   self.sectionid_to_sectionlabel(s2),
-                                                   s2,
-                                                   s2_score,
-                                                   ]
+
+                        dict_sim['reference_title'].append(tune)
+                        dict_sim['reference_titleid'].append(self.title_to_titleid(tune))
+                        dict_sim['ref_sectionid'].append(s1)
+                        dict_sim['ref_section'].append(self.sectionid_to_section(s1))
+                        dict_sim['ref_section_label'].append(self.sectionid_to_sectionlabel(s1))
+                        dict_sim['similar_title'].append(self.sectionid_to_title(s2))
+                        dict_sim['similar_titleid'].append(self.sectionid_to_titleid(s2))
+                        dict_sim['similar_sectionid'].append(s2)
+                        dict_sim['similar_section'].append(self.sectionid_to_section(s2))
+                        dict_sim['similar_section_label'].append(self.sectionid_to_sectionlabel(s2))
+                        dict_sim['score'].append(s2_score)
+
+        df_sim = pd.DataFrame.from_dict(dict_sim)
+
         return df_sim
 
 
