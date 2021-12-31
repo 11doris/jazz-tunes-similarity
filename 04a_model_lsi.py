@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     print(prep.sectionid_to_title(1370))
 
-    wandb = UseWandB(use=False, project_name='test_code', data=prep)
+    wandb = UseWandB(use=True, project_name='test_code', data=prep, comment="")
     wandb.store_input_file(prep.input_file)
 
     prep.corpus()
@@ -36,34 +36,29 @@ if __name__ == "__main__":
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    # CONTINUE HERE
-    df_sim = prep.get_sim_scores(topn=30)
-
-    # save to file
-    (df_sim
-     .loc[:, [  # 'reference_title',
-                 'reference_titleid',
-                 # 'similar_title',
-                 'similar_titleid',
-                 'ref_section_label',
-                 'similar_section_label',
-                 'score'
-             ]]
-     .groupby(['reference_titleid',
-               # 'reference_title',
-               'similar_titleid',
-               # 'similar_title',
-               'ref_section_label',
-               'similar_section_label'])
-     .max('score')
-     .reset_index()
-     .to_csv(f'output/model/recommender_lsi.csv', encoding='utf8', index=False)
-     )
-
-    with zipfile.ZipFile(f'output/recommender_lsi.zip', 'w') as zf:
-        zf.write(f'output/recommender_lsi.csv')
-
-
     wandb.store_results(matches, df_sim)
+
+    # Generate full data for web application
+    if True:
+        df_webapp = prep.get_sim_scores(topn=30)
+
+        # save to file
+        (df_webapp
+         .loc[:, ['reference_titleid',
+                  'similar_titleid',
+                  'ref_sectionid',
+                  'similar_sectionid',
+                  'ref_section_label',
+                  'similar_section_label',
+                  'score'
+                 ]]
+         .reset_index()
+         .to_csv(f'output/model/recommender_lsi.csv', encoding='utf8', index=False)
+         )
+
+        with zipfile.ZipFile(f'output/model/recommender_lsi.zip', 'w') as zf:
+            zf.write(f'output/model/recommender_lsi.csv')
+
+
 
     wandb.finish()

@@ -44,7 +44,7 @@ class BowModel(PrepareData):
 
         tunes = list(self.tunes['title_playlist'].values())
 		
-		# TODO for debugging only
+        # TODO for debugging only
         tunes = [
             "Sweet Sue, Just You [jazz1350]",
             "On The Sunny Side Of The Street [jazz1350]",
@@ -54,9 +54,8 @@ class BowModel(PrepareData):
         ]
 
         for tune in tqdm(tunes):
-            for s1 in self.title_to_sectionid(tune):
-
-                query = self.processed_corpus[s1]
+            for s1 in self._title_to_sectionid_unique_section[tune]:
+                query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
                 query_bow = self.dictionary.doc2bow(query)
 
                 # perform a similarity query against the corpus
@@ -64,11 +63,12 @@ class BowModel(PrepareData):
                 sims = sorted(enumerate(similarities), key=lambda item: -item[1])
 
                 n = 0
-                for s2, s2_score in sims:
-
+                for id, s2_score in sims:
                     # store the top N best results
-                    if n > topn:
+                    if n >= topn:
                         break
+
+                    s2 = self.row_id_to_sectionid(id)
                     # don't count self-similarity between sections of the same tune
                     if s2 not in self.title_to_sectionid(tune):
                         # print(f"\t{s2_score:.3f} {sectionid_to_section[s2]}")

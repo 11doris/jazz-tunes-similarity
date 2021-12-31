@@ -3,7 +3,7 @@ from model.config import lsi_config, get_test_tunes, test_topN, no_below
 
 
 class UseWandB:
-    def __init__(self, use, project_name='', data=None):
+    def __init__(self, use, project_name='', data=None, comment=""):
         self.use = use
         if not self.use:
             return
@@ -20,7 +20,7 @@ class UseWandB:
                 "ngrams_input": data.ngrams,
                 #"remove_repeated_chords": remove_repetitions,
                 "lsi": lsi_config,
-                "comment": ""
+                "comment": comment,
             }
         )
 

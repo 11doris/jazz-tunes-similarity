@@ -104,7 +104,8 @@ class PrepareData:
         return self.tunes['title_playlist'][id]
 
     def title_to_titleid(self, id):
-        return {v: k for k, v in self.tunes['title_playlist'].items()}
+        titleid_dict =  {v: k for k, v in self.tunes['title_playlist'].items()}
+        return titleid_dict[id]
 
     def sectionid_to_section(self, id):
         return self._sectionid_to_section[id]
