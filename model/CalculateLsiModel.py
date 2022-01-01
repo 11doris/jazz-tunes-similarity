@@ -58,3 +58,32 @@ class CalculateLsiModel(BowModel):
     def lsi_test_contrafacts(self):
         matches, results = self.test_contrafacts(self.lsi, self.index_lsi, N=test_topN)
         return matches, results
+
+
+    def get_tune_vectors(self):
+        tunes_matrix = []
+        tune_section = []
+
+        tunes = list(self.tunes['title_playlist'].values())
+        for tune in tunes:
+            for s1 in self._title_to_sectionid_unique_section[tune]:
+                query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
+                query_bow = self.dictionary.doc2bow(query)
+                V = sparse2full(self.lsi[query_bow], len(self.lsi.projection.s)).T / self.lsi.projection.s
+                tunes_matrix.append(V)
+                tune_section.append(f"{tune} ({self.sectionid_to_sectionlabel(s1)})")
+
+        return pd.DataFrame(tunes_matrix)
+
+
+    def get_similar_tunes(self, sectionid, topn=10):
+        tune = self.df_section.query(f'id == {sectionid}')
+        query = self.preprocess_input(list(tune['chords'])[0])
+        query_bow = self.dictionary.doc2bow(query)
+
+        # perform a similarity query against the corpus
+        similarities = self.index_lsi[self.lsi[query_bow]]
+        sims = sorted(enumerate(similarities), key=lambda item: -item[1])
+
+        return sims[1:topn + 1]
+
