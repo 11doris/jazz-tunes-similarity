@@ -7,11 +7,11 @@ import zipfile
 
 if __name__ == "__main__":
     set_pandas_display_options()
-    prep = CalculateLsiModel('rootAndDegreesSimplified')
+    prep = CalculateLsiModel('rootAndDegreesPlus')
 
     print(prep.sectionid_to_title(1370))
 
-    wandb = UseWandB(use=True, project_name='test_code', data=prep, comment="")
+    wandb = UseWandB(use=False, project_name='test_code', data=prep, comment="")
     wandb.store_input_file(prep.input_file)
 
     prep.corpus()
@@ -21,6 +21,7 @@ if __name__ == "__main__":
     print()
 
     prep.calculate_lsi_model()
+    prep.store_model()
     prep.store_similarity_matrix()
 
     matches, results = prep.lsi_test_contrafacts()
@@ -39,7 +40,7 @@ if __name__ == "__main__":
     wandb.store_results(matches, df_sim)
 
     # Generate full data for web application
-    if True:
+    if False:
         df_webapp = prep.get_sim_scores(topn=30)
 
         # save to file
