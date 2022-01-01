@@ -76,7 +76,7 @@ class CalculateLsiModel(BowModel):
         return pd.DataFrame(tunes_matrix)
 
 
-    def get_similar_tunes(self, sectionid, topn=10):
+    def get_similar_tunes(self, sectionid, topn=None):
         tune = self.df_section.query(f'id == {sectionid}')
         query = self.preprocess_input(list(tune['chords'])[0])
         query_bow = self.dictionary.doc2bow(query)
@@ -85,5 +85,8 @@ class CalculateLsiModel(BowModel):
         similarities = self.index_lsi[self.lsi[query_bow]]
         sims = sorted(enumerate(similarities), key=lambda item: -item[1])
 
-        return sims[1:topn + 1]
+        if topn is None:
+            return sims
+        else:
+            return sims[1:topn + 1]
 
