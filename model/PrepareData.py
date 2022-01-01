@@ -124,6 +124,17 @@ class PrepareData:
         # return the sectionid of the given rowid
         return self.df_section.iloc[id]['id']
 
+    def title_to_sectionid_unique_section(self, title):
+        return self._title_to_sectionid_unique_section[title]
+
+    def preprocess_input(self, input):
+        tune_n = []
+        if self.remove_repetitions:
+            input = _remove_chord_repetitions(input)
+        for n in self.ngrams:
+            tune_n.extend(_make_ngrams(input, n=n))
+        return tune_n
+
     def corpus(self):
         self.processed_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
         self.test_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
@@ -133,11 +144,7 @@ class PrepareData:
 
         # for line in data:
         for id, line in self.df_section.iterrows():
-            tune_n = []
-            if self.remove_repetitions:
-                chords = _remove_chord_repetitions(line['chords'])
-            for n in self.ngrams:
-                tune_n.extend(_make_ngrams(line['chords'], n=n))
+            tune_n = self.preprocess_input(line['chords'])
             full_corpus_chords.append(tune_n)
             if id not in self.test_tune_sectionid:
                 test_corpus_chords.append(tune_n)
@@ -147,7 +154,9 @@ class PrepareData:
         self.test_corpus = pd.DataFrame(list(zip(self.df_section['id'], test_corpus_chords)),
                                         columns=['sectionid', 'chords'])
 
-        self.processed_corpus.head()
+        print(f'Processed Corpus: {len(self.processed_corpus)}')
+        print(f'Test Corpus: {len(self.test_corpus)}')
+
 
     def get_processed_corpus(self):
         return self.processed_corpus
