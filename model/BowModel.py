@@ -55,7 +55,7 @@ class BowModel(PrepareData):
         # ]
 
         for tune in tqdm(tunes):
-            for s1 in self._title_to_sectionid_unique_section[tune]:
+            for s1 in self.title_to_sectionid_unique_section(tune):
                 query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
                 query_bow = self.dictionary.doc2bow(query)
 
@@ -103,7 +103,7 @@ class BowModel(PrepareData):
             section_matches = 0
             rank = 0
             score = 0
-            for s1 in self._title_to_sectionid_unique_section[tune]:
+            for s1 in self.title_to_sectionid_unique_section(tune):
                 query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
                 query_bow = self.dictionary.doc2bow(query)
 
@@ -139,7 +139,7 @@ class BowModel(PrepareData):
                                                       'rank': rank}
             else:
                 score = 0
-                for sectionid in self._title_to_sectionid_unique_section[similar_tune]:
+                for sectionid in self.title_to_sectionid_unique_section(similar_tune):
                     sim_value = similarities[self.sectionid_to_row_id(sectionid)]
                     score = sim_value if sim_value > score else score
 

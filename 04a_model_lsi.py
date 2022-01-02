@@ -9,8 +9,6 @@ if __name__ == "__main__":
     set_pandas_display_options()
     prep = CalculateLsiModel('rootAndDegreesPlus')
 
-    print(prep.sectionid_to_title(1370))
-
     wandb = UseWandB(use=False, project_name='test_code', data=prep, comment="")
     wandb.store_input_file(prep.input_file)
 

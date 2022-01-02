@@ -13,7 +13,7 @@ class CalculateLsiModel(BowModel):
 
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
-        self.test_dictionary, self.test_bow_corpus = self.prepare_corpus(self.test_corpus)
+        self.train_dictionary, self.train_bow_corpus = self.prepare_corpus(self.train_corpus)
         self.dictionary, self.bow_corpus = self.prepare_corpus(self.processed_corpus)
 
         #***
@@ -66,7 +66,7 @@ class CalculateLsiModel(BowModel):
 
         tunes = list(self.tunes['title_playlist'].values())
         for tune in tunes:
-            for s1 in self._title_to_sectionid_unique_section[tune]:
+            for s1 in self.title_to_sectionid_unique_section(tune):
                 query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
                 query_bow = self.dictionary.doc2bow(query)
                 V = sparse2full(self.lsi[query_bow], len(self.lsi.projection.s)).T / self.lsi.projection.s

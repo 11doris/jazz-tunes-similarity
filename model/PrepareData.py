@@ -31,6 +31,16 @@ def _get_list_of_test_tunes():
 
 class PrepareData:
     def __init__(self, chords_preprocessing='rootAndDegreesPlus'):
+        """
+        Reads the input data and stores it into dataframes:
+        self.df: read from the csv. dataframe with full information; one per section and tune, same sections per tune
+                 are retained. Includes the metadata with title, tune mode etc.
+        self.df_section: if multiple sections with the same label for a tune, keep only the first section.
+
+        Provides helper functions to translate between title and sectionid, and rowid
+
+        :param chords_preprocessing:
+        """
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
         self.chords_preprocessing = chords_preprocessing
@@ -51,23 +61,27 @@ class PrepareData:
         self.df_section['chords'] = self.df_section['chords'].str.split(' ')
         self.df_section.reset_index(inplace=True, drop=True)
 
-
+        ##
+        # Helper functions to translate between titles and sections
         titles = self.df.loc[:, ['id', 'tune_id', 'section_id', 'section_name', 'title', 'title_playlist', 'tune_mode']]
-        self.titles_dict = titles.to_dict()
+        self._titles_dict = titles.to_dict()
 
         tunes = self.df.loc[:, ['tune_id', 'title_playlist']].drop_duplicates()
         self.tunes = tunes.set_index('tune_id').to_dict()
-
         titles_rows = titles.to_dict(orient='records')
+
+        # given the sectionid, provide a string with the title and the section label
         self._sectionid_to_section = []
         for i, row in enumerate(titles_rows):
             name = f"{row['title']}, section{row['section_id']} ({row['section_name']})"
             self._sectionid_to_section.append(name)
 
+        # given the sectionid, return the name of the section, e.g. 'A', 'B', 'C'...
         self._sectionid_to_sectionlabel = []
         for i, row in enumerate(titles_rows):
             self._sectionid_to_sectionlabel.append(row['section_name'])
 
+        # given the title, provide a list of all corresponding sectionids (including duplicate sections)
         self._title_to_sectionid = {}
         for row in titles.iterrows():
             title = row[1]['title_playlist']
@@ -76,6 +90,7 @@ class PrepareData:
             else:
                 self._title_to_sectionid[title].append(row[1]['id'])
 
+        # list with the sectionid of the sections considered for training (omitting duplicate sections per tune)
         self._title_to_sectionid_unique_section = {}
         for row in self.df_section.iterrows():
             title = row[1]['title_playlist']
@@ -87,18 +102,21 @@ class PrepareData:
         # prepare a list of all sectionids under test
         self.test_tune_sectionid = []
         for title in _get_list_of_test_tunes():
-            self.test_tune_sectionid.extend(self._title_to_sectionid_unique_section[title])
+            self.test_tune_sectionid.extend(self.title_to_sectionid_unique_section(title))
 
+        # make sure that the directories for storing output files exist
         if not os.path.exists('output'):
             os.makedirs('output')
         if not os.path.exists('output/model'):
             os.makedirs('output/model')
 
+    ###
+    # public helper functions
     def sectionid_to_title(self, id):
-        return self.titles_dict['title_playlist'][id]
+        return self._titles_dict['title_playlist'][id]
 
     def sectionid_to_titleid(self, id):
-        return self.titles_dict['tune_id'][id]
+        return self._titles_dict['tune_id'][id]
 
     def titleid_to_title(self, id):
         return self.tunes['title_playlist'][id]
@@ -127,6 +145,10 @@ class PrepareData:
     def title_to_sectionid_unique_section(self, title):
         return self._title_to_sectionid_unique_section[title]
 
+    ###
+    # Corpus processing
+
+    # depending on the configuration, remove subsequent identical chords or add ngrams of the chords.
     def preprocess_input(self, input):
         tune_n = []
         if self.remove_repetitions:
@@ -135,31 +157,33 @@ class PrepareData:
             tune_n.extend(_make_ngrams(input, n=n))
         return tune_n
 
+    # process the input data, which is the unique sections of the tunes
     def corpus(self):
         self.processed_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
-        self.test_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
+        self.train_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
 
         full_corpus_chords = []
-        test_corpus_chords = []
+        train_corpus_chords = []
 
-        # for line in data:
+        # for each unique section of a tune, process the chords
         for id, line in self.df_section.iterrows():
             tune_n = self.preprocess_input(line['chords'])
             full_corpus_chords.append(tune_n)
+            # to the train_corpus, add only the sections which are not used by the contrafacts tests
             if id not in self.test_tune_sectionid:
-                test_corpus_chords.append(tune_n)
+                train_corpus_chords.append(tune_n)
 
         self.processed_corpus = pd.DataFrame(list(zip(self.df_section['id'], full_corpus_chords)),
                                              columns=['sectionid', 'chords'])
-        self.test_corpus = pd.DataFrame(list(zip(self.df_section['id'], test_corpus_chords)),
-                                        columns=['sectionid', 'chords'])
+        self.train_corpus = pd.DataFrame(list(zip(self.df_section['id'], train_corpus_chords)),
+                                         columns=['sectionid', 'chords'])
 
         print(f'Processed Corpus: {len(self.processed_corpus)}')
-        print(f'Test Corpus: {len(self.test_corpus)}')
+        print(f'Train Corpus: {len(self.train_corpus)}')
 
 
     def get_processed_corpus(self):
         return self.processed_corpus
 
     def get_test_corpus(self):
-        return self.test_corpus
+        return self.train_corpus
