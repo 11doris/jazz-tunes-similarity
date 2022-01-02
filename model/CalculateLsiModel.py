@@ -10,10 +10,11 @@ import numpy as np
 class CalculateLsiModel(BowModel):
     pass
 
+
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
-        self.train_dictionary, self.train_bow_corpus = self.prepare_corpus(self.df_train)
-        _, self.test_bow_corpus = self.prepare_corpus(self.df_test)
+        self.train_dictionary, self.train_bow_corpus = self.prepare_dict_and_corpus(self.df_train)
+        self.test_bow_corpus = self.prepare_corpus(self.df_test, self.train_dictionary)
 
         num_topics = lsi_config['num_topics']
 

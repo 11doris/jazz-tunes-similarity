@@ -13,7 +13,7 @@ lsi_config = {
     'num_topics': 100 #22, # 100 gives a better value for the contrafacts test
 }
 
-# TODO clean uup
+# TODO clean up
 ngrams = [1,2]
 test_topN = 30
 no_below = 5

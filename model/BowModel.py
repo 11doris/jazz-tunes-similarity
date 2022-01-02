@@ -8,7 +8,7 @@ from gensim import corpora
 class BowModel(PrepareData):
     pass
 
-    def prepare_corpus(self, df_clean):
+    def prepare_dict_and_corpus(self, df_clean):
         """
         Input  : cleaned tunes
         Purpose: create term dictionary of our courpus and Converting list of documents (corpus) into Document Term Matrix
@@ -26,6 +26,10 @@ class BowModel(PrepareData):
         # generate LDA model
         return dic, doc_term_matrix
 
+    def prepare_corpus(self, df_clean, dic):
+        doc_clean = list(df_clean['chords'])
+        doc_term_matrix = [dic.doc2bow(text) for text in doc_clean]
+        return doc_term_matrix
 
     def get_sim_scores(self, topn=50):
 
@@ -119,11 +123,11 @@ class BowModel(PrepareData):
                 i = 0
 				
 				# TODO!! because corpus is updated, there is a new mapping needed!
-                _map_id_to_sectionid = list(self.df_train.index) + list(self.df_test.index)
+                #_map_id_to_sectionid = self.get_train_test_sectionid()
                 for id, value in sims:
                     if i >= N:
                         break
-                    sectionid = _map_id_to_sectionid[id]
+                    sectionid = self.get_train_test_sectionid(id)
                     if self.sectionid_to_title(sectionid) == similar_tune:
                         section_matches += 1
                         print(

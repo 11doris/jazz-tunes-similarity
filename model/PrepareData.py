@@ -201,3 +201,7 @@ class PrepareData:
 
     def get_train_corpus(self):
         return self.df_train
+
+    def get_train_test_sectionid(self, id):
+        map = list(self.df_train.index) + list(self.df_test.index)
+        return map[id]

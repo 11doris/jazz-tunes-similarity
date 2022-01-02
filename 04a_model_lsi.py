@@ -29,25 +29,24 @@ if __name__ == "__main__":
 
     #
     prep.store_model()
-    #prep.add_test_documents_to_model()
+    prep.add_test_documents_to_model()
 
     prep.store_similarity_matrix()
 
-    if False:
-        matches, results = prep.lsi_test_contrafacts()
+    matches, results = prep.lsi_test_contrafacts()
 
-        for rr, val in results.items():
-            if val == 0:
-                print(f"{val}: {rr}")
+    for rr, val in results.items():
+        if val == 0:
+            print(f"{val}: {rr}")
 
-        df_sim = pd.DataFrame.from_dict(results, orient='index')
-        df_sim = df_sim.reset_index()
-        df_sim.sort_values('index')
-        print(df_sim)
-        print()
-        print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
+    df_sim = pd.DataFrame.from_dict(results, orient='index')
+    df_sim = df_sim.reset_index()
+    df_sim.sort_values('index')
+    print(df_sim)
+    print()
+    print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-        wandb.store_results(matches, df_sim)
+    wandb.store_results(matches, df_sim)
 
     # Generate full data for web application
     if False:
