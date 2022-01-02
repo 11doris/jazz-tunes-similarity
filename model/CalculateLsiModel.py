@@ -13,16 +13,10 @@ class CalculateLsiModel(BowModel):
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
         self.train_dictionary, self.train_bow_corpus = self.prepare_corpus(self.df_train)
-        self.test_dictionary, self.test_bow_corpus = self.prepare_corpus(self.df_test)
-
-        # ***
-        ### here we're using the dictionary of the full dataset! Gives a bit better results!
-        # self.test_bow_corpus = [self.dictionary.doc2bow(text) for text in self.test_corpus]
-        # ***
+        _, self.test_bow_corpus = self.prepare_corpus(self.df_test)
 
         num_topics = lsi_config['num_topics']
 
-        # TODO: with test_bow_corpus and test_dictionary, inf values occur at Topic 4!! for section 1040, 2068, 2388, 2803, 3138
         self.lsi = LsiModel(self.train_bow_corpus,
                             id2word=self.train_dictionary,
                             num_topics=num_topics)
@@ -34,7 +28,9 @@ class CalculateLsiModel(BowModel):
 
     def load_model(self):
         self.lsi = LsiModel.load('output/model/lsi.model')
-        self.test_dictionary = self.lsi.id2word
+
+        # TODO get rid of self.train_dictionary and use self.lsi.id2word instead?
+        self.train_dictionary = self.lsi.id2word
 
     def add_test_documents_to_model(self):
         print(f"LSI Model processed {self.lsi.docs_processed} sections so far. ")
@@ -51,9 +47,18 @@ class CalculateLsiModel(BowModel):
         #                                                 self.lsi[self.bow_corpus],
         #                                                 num_features=len(self.dictionary))
 
-        assert (len(self.train_bow_corpus + self.test_bow_corpus) == self.lsi.docs_processed)
-        self.index_lsi = similarities.MatrixSimilarity(self.lsi[self.train_bow_corpus + self.test_bow_corpus],
+
+        if self.lsi.docs_processed == len(self.train_bow_corpus):
+            print("Store MatrixSimilarity for TRAIN only")
+            self.index_lsi = similarities.MatrixSimilarity(self.lsi[self.train_bow_corpus],
+                                                           num_features=len(self.train_dictionary))
+
+        elif self.lsi.docs_processed == len(self.train_bow_corpus + self.test_bow_corpus):
+            print("Store MatrixSimilarity for TEST and TRAIN")
+            self.index_lsi = similarities.MatrixSimilarity(self.lsi[self.train_bow_corpus + self.test_bow_corpus],
                                                        num_features=len(self.train_dictionary))
+        else:
+            assert(False)
 
         self.index_lsi.save("output/model/lsi_matrixsim.index")
 
@@ -73,10 +78,14 @@ class CalculateLsiModel(BowModel):
             V = sparse2full(self.lsi[query_bow], len(self.lsi.projection.s)).T / self.lsi.projection.s
             tunes_matrix.append(V)
 
-        return pd.DataFrame(tunes_matrix)
+        _df = pd.DataFrame(tunes_matrix)
+        _df['sectionid'] = self.df_train.index
+        _df.set_index('sectionid', inplace=True)
+        return _df
+
 
     def get_similar_tunes(self, sectionid, topn=None):
-        tune = self.df_section.query(f'id == {sectionid}')
+        tune = self.df_section.query(f'sectionid == {sectionid}')
         query = self.preprocess_input(list(tune['chords'])[0])
 
         # TODO §§§

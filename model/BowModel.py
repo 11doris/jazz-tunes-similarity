@@ -110,17 +110,20 @@ class BowModel(PrepareData):
                 # perform a similarity query against the corpus
                 similarities = index[model[query_bow]]
                 sims = sorted(enumerate(similarities), key=lambda item: -item[1])
-                # print(f"{tune} s1: {s1}")
-                # print(f"similar_tune: {similar_tune}, {title_to_sectionid[similar_tune]}")
+                print(f"{tune} s1: {s1}")
+                #print(f"similar_tune: {similar_tune}, {title_to_sectionid[similar_tune]}")
                 # print(sims)
                 # print(len(sims))
 
                 # check if the section matches the expected title; consider only the first N recommendations
                 i = 0
+				
+				# TODO!! because corpus is updated, there is a new mapping needed!
+                _map_id_to_sectionid = list(self.df_train.index) + list(self.df_test.index)
                 for id, value in sims:
                     if i >= N:
                         break
-                    sectionid = self.row_id_to_sectionid(id)
+                    sectionid = _map_id_to_sectionid[id]
                     if self.sectionid_to_title(sectionid) == similar_tune:
                         section_matches += 1
                         print(

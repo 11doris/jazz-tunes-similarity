@@ -71,7 +71,9 @@ if __name__ == "__main__":
     # Load the LSI Model
     prep = CalculateLsiModel('rootAndDegreesPlus')
     prep.corpus()
+
     prep.load_model()
+
     prep.load_similarity_matrix()
 
     # get the LSI weights for each tune
@@ -87,25 +89,26 @@ if __name__ == "__main__":
     # Define Reference query
 
     title_name = 'These Foolish Things [jazz1350]'
-    sectionid = prep.title_to_sectionid_unique_section(title_name)[0]
-    id_ref = prep.sectionid_to_row_id(sectionid)
+    ref_sectionid = prep.title_to_sectionid_unique_section(title_name)[0]
+    #id_ref = prep.sectionid_to_row_id(sectionid)
 
     # store the topn relevant and irrelevant recommendations into a dataframe
-    sims = prep.get_similar_tunes(sectionid)
+    sims = prep.get_similar_tunes(ref_sectionid)
 
     df_sim = pd.DataFrame(sims)
     df_sim.columns = ['id', 'score']
-    df_sim['sectionid'] = df_sim['id'].apply(lambda id: prep.row_id_to_sectionid(id))
+    df_sim['sectionid'] = df_sim['id'].apply(lambda id: prep.df_train.iloc[id].name)
     df_sim['title'] = df_sim['sectionid'].apply(lambda sectionid: prep.sectionid_to_title(sectionid))
+    df_sim.set_index('sectionid', inplace=True)
 
     df_plot = pd.concat([
         df_sim.head(topn).assign(relevance = 'relevant'),
         df_sim.tail(topn).assign(relevance='irrelevant')
         ]
     )
-    df_plot = df_plot.set_index('id')
-    df_plot.at[prep.sectionid_to_row_id(sectionid), 'relevance'] = 'reference'
-    df_plot = df_plot.reset_index()
+    #df_plot = df_plot.set_index('id')
+    df_plot.at[ref_sectionid, 'relevance'] = 'reference'
+    #df_plot = df_plot.reset_index()
 
 
     ##
@@ -121,13 +124,12 @@ if __name__ == "__main__":
      ## Rocchio
 
     # original vector of the reference tune
-    q0 = df_vectors.iloc[id_ref]
+    q0 = df_vectors.loc[ref_sectionid]
 
     # simulate a positive feedback
     pos_feedback = "Fools Rush In [jazz1350]"
-    sectionid = prep.title_to_sectionid_unique_section(pos_feedback)[1]
-    id = prep.sectionid_to_row_id(sectionid)
-    vec_positive = df_vectors.iloc[id]
+    pos_sectionid = prep.title_to_sectionid_unique_section(pos_feedback)[1]
+    vec_positive = df_vectors.loc[pos_sectionid]
 
     # Apply Rocchio
     _alpha = 0.8
@@ -135,7 +137,7 @@ if __name__ == "__main__":
     q1 = _alpha * q0 + _beta * vec_positive
 
     # Update the weights of the reference tune with the new vector
-    df_vectors.iloc[id_ref] = q1
+    df_vectors.loc[ref_sectionid] = q1
 
     # Re-evaluate PCA and visualize
     data = df_vectors.values.tolist()
@@ -151,7 +153,7 @@ if __name__ == "__main__":
     q1 = _alpha * q0 + _beta * vec_positive
 
     # Update the weights of the reference tune with the new vector
-    df_vectors.iloc[id_ref] = q1
+    df_vectors.loc[ref_sectionid] = q1
 
     # Re-evaluate PCA and visualize
 
@@ -164,7 +166,6 @@ if __name__ == "__main__":
    ## Centroid of relevant documents (could be used later for Pseudo-relevant Feedback)
 
     # calculate mean of relevant tunes
-    df_plot = df_plot.set_index('id')
     vec_relevant = df_vectors.merge(df_plot.query('relevance == "relevant"')['relevance'], left_index=True, right_index=True)
     vec_relevant = vec_relevant.drop(columns=['relevance'])
 
@@ -177,7 +178,7 @@ if __name__ == "__main__":
     q1 = _alpha * q0 + _beta * q_relevant_centroid
 
     # Update the weights of the reference tune with the new vector
-    df_vectors.iloc[id_ref] = q1
+    df_vectors.loc[ref_sectionid] = q1
 
     # Re-evaluate PCA and visualize
     data = df_vectors.values.tolist()
