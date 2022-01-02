@@ -60,8 +60,8 @@ class BowModel(PrepareData):
 
         for tune in tqdm(tunes):
             for s1 in self.title_to_sectionid_unique_section(tune):
-                query = self.df_test.iloc[self.sectionid_to_row_id(s1), 1]
-                query_bow = self.dictionary.doc2bow(query)
+                query = self.df_train_test.loc[s1]['chords']
+                query_bow = self.train_dictionary.doc2bow(query)
 
                 # perform a similarity query against the corpus
                 similarities = self.index_lsi[self.lsi[query_bow]]
@@ -73,7 +73,7 @@ class BowModel(PrepareData):
                     if n >= topn:
                         break
 
-                    s2 = self.row_id_to_sectionid(id)
+                    s2 = self.get_train_test_sectionid(id)
                     # don't count self-similarity between sections of the same tune
                     if s2 not in self.title_to_sectionid(tune):
                         # print(f"\t{s2_score:.3f} {sectionid_to_section[s2]}")
@@ -147,7 +147,7 @@ class BowModel(PrepareData):
             else:
                 score = 0
                 for sectionid in self.title_to_sectionid_unique_section(similar_tune):
-                    sim_value = similarities[self.sectionid_to_row_id(sectionid)]
+                    sim_value = similarities[self.df_train_test.loc[sectionid]['index']]
                     score = sim_value if sim_value > score else score
 
                 results[f'{tune}, {similar_tune}'] = {'found': 0,

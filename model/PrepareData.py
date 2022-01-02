@@ -135,14 +135,6 @@ class PrepareData:
     def title_to_sectionid(self, id):
         return self._title_to_sectionid[id]
 
-    def sectionid_to_row_id(self, id):
-        # return the row index of the given section id
-        return self.df_section.index[self.df_section['sectionid'] == id].tolist()[0]
-
-    def row_id_to_sectionid(self, id):
-        # return the sectionid of the given rowid
-        return self.df_section.iloc[id]['sectionid']
-
     def title_to_sectionid_unique_section(self, title):
         return self._title_to_sectionid_unique_section[title]
 
@@ -192,6 +184,8 @@ class PrepareData:
                                      columns=['sectionid', 'chords'])
         self.df_train.set_index('sectionid', inplace=True)
 
+        self.df_train_test = pd.concat([self.df_train, self.df_test]).reset_index().reset_index().set_index('sectionid')
+
         print(f'Train Corpus: {len(self.df_train)}')
         print(f'Test Corpus: {len(self.df_test)}')
 
@@ -203,5 +197,4 @@ class PrepareData:
         return self.df_train
 
     def get_train_test_sectionid(self, id):
-        map = list(self.df_train.index) + list(self.df_test.index)
-        return map[id]
+        return self.df_train_test.iloc[id].name
