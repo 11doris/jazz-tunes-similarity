@@ -14,12 +14,23 @@ if __name__ == "__main__":
 
     prep.corpus()
 
-    print(f'Full Corpus: {len(prep.get_processed_corpus())} sections')
-    print(f'Test Corpus: {len(prep.get_test_corpus())} sections')
+    print(f'Full Corpus: {len(prep.get_test_corpus())} sections')
+    print(f'Test Corpus: {len(prep.get_train_corpus())} sections')
     print()
 
     prep.calculate_lsi_model()
+
+    # get the LSI weights for each tune
+    df_vectors = prep.get_train_tune_vectors()
+    # make sure there are no nan or inf values in the weights
+    invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]
+    print(invalid)
+    assert(len(invalid) == 0)
+
+    #
     prep.store_model()
+    prep.add_test_documents_to_model()
+
     prep.store_similarity_matrix()
 
     matches, results = prep.lsi_test_contrafacts()

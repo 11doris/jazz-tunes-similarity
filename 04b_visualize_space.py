@@ -75,7 +75,7 @@ if __name__ == "__main__":
     prep.load_similarity_matrix()
 
     # get the LSI weights for each tune
-    df_vectors = prep.get_tune_vectors()
+    df_vectors = prep.get_train_tune_vectors()
 
     # make sure there are no nan or inf values in the weights
     invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]

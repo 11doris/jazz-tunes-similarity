@@ -15,9 +15,9 @@ class BowModel(PrepareData):
         Output : term dictionary and Document Term Matrix
         """
         doc_clean = list(df_clean['chords'])
-        # Creating the term dictionary of our courpus, where every unique term is assigned an index. dictionary = corpora.Dictionary(doc_clean)
+        # Creating the term dictionary of our courpus, where every unique term is assigned an index.
         dic = corpora.Dictionary(doc_clean)
-        # Filter out words that occur less than 20 documents.
+        # Filter out words that occur only in a few documents.
         dic.filter_extremes(no_below=no_below, no_above=1.0)
 
         # Converting list of documents (corpus) into Document Term Matrix using dictionary prepared above.
@@ -56,7 +56,7 @@ class BowModel(PrepareData):
 
         for tune in tqdm(tunes):
             for s1 in self.title_to_sectionid_unique_section(tune):
-                query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
+                query = self.df_test.iloc[self.sectionid_to_row_id(s1), 1]
                 query_bow = self.dictionary.doc2bow(query)
 
                 # perform a similarity query against the corpus
@@ -104,8 +104,8 @@ class BowModel(PrepareData):
             rank = 0
             score = 0
             for s1 in self.title_to_sectionid_unique_section(tune):
-                query = self.processed_corpus.iloc[self.sectionid_to_row_id(s1), 1]
-                query_bow = self.dictionary.doc2bow(query)
+                query = self.df_test.loc[s1]['chords']
+                query_bow = self.train_dictionary.doc2bow(query)
 
                 # perform a similarity query against the corpus
                 similarities = index[model[query_bow]]

@@ -58,6 +58,7 @@ class PrepareData:
                     .drop_duplicates(['tune_id', 'section_name'], keep='first')
                     .loc[:, ['id', 'chords', 'title_playlist']]
                     )
+        self.df_section.rename(columns={'id': 'sectionid'}, inplace=True)
         self.df_section['chords'] = self.df_section['chords'].str.split(' ')
         self.df_section.reset_index(inplace=True, drop=True)
 
@@ -95,9 +96,9 @@ class PrepareData:
         for row in self.df_section.iterrows():
             title = row[1]['title_playlist']
             if title not in self._title_to_sectionid_unique_section:
-                self._title_to_sectionid_unique_section[title] = [row[1]['id']]
+                self._title_to_sectionid_unique_section[title] = [row[1]['sectionid']]
             else:
-                self._title_to_sectionid_unique_section[title].append(row[1]['id'])
+                self._title_to_sectionid_unique_section[title].append(row[1]['sectionid'])
 
         # prepare a list of all sectionids under test
         self.test_tune_sectionid = []
@@ -136,11 +137,11 @@ class PrepareData:
 
     def sectionid_to_row_id(self, id):
         # return the row index of the given section id
-        return self.df_section.index[self.df_section['id'] == id].tolist()[0]
+        return self.df_section.index[self.df_section['sectionid'] == id].tolist()[0]
 
     def row_id_to_sectionid(self, id):
         # return the sectionid of the given rowid
-        return self.df_section.iloc[id]['id']
+        return self.df_section.iloc[id]['sectionid']
 
     def title_to_sectionid_unique_section(self, title):
         return self._title_to_sectionid_unique_section[title]
@@ -159,31 +160,44 @@ class PrepareData:
 
     # process the input data, which is the unique sections of the tunes
     def corpus(self):
-        self.processed_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
-        self.train_corpus = pd.DataFrame(columns=['sectionid', 'chords'])
+        self.df_test = pd.DataFrame(columns=['sectionid', 'chords'])
+        self.df_train = pd.DataFrame(columns=['sectionid', 'chords'])
 
-        full_corpus_chords = []
+        test_corpus_chords = []
         train_corpus_chords = []
+
+        test_sectionid = []
+        train_sectionid = []
 
         # for each unique section of a tune, process the chords
         for id, line in self.df_section.iterrows():
+            sectionid = line['sectionid']
+            if sectionid == 4538:
+                print('stop')
             tune_n = self.preprocess_input(line['chords'])
-            full_corpus_chords.append(tune_n)
+
             # to the train_corpus, add only the sections which are not used by the contrafacts tests
-            if id not in self.test_tune_sectionid:
+            if sectionid in self.test_tune_sectionid:
+                test_corpus_chords.append(tune_n)
+                test_sectionid.append(sectionid)
+            else:
                 train_corpus_chords.append(tune_n)
+                train_sectionid.append(sectionid)
 
-        self.processed_corpus = pd.DataFrame(list(zip(self.df_section['id'], full_corpus_chords)),
-                                             columns=['sectionid', 'chords'])
-        self.train_corpus = pd.DataFrame(list(zip(self.df_section['id'], train_corpus_chords)),
-                                         columns=['sectionid', 'chords'])
+        self.df_test = pd.DataFrame(list(zip(test_sectionid, test_corpus_chords)),
+                                    columns=['sectionid', 'chords'])
+        self.df_test.set_index('sectionid', inplace=True)
 
-        print(f'Processed Corpus: {len(self.processed_corpus)}')
-        print(f'Train Corpus: {len(self.train_corpus)}')
+        self.df_train = pd.DataFrame(list(zip(train_sectionid, train_corpus_chords)),
+                                     columns=['sectionid', 'chords'])
+        self.df_train.set_index('sectionid', inplace=True)
 
+        print(f'Train Corpus: {len(self.df_train)}')
+        print(f'Test Corpus: {len(self.df_test)}')
 
-    def get_processed_corpus(self):
-        return self.processed_corpus
 
     def get_test_corpus(self):
-        return self.train_corpus
+        return self.df_test
+
+    def get_train_corpus(self):
+        return self.df_train
