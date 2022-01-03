@@ -1,18 +1,11 @@
 import pandas as pd
 from dataset.utils import set_pandas_display_options
 from model.CalculateLsiModel import *
-from model.UseWandB import *
-import zipfile
 import numpy as np  # Linear algebra library
-import matplotlib.pyplot as plt  # library for visualization
 from sklearn.decomposition import PCA  # PCA library
 import pandas as pd  # Data frame library
-import math  # Library for math functions
-import random  # Library for pseudo random numbers
 import plotly.express as px
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from gensim.models.lsimodel import LsiModel
-
 
 def apply_pca(input_matrix):
 
@@ -27,7 +20,7 @@ def apply_pca(input_matrix):
     pcaTr = pca.fit(scaled_data)
     rotatedData = pcaTr.transform(scaled_data)  # Transform the data base on the rotation matrix of pcaTr
 
-    # # Create a data frame with the new variables. We call these new variables PC1 and PC2
+    # Create a data frame with the new variables for the two principal components
     _df = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2']).reset_index()
     _df.columns = ['id', 'PC1', 'PC2']
 
@@ -70,18 +63,14 @@ if __name__ == "__main__":
 
     # Load the LSI Model
     prep = CalculateLsiModel('rootAndDegreesPlus')
-    prep.corpus()
-
     prep.load_model()
-
     prep.load_similarity_matrix()
 
-    # get the LSI weights for each tune
+    # get the LSI topics for each tune
     df_vectors = prep.get_train_tune_vectors()
 
     # make sure there are no nan or inf values in the weights
     invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]
-    #print(invalid)
     assert(len(invalid) == 0)
 
 
@@ -90,14 +79,13 @@ if __name__ == "__main__":
 
     title_name = 'These Foolish Things [jazz1350]'
     ref_sectionid = prep.title_to_sectionid_unique_section(title_name)[0]
-    #id_ref = prep.sectionid_to_row_id(sectionid)
 
     # store the topn relevant and irrelevant recommendations into a dataframe
     sims = prep.get_similar_tunes(ref_sectionid)
 
     df_sim = pd.DataFrame(sims)
     df_sim.columns = ['id', 'score']
-    df_sim['sectionid'] = df_sim['id'].apply(lambda id: prep.df_train.iloc[id].name)
+    df_sim['sectionid'] = df_sim['id'].apply(lambda id: prep.get_train_test_sectionid(id))
     df_sim['title'] = df_sim['sectionid'].apply(lambda sectionid: prep.sectionid_to_title(sectionid))
     df_sim.set_index('sectionid', inplace=True)
 
@@ -106,9 +94,7 @@ if __name__ == "__main__":
         df_sim.tail(topn).assign(relevance='irrelevant')
         ]
     )
-    #df_plot = df_plot.set_index('id')
     df_plot.at[ref_sectionid, 'relevance'] = 'reference'
-    #df_plot = df_plot.reset_index()
 
 
     ##
