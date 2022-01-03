@@ -43,7 +43,6 @@ def get_test_tunes():
         ("Freight Train [jazz1350]", "Blues For Alice [jazz1350]"),
         ("Good Bait [jazz1350]", "I Got Rhythm [jazz1350]"),  # A sections
         ("Hackensack [jazz1350]", "Oh, Lady Be Good [jazz1350]"),
-        ("Half Nelson [jazz1350]", "Lady Bird [jazz1350]"),
         ("Hot House [jazz1350]", "What Is This Thing Called Love [jazz1350]"),
         ("Impressions [jazz1350]", "So What [jazz1350]"),
         ("In A Mellow Tone (In A Mellotone) [jazz1350]", "Rose Room [jazz1350]"),

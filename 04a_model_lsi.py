@@ -23,7 +23,7 @@ def calculate_model(lsiObject):
     lsiObject.store_similarity_matrix()
 
 
-def test_contrafacts(lsiObject):
+def do_contrafacts_test(lsiObject):
     # test how many of the contrafacts are found
     matches, results = lsiObject.lsi_test_contrafacts()
 
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         calculate_model(mod)
 
         # Test
-        test_contrafacts(mod)
+        do_contrafacts_test(mod)
 
         # Generate full data for web application
         if True:
