@@ -7,13 +7,10 @@ import pandas as pd  # Data frame library
 import plotly.express as px
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
+
 def apply_pca(input_matrix):
-
-    # scale to 0..1
-    scaled_data = MinMaxScaler().fit_transform(input_matrix)
-    # max(map(max, scaled_data))
-    # min(map(min, scaled_data))
-
+    # scale input data to unit variance for PCA
+    scaled_data = StandardScaler().fit_transform(input_matrix)
     pca = PCA(n_components=2, random_state=31)
 
     # Create the transformation model for this data. Internally, it gets the rotation matrix and the explained variance
@@ -23,7 +20,6 @@ def apply_pca(input_matrix):
     # Create a data frame with the new variables for the two principal components
     _df = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2']).reset_index()
     _df.columns = ['id', 'PC1', 'PC2']
-
     return _df
 
 
