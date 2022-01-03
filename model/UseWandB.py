@@ -1,5 +1,5 @@
 import wandb
-from model.config import lsi_config, get_test_tunes, test_topN, no_below
+from model.config import lsi_config, get_test_tunes, preprocess_config
 
 
 class UseWandB:
@@ -40,13 +40,13 @@ class UseWandB:
         wandb.log(
             {model_name: {
                 'contrafacts': {
-                    'topN': test_topN,
+                    'topN': preprocess_config['test_topN'],
                     'success': matches / len(get_test_tunes()),
                     'results': wandb.Table(data=df_sim),
                     #'score_histogram': wandb.Image('plot.png'),
                 },
                 'model': {
-                    'remove_tokens_below': no_below,
+                    'remove_tokens_below': preprocess_config['no_below'],
                 }
             },
             })

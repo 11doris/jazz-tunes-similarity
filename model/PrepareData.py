@@ -1,4 +1,4 @@
-from model.config import input_files, get_test_tunes, ngrams, remove_repetitions
+from model.config import input_files, get_test_tunes, preprocess_config
 import pandas as pd
 import logging
 import os
@@ -44,8 +44,8 @@ class PrepareData:
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
         self.chords_preprocessing = chords_preprocessing
-        self.ngrams = ngrams
-        self.remove_repetitions = remove_repetitions
+        self.ngrams = preprocess_config['ngrams']
+        self.remove_repetitions = preprocess_config['remove_repetitions']
 
         self.input_file = input_files[chords_preprocessing]
 

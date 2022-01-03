@@ -3,20 +3,22 @@ from data_preparation.utils import output_preprocessing_directory
 use_wandb = True
 
 input_files = {
-        # M7 and 6 reduced to major triad, m7 reduced to m, dominant 7, m7b5, diminished, and all (b5) left as they are.
-        'rootAndDegreesPlus': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_rootAndDegreesPlus.csv',
-        'rootAndDegreesSimplified': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_simplified.csv',
+    # M7 and 6 reduced to major triad, m7 reduced to m, dominant 7, m7b5, diminished, and all (b5) left as they are.
+    'rootAndDegreesPlus': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_rootAndDegreesPlus.csv',
+    'rootAndDegreesSimplified': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_simplified.csv',
+}
+
+preprocess_config = {
+    'ngrams': [1, 2],
+    'test_topN': 30,
+    'no_below': 10,
+    'remove_repetitions': False,
 }
 
 lsi_config = {
-    'num_topics': 100 #22, # 100 gives a better value for the contrafacts test
+    'num_topics': 100  # 22, # 100 gives a better value for the contrafacts test
 }
 
-# TODO clean up
-ngrams = [1,2]
-test_topN = 30
-no_below = 10
-remove_repetitions = False
 
 def get_test_tunes():
     return [
@@ -171,4 +173,3 @@ def get_test_tunes():
         ("A Blossom Fell [jazz1350]", "Among My Souvenirs [jazz1350]"),
 
     ]
-

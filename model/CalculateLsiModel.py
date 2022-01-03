@@ -1,5 +1,5 @@
 from model.BowModel import BowModel
-from model.config import lsi_config, test_topN
+from model.config import lsi_config, preprocess_config
 from gensim.models.lsimodel import LsiModel
 from gensim import similarities
 from gensim.matutils import sparse2full
@@ -65,7 +65,7 @@ class CalculateLsiModel(BowModel):
         self.index_lsi = similarities.MatrixSimilarity.load(f"output/model/lsi_matrixsim_{self.chords_preprocessing}.index")
 
     def lsi_test_contrafacts(self):
-        matches, results = self.test_contrafacts(self.lsi, self.index_lsi, n=test_topN)
+        matches, results = self.test_contrafacts(self.lsi, self.index_lsi, n=preprocess_config['test_topN'])
         return matches, results
 
     def get_train_tune_vectors(self):
