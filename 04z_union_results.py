@@ -9,18 +9,14 @@ if __name__ == "__main__":
     set_pandas_display_options()
 
     input_files = [
-        'output/similarity/recommender_lsi_simp.zip',
-        'output/similarity/recommender_lsi_plus.zip'
+        'output/model/recommender_lsi_rootAndDegreesPlus.zip',
+        'output/model/recommender_lsi_rootAndDegreesSimplified.zip'
     ]
-
-    # read all input csv files into a dataframe and append a new column with the filename
-    # df_from_each_file = (pd.read_csv(f).assign(filename = f.split('/')[-1].split('.')[0]) for f in input_files)
-    # df = pd.concat(df_from_each_file, ignore_index=True)
 
     df_list = []
     for f in input_files:
         temp_df = pd.read_csv(f)
-        temp_df['method'] = f.split('/')[-1].split('.')[0]
+        temp_df['method'] = "Basic" if "Plus" in f.split('/')[-1].split('.')[0] else "Simplified"
         df_list.append(temp_df)
 
     df_list
@@ -54,7 +50,7 @@ if __name__ == "__main__":
               )
     common['common'] = True
     common['score'] = common[['score_x', 'score_y']].max(axis=1)
-    common['method'] = 'common'
+    common['method'] = 'Both'
 
     common.drop(['score_x', 'score_y', 'method_x', 'method_y', 'index_x', 'index_y'], inplace=True, axis=1)
 
@@ -68,7 +64,7 @@ if __name__ == "__main__":
                                      'similar_sectionid',
                                      'similar_section_label'], how='outer', indicator=True)
               .query('_merge != "both"')
-              .drop('_merge', 1)
+              .drop(columns=['_merge'])
               )
 
     unique['score_x'].fillna(0.0, inplace=True)
