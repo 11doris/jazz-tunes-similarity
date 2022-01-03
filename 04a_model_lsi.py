@@ -16,20 +16,26 @@ if __name__ == "__main__":
     wandb = UseWandB(use=False, project_name='test_code', data=prep, comment="")
     wandb.store_input_file(prep.input_file)
 
-    prep.calculate_lsi_model()
+    ## Calculate the LSI Model
 
-    # get the LSI weights for each tune
+    # train the model on the train data
+    prep.calculate_lsi_model()
+    # after training, add the test data to the model for later querying
+    prep.add_test_documents_to_model()
+
+    # get the LSI topics for each tune
     df_vectors = prep.get_train_tune_vectors()
     # make sure there are no nan or inf values in the weights
     invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]
     assert(len(invalid) == 0)
 
-    #
+    # store the model and similarity matrix
     prep.store_model()
-    prep.add_test_documents_to_model()
-
     prep.store_similarity_matrix()
 
+    ## Test
+
+    # test how many of the contrafacts are found
     matches, results = prep.lsi_test_contrafacts()
 
     for rr, val in results.items():
@@ -45,7 +51,9 @@ if __name__ == "__main__":
 
     wandb.store_results(matches, df_sim)
 
-    # Generate full data for web application
+
+    ## Generate full data for web application
+
     if False:
         df_webapp = prep.get_sim_scores(topn=30)
 
