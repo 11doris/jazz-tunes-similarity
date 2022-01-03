@@ -51,7 +51,7 @@ class UseWandB:
             },
             })
 
-    def store_artifacts(self):
+    def store_artifacts(self, chords_preprocessing):
         if not self.use:
             return
 
@@ -62,9 +62,9 @@ class UseWandB:
             metadata="")
 
         #model_artifact.add_file("output/model/index/lsi.model")
-        model_artifact.add_file("output/model/lsi_matrixsim.index")
-        model_artifact.add_file("output/model/lsi.model.projection")
-        model_artifact.add_file("output/model/recommender_lsi.zip")
+        model_artifact.add_file(f"output/model/lsi_matrixsim_{chords_preprocessing}.index")
+        model_artifact.add_file(f'output/model/lsi_{chords_preprocessing}.model')
+        model_artifact.add_file(f'output/model/recommender_lsi_{chords_preprocessing}.zip')
 
         wandb.log_artifact(model_artifact)
 

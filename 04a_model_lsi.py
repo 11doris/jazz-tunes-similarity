@@ -3,17 +3,19 @@ from dataset.utils import set_pandas_display_options
 from model.CalculateLsiModel import *
 from model.UseWandB import *
 import numpy as np
+import zipfile
 
 
 if __name__ == "__main__":
     set_pandas_display_options()
-    prep = CalculateLsiModel('rootAndDegreesPlus')
+    preprocessing = 'rootAndDegreesPlus'
+    prep = CalculateLsiModel(preprocessing)
 
     print(f'Test Corpus: {len(prep.get_test_corpus())} sections')
     print(f'Train Corpus: {len(prep.get_train_corpus())} sections')
     print()
 
-    wandb = UseWandB(use=False, project_name='test_code', data=prep, comment="")
+    wandb = UseWandB(use=False, project_name='lsi_model', data=prep, comment="")
     wandb.store_input_file(prep.input_file)
 
     ## Calculate the LSI Model
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     ## Generate full data for web application
 
     if False:
-        df_webapp = prep.get_sim_scores(topn=30)
+        df_webapp = prep.get_sim_scores()
 
         # save to file
         (df_webapp
@@ -70,12 +72,12 @@ if __name__ == "__main__":
                   'score'
                  ]]
          .reset_index()
-         .to_csv(f'output/model/recommender_lsi.csv', encoding='utf8', index=False)
+         .to_csv(f'output/model/recommender_lsi_{preprocessing}.csv', encoding='utf8', index=False)
          )
 
-        with zipfile.ZipFile(f'output/model/recommender_lsi.zip', 'w') as zf:
-            zf.write(f'output/model/recommender_lsi.csv')
+        with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w') as zf:
+            zf.write(f'output/model/recommender_lsi_{preprocessing}.csv')
 
-    wandb.store_artifacts()
+    wandb.store_artifacts(preprocessing)
 
     wandb.finish()

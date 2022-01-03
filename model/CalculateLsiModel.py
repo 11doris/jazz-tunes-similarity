@@ -23,10 +23,10 @@ class CalculateLsiModel(BowModel):
         print(self.lsi)
 
     def store_model(self):
-        self.lsi.save('output/model/lsi.model')
+        self.lsi.save(f'output/model/lsi_{self.chords_preprocessing}.model')
 
     def load_model(self):
-        self.lsi = LsiModel.load('output/model/lsi.model')
+        self.lsi = LsiModel.load(f'output/model/lsi_{self.chords_preprocessing}.model')
 
         # TODO get rid of self.train_dictionary and use self.lsi.id2word instead?
         self.train_dictionary = self.lsi.id2word
@@ -59,10 +59,10 @@ class CalculateLsiModel(BowModel):
         else:
             assert(False)
 
-        self.index_lsi.save("output/model/lsi_matrixsim.index")
+        self.index_lsi.save(f"output/model/lsi_matrixsim_{self.chords_preprocessing}.index")
 
     def load_similarity_matrix(self):
-        self.index_lsi = similarities.MatrixSimilarity.load("output/model/lsi_matrixsim.index")
+        self.index_lsi = similarities.MatrixSimilarity.load(f"output/model/lsi_matrixsim_{self.chords_preprocessing}.index")
 
     def lsi_test_contrafacts(self):
         matches, results = self.test_contrafacts(self.lsi, self.index_lsi, n=test_topN)
