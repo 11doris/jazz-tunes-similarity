@@ -120,8 +120,6 @@ class BowModel(PrepareData):
                 # check if the section matches the expected title; consider only the first N recommendations
                 i = 0
 
-                # TODO!! because corpus is updated, there is a new mapping needed!
-                # _map_id_to_sectionid = self.get_train_test_sectionid()
                 for id, value in sims:
                     if i >= n:
                         break

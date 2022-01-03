@@ -27,7 +27,6 @@ class CalculateLsiModel(BowModel):
 
     def load_model(self):
         self.lsi = LsiModel.load(f'output/model/lsi_{self.chords_preprocessing}.model')
-
         # TODO get rid of self.train_dictionary and use self.lsi.id2word instead?
         self.train_dictionary = self.lsi.id2word
 
@@ -39,13 +38,6 @@ class CalculateLsiModel(BowModel):
 
     def store_similarity_matrix(self):
         print('\n*** Calculate and store Similarity Matrix ***')
-        index_path = 'output/model'
-
-        # TODO overflow errors with the memory-optimized version
-        #        self.index_lsi = similarities.Similarity('lsi_index',
-        #                                                 self.lsi[self.bow_corpus],
-        #                                                 num_features=len(self.dictionary))
-
 
         if self.lsi.docs_processed == len(self.train_bow_corpus):
             print("Store MatrixSimilarity for TRAIN only")
@@ -59,6 +51,11 @@ class CalculateLsiModel(BowModel):
         else:
             assert(False)
 
+        # Note: If the matrix should not fit into RAM anymore, this would be the memory-optimized version:
+        # self.index_lsi = similarities.Similarity('lsi_index',
+        #                                          self.lsi[self.bow_corpus],
+        #                                          num_features=len(self.dictionary))
+        # Store index
         self.index_lsi.save(f"output/model/lsi_matrixsim_{self.chords_preprocessing}.index")
 
     def load_similarity_matrix(self):
