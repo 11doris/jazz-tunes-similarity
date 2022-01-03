@@ -15,7 +15,8 @@ def apply_pca(input_matrix):
 
     # Create the transformation model for this data. Internally, it gets the rotation matrix and the explained variance
     pcaTr = pca.fit(scaled_data)
-    rotatedData = pcaTr.transform(scaled_data)  # Transform the data base on the rotation matrix of pcaTr
+    # apply PCA
+    rotatedData = pcaTr.transform(scaled_data)
 
     # Create a data frame with the new variables for the two principal components
     _df = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2']).reset_index()
@@ -95,6 +96,7 @@ if __name__ == "__main__":
 
     ##
     # PCA: Visualize LSI Weights
+    # Note: plots are not identical because StandardScaler is used. Use MinMaxScaler to keep them consistent if needed.
     data = df_vectors.values.tolist()
 
     dataPCA = apply_pca(data)
@@ -103,7 +105,7 @@ if __name__ == "__main__":
 
 
 
-     ## Rocchio
+    ## Rocchio
 
     # original vector of the reference tune
     q0 = df_vectors.loc[ref_sectionid]
@@ -138,7 +140,6 @@ if __name__ == "__main__":
     df_vectors.loc[ref_sectionid] = q1
 
     # Re-evaluate PCA and visualize
-
     data = df_vectors.values.tolist()
     dataPCA = apply_pca(data)
     fig = visualize_pca(pca=dataPCA, subset=df_plot, title=title_name, comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
