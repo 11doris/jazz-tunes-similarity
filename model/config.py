@@ -5,7 +5,6 @@ use_wandb = True
 input_files = {
         # M7 and 6 reduced to major triad, m7 reduced to m, dominant 7, m7b5, diminished, and all (b5) left as they are.
         'rootAndDegreesPlus': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_rootAndDegreesPlus.csv',
-        'rootAndDegrees7': '',
         'rootAndDegreesSimplified': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_simplified.csv',
 }
 
@@ -16,7 +15,7 @@ lsi_config = {
 # TODO clean up
 ngrams = [1,2]
 test_topN = 30
-no_below = 5
+no_below = 10
 remove_repetitions = False
 
 def get_test_tunes():
