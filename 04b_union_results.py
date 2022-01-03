@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     plt.show()
 
-
+    f = 'output/model/unified_model_result'
     # reference_titleid, similar_titleid, ref_section_label, similar_section_label, score
     (df[['reference_titleid',
          'similar_titleid',
@@ -103,7 +103,9 @@ if __name__ == "__main__":
          'similar_section_label',
          'method',
          'score']]
-     .to_csv('output/model/unified_model_result.csv')
+     .to_csv(f"{f}.csv")
      )
-    with zipfile.ZipFile(f'output/model/unified_model_result.zip', 'w') as zf:
-        zf.write(f'output/model/unified_model_result.csv')
+    with zipfile.ZipFile(f"{f}.zip", 'w') as zf:
+        zf.write(f"{f}.csv")
+
+    print(f"Output data for webapp is stored to: {f}.zip.")

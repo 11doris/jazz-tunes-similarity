@@ -61,7 +61,6 @@ class UseWandB:
             description="LSI model",
             metadata="")
 
-        #model_artifact.add_file("output/model/index/lsi.model")
         model_artifact.add_file(f"output/model/lsi_matrixsim_{chords_preprocessing}.index")
         model_artifact.add_file(f'output/model/lsi_{chords_preprocessing}.model')
         model_artifact.add_file(f'output/model/recommender_lsi_{chords_preprocessing}.zip')

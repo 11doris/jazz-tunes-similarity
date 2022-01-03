@@ -167,8 +167,6 @@ class PrepareData:
         # for each unique section of a tune, process the chords
         for id, line in self.df_section.iterrows():
             sectionid = line['sectionid']
-            if sectionid == 4538:
-                print('stop')
             tune_n = self.preprocess_input(line['chords'])
 
             # to the train_corpus, add only the sections which are not used by the contrafacts tests
