@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
 from model.PrepareData import PrepareData
-from model.config import get_test_tunes, no_below
+from model.config import get_test_tunes, no_below, test_topN
 from gensim import corpora
 
 
@@ -31,7 +31,7 @@ class BowModel(PrepareData):
         doc_term_matrix = [dic.doc2bow(text) for text in doc_clean]
         return doc_term_matrix
 
-    def get_sim_scores(self, topn=50):
+    def get_sim_scores(self, topn=test_topN):
 
         dict_sim = {
             'reference_title': [],
