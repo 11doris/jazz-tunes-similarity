@@ -54,10 +54,10 @@ class PrepareData:
 
         # if multiple sections with same label, reduce dataset to just one
         self.df_section = (self.df
-                    .sort_values(['tune_id', 'section_name', 'section_id'])
-                    .drop_duplicates(['tune_id', 'section_name'], keep='first')
-                    .loc[:, ['id', 'chords', 'title_playlist']]
-                    )
+                               .sort_values(['tune_id', 'section_name', 'section_id'])
+                               .drop_duplicates(['tune_id', 'section_name'], keep='first')
+                               .loc[:, ['id', 'chords', 'title_playlist']]
+                               )
         self.df_section.rename(columns={'id': 'sectionid'}, inplace=True)
         self.df_section['chords'] = self.df_section['chords'].str.split(' ')
         self.df_section.reset_index(inplace=True, drop=True)
@@ -111,7 +111,10 @@ class PrepareData:
         if not os.path.exists('output/model'):
             os.makedirs('output/model')
 
-    ###
+        # load the Corpus
+        self.__corpus()
+
+        ###
     # public helper functions
     def sectionid_to_title(self, id):
         return self._titles_dict['title_playlist'][id]
@@ -123,7 +126,7 @@ class PrepareData:
         return self.tunes['title_playlist'][id]
 
     def title_to_titleid(self, id):
-        titleid_dict =  {v: k for k, v in self.tunes['title_playlist'].items()}
+        titleid_dict = {v: k for k, v in self.tunes['title_playlist'].items()}
         return titleid_dict[id]
 
     def sectionid_to_section(self, id):
@@ -142,16 +145,16 @@ class PrepareData:
     # Corpus processing
 
     # depending on the configuration, remove subsequent identical chords or add ngrams of the chords.
-    def preprocess_input(self, input):
+    def preprocess_input(self, chord_list):
         tune_n = []
         if self.remove_repetitions:
-            input = _remove_chord_repetitions(input)
+            chord_list = _remove_chord_repetitions(chord_list)
         for n in self.ngrams:
-            tune_n.extend(_make_ngrams(input, n=n))
+            tune_n.extend(_make_ngrams(chord_list, n=n))
         return tune_n
 
     # process the input data, which is the unique sections of the tunes
-    def corpus(self):
+    def __corpus(self):
         self.df_test = pd.DataFrame(columns=['sectionid', 'chords'])
         self.df_train = pd.DataFrame(columns=['sectionid', 'chords'])
 
@@ -188,7 +191,6 @@ class PrepareData:
 
         print(f'Train Corpus: {len(self.df_train)}')
         print(f'Test Corpus: {len(self.df_test)}')
-
 
     def get_test_corpus(self):
         return self.df_test

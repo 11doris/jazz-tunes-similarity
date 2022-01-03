@@ -48,7 +48,7 @@ class BowModel(PrepareData):
         }
 
         tunes = list(self.tunes['title_playlist'].values())
-		
+
         # # for debugging only
         # tunes = [
         #     "Sweet Sue, Just You [jazz1350]",
@@ -95,10 +95,8 @@ class BowModel(PrepareData):
 
         return df_sim
 
-
-    def test_contrafacts(self, model, index, N=15):
+    def test_contrafacts(self, model, index, n=15):
         matches = 0
-        number_of_sections = 0
         results = {}
 
         for tune, similar_tune in get_test_tunes():
@@ -114,18 +112,18 @@ class BowModel(PrepareData):
                 # perform a similarity query against the corpus
                 similarities = index[model[query_bow]]
                 sims = sorted(enumerate(similarities), key=lambda item: -item[1])
-                print(f"{tune} s1: {s1}")
-                #print(f"similar_tune: {similar_tune}, {title_to_sectionid[similar_tune]}")
+                # print(f"{tune} s1: {s1}")
+                # print(f"similar_tune: {similar_tune}, {title_to_sectionid[similar_tune]}")
                 # print(sims)
                 # print(len(sims))
 
                 # check if the section matches the expected title; consider only the first N recommendations
                 i = 0
-				
-				# TODO!! because corpus is updated, there is a new mapping needed!
-                #_map_id_to_sectionid = self.get_train_test_sectionid()
+
+                # TODO!! because corpus is updated, there is a new mapping needed!
+                # _map_id_to_sectionid = self.get_train_test_sectionid()
                 for id, value in sims:
-                    if i >= N:
+                    if i >= n:
                         break
                     sectionid = self.get_train_test_sectionid(id)
                     if self.sectionid_to_title(sectionid) == similar_tune:

@@ -2,21 +2,19 @@ import pandas as pd
 from dataset.utils import set_pandas_display_options
 from model.CalculateLsiModel import *
 from model.UseWandB import *
-import zipfile
+import numpy as np
 
 
 if __name__ == "__main__":
     set_pandas_display_options()
     prep = CalculateLsiModel('rootAndDegreesPlus')
 
-    wandb = UseWandB(use=False, project_name='test_code', data=prep, comment="")
-    wandb.store_input_file(prep.input_file)
-
-    prep.corpus()
-
     print(f'Test Corpus: {len(prep.get_test_corpus())} sections')
     print(f'Train Corpus: {len(prep.get_train_corpus())} sections')
     print()
+
+    wandb = UseWandB(use=False, project_name='test_code', data=prep, comment="")
+    wandb.store_input_file(prep.input_file)
 
     prep.calculate_lsi_model()
 
@@ -24,7 +22,6 @@ if __name__ == "__main__":
     df_vectors = prep.get_train_tune_vectors()
     # make sure there are no nan or inf values in the weights
     invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]
-    print(invalid)
     assert(len(invalid) == 0)
 
     #

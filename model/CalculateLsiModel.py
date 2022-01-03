@@ -4,12 +4,10 @@ from gensim.models.lsimodel import LsiModel
 from gensim import similarities
 from gensim.matutils import sparse2full
 import pandas as pd
-import numpy as np
 
 
 class CalculateLsiModel(BowModel):
     pass
-
 
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
@@ -67,7 +65,7 @@ class CalculateLsiModel(BowModel):
         self.index_lsi = similarities.MatrixSimilarity.load("output/model/lsi_matrixsim.index")
 
     def lsi_test_contrafacts(self):
-        matches, results = self.test_contrafacts(self.lsi, self.index_lsi, N=test_topN)
+        matches, results = self.test_contrafacts(self.lsi, self.index_lsi, n=test_topN)
         return matches, results
 
     def get_train_tune_vectors(self):
@@ -86,10 +84,8 @@ class CalculateLsiModel(BowModel):
 
 
     def get_similar_tunes(self, sectionid, topn=None):
-        tune = self.df_section.query(f'sectionid == {sectionid}')
-        query = self.preprocess_input(list(tune['chords'])[0])
 
-        # TODO §§§
+        query = self.df_train_test.loc[sectionid]['chords']
         query_bow = self.train_dictionary.doc2bow(query)
 
         # perform a similarity query against the corpus
@@ -100,5 +96,3 @@ class CalculateLsiModel(BowModel):
             return sims
         else:
             return sims[1:topn + 1]
-
-
