@@ -6,39 +6,26 @@ import numpy as np
 import zipfile
 
 
-if __name__ == "__main__":
-    set_pandas_display_options()
-    preprocessing = 'rootAndDegreesPlus'
-    prep = CalculateLsiModel(preprocessing)
-
-    print(f'Test Corpus: {len(prep.get_test_corpus())} sections')
-    print(f'Train Corpus: {len(prep.get_train_corpus())} sections')
-    print()
-
-    wandb = UseWandB(use=False, project_name='lsi_model', data=prep, comment="")
-    wandb.store_input_file(prep.input_file)
-
-    ## Calculate the LSI Model
-
+def calculate_model(lsiObject):
     # train the model on the train data
-    prep.calculate_lsi_model()
+    lsiObject.calculate_lsi_model()
     # after training, add the test data to the model for later querying
-    prep.add_test_documents_to_model()
+    lsiObject.add_test_documents_to_model()
 
     # get the LSI topics for each tune
-    df_vectors = prep.get_train_tune_vectors()
+    df_vectors = lsiObject.get_train_tune_vectors()
     # make sure there are no nan or inf values in the weights
     invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]
     assert(len(invalid) == 0)
 
     # store the model and similarity matrix
-    prep.store_model()
-    prep.store_similarity_matrix()
+    lsiObject.store_model()
+    lsiObject.store_similarity_matrix()
 
-    ## Test
 
+def test_contrafacts(lsiObject):
     # test how many of the contrafacts are found
-    matches, results = prep.lsi_test_contrafacts()
+    matches, results = lsiObject.lsi_test_contrafacts()
 
     for rr, val in results.items():
         if val == 0:
@@ -54,30 +41,50 @@ if __name__ == "__main__":
     wandb.store_results(matches, df_sim)
 
 
-    ## Generate full data for web application
+def generate_webapp_data(lsiObject, preprocessing):
+    df_webapp = lsiObject.get_sim_scores()
 
-    if False:
-        df_webapp = prep.get_sim_scores()
+    # save to file
+    (df_webapp
+     .loc[:, ['reference_title',
+              'reference_titleid',
+              'ref_sectionid',
+              'ref_section_label',
+              'similar_titleid',
+              'similar_title',
+              'similar_sectionid',
+              'similar_section_label',
+              'score'
+              ]]
+     .reset_index()
+     .to_csv(f'output/model/recommender_lsi_{preprocessing}.csv', encoding='utf8', index=False)
+     )
 
-        # save to file
-        (df_webapp
-         .loc[:, ['reference_title',
-                  'reference_titleid',
-                  'ref_sectionid',
-                  'ref_section_label',
-                  'similar_titleid',
-                  'similar_title',
-                  'similar_sectionid',
-                  'similar_section_label',
-                  'score'
-                 ]]
-         .reset_index()
-         .to_csv(f'output/model/recommender_lsi_{preprocessing}.csv', encoding='utf8', index=False)
-         )
+    with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w') as zf:
+        zf.write(f'output/model/recommender_lsi_{preprocessing}.csv')
 
-        with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w') as zf:
-            zf.write(f'output/model/recommender_lsi_{preprocessing}.csv')
 
-    wandb.store_artifacts(preprocessing)
+if __name__ == "__main__":
+    set_pandas_display_options()
 
-    wandb.finish()
+    for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
+
+        # initialize model with the chords preprocessing method
+        mod = CalculateLsiModel(p)
+
+        wandb = UseWandB(use=True, project_name='lsi_model', data=mod, comment="")
+        wandb.store_input_file(mod.input_file)
+
+        # Calculate the LSI Model
+        calculate_model(mod)
+
+        # Test
+        test_contrafacts(mod)
+
+        # Generate full data for web application
+        if True:
+            generate_webapp_data(mod, p)
+            wandb.store_artifacts(p)
+
+        # Done.
+        wandb.finish()
