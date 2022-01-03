@@ -71,14 +71,14 @@ class CalculateLsiModel(BowModel):
     def get_train_tune_vectors(self):
         tunes_matrix = []
 
-        for s1 in self.df_train.index:
-            query = self.df_train.loc[s1]['chords']
+        for s1 in self.df_train_test.index:
+            query = self.df_train_test.loc[s1]['chords']
             query_bow = self.train_dictionary.doc2bow(query)
             V = sparse2full(self.lsi[query_bow], len(self.lsi.projection.s)).T / self.lsi.projection.s
             tunes_matrix.append(V)
 
         _df = pd.DataFrame(tunes_matrix)
-        _df['sectionid'] = self.df_train.index
+        _df['sectionid'] = self.df_train_test.index
         _df.set_index('sectionid', inplace=True)
         return _df
 
