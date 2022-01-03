@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2019-10-29</encoding-date>
+            <encoding-date>2021-12-22</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -85,16 +85,6 @@
         </clef>
       </attributes>
       <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine location="left">
-        <bar-style>heavy-light</bar-style>
-        <repeat direction="forward"/>
-      </barLine>
       <direction placement="above">
         <direction-type>
           <rehearsal>A</rehearsal>
@@ -361,6 +351,9 @@
     <measure number="8">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>D</root-step>
@@ -400,13 +393,6 @@
     <measure number="9">
       <print new-system="yes"/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine/>
       <direction placement="above">
         <direction-type>
@@ -525,11 +511,6 @@
         <type>whole</type>
         <notehead>diamond</notehead>
       </note>
-      <direction placement="above">
-        <direction-type>
-          <coda/>
-        </direction-type>
-      </direction>
     </measure>
     <!--=========================================================-->
     <measure number="13">
@@ -572,6 +553,11 @@
         <type>half</type>
         <notehead>diamond</notehead>
       </note>
+      <direction placement="above">
+        <direction-type>
+          <coda/>
+        </direction-type>
+      </direction>
     </measure>
     <!--=========================================================-->
     <measure number="14">
@@ -752,42 +738,8 @@
     <measure number="20">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
-        <bar-style>light-heavy</bar-style>
-        <repeat direction="backward"/>
+        <bar-style>light-light</bar-style>
       </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
@@ -853,13 +805,11 @@
         </direction-type>
       </direction>
       <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>C</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>D</root-step>
@@ -1395,22 +1345,6 @@
     <measure number="36">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
         <bar-style>light-heavy</bar-style>
       </barLine>
