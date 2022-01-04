@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # Define Reference query
 
     title_name = 'These Foolish Things [jazz1350]'
-    ref_sectionid = prep.title_to_sectionid_unique_section(title_name)[0]
+    ref_sectionid = prep.title_to_sectionid_unique_section(title_name)[1]
 
     # store the topn relevant and irrelevant recommendations into a dataframe
     sims = prep.get_similar_tunes(ref_sectionid)
