@@ -10,6 +10,23 @@ from sklearn.manifold import TSNE
 import zipfile
 
 
+def year_to_decade(year):
+    return int(np.floor(year / 10) * 10)
+
+def year_to_period(year):
+    _year = int(year)
+    if _year == 0:
+        return "missing"
+    if _year < 1929:
+        return "1929"
+    if _year < 1939:
+        return "1939"
+    if _year < 1949:
+        return "1949"
+    else:
+        return "1950+"
+
+
 ##
 if __name__ == "__main__":
     set_pandas_display_options()
@@ -17,6 +34,7 @@ if __name__ == "__main__":
 
     # Load the LSI Model
     preprocessing = 'rootAndDegreesPlus'
+
     mod = CalculateLsiModel(preprocessing)
     mod.load_model()
 
@@ -37,7 +55,7 @@ if __name__ == "__main__":
 
 
     fig = px.imshow(data,
-                    title="Visualization of Topics",
+                    title=f"Visualization of LSI Topics<br><sup>{preprocessing}</sup>",
                     color_continuous_scale='RdBu',
                     #color_continuous_midpoint=0.5,
                     #width=500, height=400
@@ -48,24 +66,22 @@ if __name__ == "__main__":
 
     # get the LSI topics for each tune
     df_vectors = mod.get_train_tune_vectors()
-    titles = list(mod.df_section['title_playlist'] + ', ' + mod.df_section['section_name'])
     titles = mod.get_train_test_meta()
 
     # b) Plot Tunes
 
-    if False:
+    if True:
         data = xr.DataArray(
-            df_vectors,
+            df_vectors.T,
             coords={
-                "sectionid": list(mod.df_section['sectionid']),
                 "topics": list(range(mod.lsi.num_topics)),
-
+                "sectionid": list(mod.df_section['sectionid']),
             },
-            dims=["sectionid", "topics"],
+            dims=["topics", "sectionid"],
         )
 
         fig = px.imshow(data,
-                        title="Visualization of Topics",
+                        title=f"Visualization of Tune Vectors<br><sup>{preprocessing}</sup>",
                         color_continuous_scale='RdBu',
                         #color_continuous_midpoint=0.5,
                         #width=500, height=400
@@ -94,16 +110,19 @@ if __name__ == "__main__":
         df_umap['title_section'] = titles['title_section']
         df_umap['titleid'] = titles['tune_id']
         df_umap['sectionid'] = titles['sectionid']
+        df_umap['year'] = titles['year_truncated']
+        df_umap['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
+        df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
 
         fig_2d = px.scatter(
             df_umap,
             x='UMAP0', y='UMAP1',
             opacity=0.5,
-            color='tune_mode',
+            color=df_umap['period'].astype(str),
             hover_name='title_section',
-            title=f"metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}",
-            width=600, height=500,
+            title=f"UMAP for {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+            width=800, height=700,
         )
         fig_2d.show()
 
@@ -112,13 +131,14 @@ if __name__ == "__main__":
         with zipfile.ZipFile(f'{f}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
             zf.write(f'{f}_{preprocessing}.csv')
 
+
     ## TSNE
     perplexity = 10
     init = 'random'
     tsne = TSNE(n_components=2,
                 random_state=31,
                 perplexity=perplexity,
-                metric='euclidean',
+                metric=metric,
                 init=init,
                 learning_rate='auto',
                 # n_iter_without_progress=200,
@@ -128,16 +148,22 @@ if __name__ == "__main__":
 
     T = tsne.fit_transform(scaled_data)
 
-    if True:
-        projected = pd.DataFrame(T)
+    df_tsne = pd.DataFrame(T, columns=['TSNE0', 'TSNE1'])
+    df_tsne['tune_mode'] = titles['tune_mode']
+    df_tsne['title_section'] = titles['title_section']
+    df_tsne['titleid'] = titles['tune_id']
+    df_tsne['sectionid'] = titles['sectionid']
+    df_tsne['year'] = titles['year_truncated']
+    df_tsne['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
+    df_tsne['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
-        fig = px.scatter(
-            projected,
-            x=0, y=1,
-            opacity=0.5,
-            color=titles['tune_mode'],
-            hover_name=titles['title_section'],
-            width=600, height=500,
-            title=f"perplexity: {perplexity}, init: {init}"
-        )
-        fig.show()
+    fig = px.scatter(
+        df_tsne,
+        x='TSNE0', y='TSNE1',
+        opacity=0.5,
+        color='period',
+        hover_name='title_section',
+        width=800, height=700,
+        title=f"T-SNE for {preprocessing}<br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
+    )
+    fig.show()
