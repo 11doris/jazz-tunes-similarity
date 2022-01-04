@@ -17,8 +17,6 @@ def year_to_period(year):
     _year = int(year)
     if _year == 0:
         return "missing"
-    if _year < 1919:
-        return "1919"
     if _year < 1929:
         return "1929"
     if _year < 1939:
@@ -116,21 +114,15 @@ if __name__ == "__main__":
         df_umap['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
         df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
-        title = 'These Foolish Things [jazz1350], B'
-        index_tune = df_umap[df_umap['title_section'] == title].index
-        df_umap['size'] = 3
-        df_umap.at[index_tune, 'size'] = 30
 
         fig_2d = px.scatter(
             df_umap,
             x='UMAP0', y='UMAP1',
             opacity=0.5,
-            color='tune_mode', #df_umap['period'].astype(str),
+            color=df_umap['period'].astype(str),
             hover_name='title_section',
-            size='size',
-            size_max=30,
             title=f"UMAP for {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
-            #width=600, height=500,
+            width=800, height=700,
         )
         fig_2d.show()
 
@@ -169,9 +161,9 @@ if __name__ == "__main__":
         df_tsne,
         x='TSNE0', y='TSNE1',
         opacity=0.5,
-        color='tune_mode', #'period',
+        color='period',
         hover_name='title_section',
-        #width=600, height=500,
+        width=800, height=700,
         title=f"T-SNE for {preprocessing}<br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
     )
     fig.show()
