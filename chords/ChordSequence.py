@@ -150,11 +150,11 @@ class ChordSequence:
 
         seq = self.create_sequence(data, names, mode='relative')
 
-        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'tune_id', 'section_name', 'section_id', 'chords'])
+        df = pd.DataFrame(columns=['file_name', 'title', 'title_playlist', 'tune_mode', 'year', 'tune_id', 'section_name', 'section_id', 'chords'])
 
         for i, tune in tqdm(enumerate(seq)):
             meta = self.data_obj.meta[names[i]]
-            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode']]
+            meta_row = [meta['file_path'], meta['title'], meta['title_playlist'], meta['default_key']['mode'], meta['year']]
 
             # generate a list with the chords for each section
             sections = self.data_obj.meta[names[i]]['sections']
