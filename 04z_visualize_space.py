@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # Define Reference query
 
     title_name = 'These Foolish Things [jazz1350]'
-    ref_sectionid = prep.title_to_sectionid_unique_section(title_name)[1]
+    ref_sectionid = prep.title_to_sectionid_unique_section(title_name)[0]
 
     # store the topn relevant and irrelevant recommendations into a dataframe
     sims = prep.get_similar_tunes(ref_sectionid)
@@ -106,32 +106,21 @@ if __name__ == "__main__":
 
 
     ## Rocchio
+    df_vectors_original = df_vectors.copy()
 
     # original vector of the reference tune
     q0 = df_vectors.loc[ref_sectionid]
 
     # simulate a positive feedback
-    pos_feedback = "Fools Rush In [jazz1350]"
-    pos_sectionid = prep.title_to_sectionid_unique_section(pos_feedback)[1]
+    pos_feedback = "Blue Room, The [jazz1350]"
+    pos_sectionid = prep.title_to_sectionid_unique_section(pos_feedback)[0]
     vec_positive = df_vectors.loc[pos_sectionid]
-
-    # Apply Rocchio
-    _alpha = 0.8
-    _beta = 1.0 - _alpha
-    q1 = _alpha * q0 + _beta * vec_positive
-
-    # Update the weights of the reference tune with the new vector
-    df_vectors.loc[ref_sectionid] = q1
-
-    # Re-evaluate PCA and visualize
-    data = df_vectors.values.tolist()
-    dataPCA = apply_pca(data)
-    fig = visualize_pca(pca=dataPCA, subset=df_plot, title=title_name, comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
-    fig.show()
 
 
     ##
     # Apply Rocchio
+    df_vectors = df_vectors_original.copy()
+
     _alpha = 0.0
     _beta = 1.0 - _alpha
     q1 = _alpha * q0 + _beta * vec_positive
@@ -145,8 +134,25 @@ if __name__ == "__main__":
     fig = visualize_pca(pca=dataPCA, subset=df_plot, title=title_name, comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
     fig.show()
 
+    ##
+    # Apply Rocchio
+    df_vectors = df_vectors_original.copy()
+
+    _alpha = 0.6
+    _beta = 1.0 - _alpha
+    q1 = _alpha * q0 + _beta * vec_positive
+
+    # Update the weights of the reference tune with the new vector
+    df_vectors.loc[ref_sectionid] = q1
+
+    # Re-evaluate PCA and visualize
+    data = df_vectors.values.tolist()
+    dataPCA = apply_pca(data)
+    fig = visualize_pca(pca=dataPCA, subset=df_plot, title=title_name, comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
+    fig.show()
 
    ## Centroid of relevant documents (could be used later for Pseudo-relevant Feedback)
+    df_vectors = df_vectors_original.copy()
 
     # calculate mean of relevant tunes
     vec_relevant = df_vectors.merge(df_plot.query('relevance == "relevant"')['relevance'], left_index=True, right_index=True)
