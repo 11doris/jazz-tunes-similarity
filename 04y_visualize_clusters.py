@@ -94,7 +94,7 @@ if __name__ == "__main__":
     ##
     # UMAP
     if True:
-        metric = 'cosine'
+        metric = 'euclidean'
         n_neighbors = 40
         min_dist = 0.01
         umap_2d = umap.UMAP(n_components=2,
@@ -125,7 +125,7 @@ if __name__ == "__main__":
             df_umap,
             x='UMAP0', y='UMAP1',
             opacity=0.5,
-            color=df_umap['period'].astype(str),
+            color='tune_mode', #df_umap['period'].astype(str),
             hover_name='title_section',
             size='size',
             size_max=30,
@@ -169,7 +169,7 @@ if __name__ == "__main__":
         df_tsne,
         x='TSNE0', y='TSNE1',
         opacity=0.5,
-        color='period',
+        color='tune_mode', #'period',
         hover_name='title_section',
         #width=600, height=500,
         title=f"T-SNE for {preprocessing}<br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
