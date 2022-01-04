@@ -57,7 +57,7 @@ class PrepareData:
         self.df_section = (self.df
                                .sort_values(['tune_id', 'section_name', 'section_id'])
                                .drop_duplicates(['tune_id', 'section_name'], keep='first')
-                               .loc[:, ['id', 'chords', 'title_playlist', 'section_name', 'tune_mode']]
+                               .loc[:, ['id', 'chords', 'title_playlist', 'section_name']]
                                )
         self.df_section.rename(columns={'id': 'sectionid'}, inplace=True)
         self.df_section['chords'] = self.df_section['chords'].str.split(' ')
@@ -65,7 +65,7 @@ class PrepareData:
 
         ##
         # Helper functions to translate between titles and sections
-        titles = self.df.loc[:, ['id', 'tune_id', 'section_id', 'section_name', 'title', 'title_playlist', 'tune_mode']]
+        titles = self.df.loc[:, ['id', 'tune_id', 'section_id', 'section_name', 'title', 'title_playlist']]
         self._titles_dict = titles.to_dict()
 
         tunes = self.df.loc[:, ['tune_id', 'title_playlist']].drop_duplicates()
@@ -201,10 +201,17 @@ class PrepareData:
         return self.df_train_test.iloc[id].name
 
     def get_train_test_meta(self):
+
+        meta = pd.read_csv(f'output/preprocessing/02c_tune_sql_import.csv', sep='\t')
+        meta = meta[['id', 'title_playlist', 'year_truncated', 'tune_mode']].drop_duplicates()
+        assert (len(meta) == len(self.df.loc[:, ['tune_id']].drop_duplicates()))
+
         _df = pd.DataFrame()
         _df['sectionid'] = self.df_train_test.index.to_list()
-        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_mode', 'tune_id']]
+        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_id']]
                .merge(_df, left_index=True, right_on='sectionid')
                )
+        _df = (_df
+               .merge(meta, left_on='tune_id', right_on='id'))
         _df = _df.sort_index()
         return _df
