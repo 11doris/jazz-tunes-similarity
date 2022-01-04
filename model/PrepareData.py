@@ -203,7 +203,7 @@ class PrepareData:
     def get_train_test_meta(self):
         _df = pd.DataFrame()
         _df['sectionid'] = self.df_train_test.index.to_list()
-        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_mode']]
+        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_mode', 'tune_id']]
                .merge(_df, left_index=True, right_on='sectionid')
                )
         _df = _df.sort_index()
