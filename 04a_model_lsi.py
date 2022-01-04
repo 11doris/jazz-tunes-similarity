@@ -60,7 +60,7 @@ def generate_webapp_data(lsiObject, preprocessing):
      .to_csv(f'output/model/recommender_lsi_{preprocessing}.csv', encoding='utf8', index=False)
      )
 
-    with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w') as zf:
+    with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
         zf.write(f'output/model/recommender_lsi_{preprocessing}.csv')
 
 

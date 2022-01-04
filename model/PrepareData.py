@@ -50,13 +50,14 @@ class PrepareData:
         self.input_file = input_files[chords_preprocessing]
 
         self.df = pd.read_csv(self.input_file, sep='\t', index_col="id")
+        self.df['title_section'] = self.df['title_playlist'] + ', ' + self.df['section_name']
         self.df = self.df.reset_index()
 
         # if multiple sections with same label, reduce dataset to just one
         self.df_section = (self.df
                                .sort_values(['tune_id', 'section_name', 'section_id'])
                                .drop_duplicates(['tune_id', 'section_name'], keep='first')
-                               .loc[:, ['id', 'chords', 'title_playlist']]
+                               .loc[:, ['id', 'chords', 'title_playlist', 'section_name', 'tune_mode']]
                                )
         self.df_section.rename(columns={'id': 'sectionid'}, inplace=True)
         self.df_section['chords'] = self.df_section['chords'].str.split(' ')
@@ -198,3 +199,12 @@ class PrepareData:
 
     def get_train_test_sectionid(self, id):
         return self.df_train_test.iloc[id].name
+
+    def get_train_test_meta(self):
+        _df = pd.DataFrame()
+        _df['sectionid'] = self.df_train_test.index.to_list()
+        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_mode', 'tune_id']]
+               .merge(_df, left_index=True, right_on='sectionid')
+               )
+        _df = _df.sort_index()
+        return _df

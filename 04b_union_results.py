@@ -105,7 +105,7 @@ if __name__ == "__main__":
          'score']]
      .to_csv(f"{f}.csv")
      )
-    with zipfile.ZipFile(f"{f}.zip", 'w') as zf:
+    with zipfile.ZipFile(f"{f}.zip", 'w', zipfile.ZIP_DEFLATED) as zf:
         zf.write(f"{f}.csv")
 
     print(f"Output data for webapp is stored to: {f}.zip.")
