@@ -211,7 +211,7 @@ class PrepareData:
         _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_id']]
                .merge(_df, left_index=True, right_on='sectionid')
                )
+        _df = _df.sort_index()
         _df = (_df
                .merge(meta, left_on='tune_id', right_on='id'))
-        _df = _df.sort_index()
         return _df
