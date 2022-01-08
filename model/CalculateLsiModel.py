@@ -65,6 +65,10 @@ class CalculateLsiModel(BowModel):
         matches, results = self.test_contrafacts(self.lsi, self.index_lsi, n=preprocess_config['test_topN'])
         return matches, results
 
+    def get_tune_similarity(self):
+        df_sim = self.get_sim_scores(self.lsi, self.index_lsi, topn=preprocess_config['test_topN'])
+        return df_sim
+
     def get_train_tune_vectors(self):
         tunes_matrix = []
 

@@ -1,31 +1,23 @@
 import pandas as pd
 from dataset.utils import set_pandas_display_options
-from model.CalculateLsiModel import *
+from model.CalculateTfidfModel import *
 from model.UseWandB import *
 import numpy as np
 import zipfile
 
 
-def calculate_model(lsiObject):
+def calculate_model(tfidfObject):
     # train the model on the train data
-    lsiObject.calculate_lsi_model()
-    # after training, add the test data to the model for later querying
-    lsiObject.add_test_documents_to_model()
-
-    # get the LSI topics for each tune
-    df_vectors = lsiObject.get_train_tune_vectors()
-    # make sure there are no nan or inf values in the weights
-    invalid = df_vectors[df_vectors.isin([np.nan, np.inf, -np.inf]).any(1)]
-    assert(len(invalid) == 0)
+    tfidfObject.calculate_tfidf_model()
 
     # store the model and similarity matrix
-    lsiObject.store_model()
-    lsiObject.store_similarity_matrix()
+    tfidfObject.store_model()
+    tfidfObject.store_similarity_matrix()
 
 
-def do_contrafacts_test(lsiObject):
+def do_contrafacts_test(tfidfObject):
     # test how many of the contrafacts are found
-    matches, results = lsiObject.lsi_test_contrafacts()
+    matches, results = tfidfObject.tfidf_test_contrafacts()
 
     for rr, val in results.items():
         if val == 0:
@@ -41,8 +33,8 @@ def do_contrafacts_test(lsiObject):
     wandb.store_results(matches, df_sim)
 
 
-def generate_webapp_data(lsiObject, preprocessing):
-    df_webapp = lsiObject.get_tune_similarity()
+def generate_webapp_data(tfidfObject, preprocessing):
+    df_webapp = tfidfObject.get_tune_similarity()
 
     # save to file
     (df_webapp
@@ -57,11 +49,11 @@ def generate_webapp_data(lsiObject, preprocessing):
               'score'
               ]]
      .reset_index()
-     .to_csv(f'output/model/recommender_lsi_{preprocessing}.csv', encoding='utf8', index=False)
+     .to_csv(f'output/model/recommender_tfidf_{preprocessing}.csv', encoding='utf8', index=False)
      )
 
-    with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'output/model/recommender_lsi_{preprocessing}.csv')
+    with zipfile.ZipFile(f'output/model/recommender_tfidf_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'output/model/recommender_tfidf_{preprocessing}.csv')
 
 
 if __name__ == "__main__":
@@ -70,12 +62,12 @@ if __name__ == "__main__":
     for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
 
         # initialize model with the chords preprocessing method
-        mod = CalculateLsiModel(p)
+        mod = CalculateTfidfModel(p)
 
-        wandb = UseWandB(use=True, project_name='lsi_model', data=mod, comment="")
+        wandb = UseWandB(use=False, project_name='tfidf_model', data=mod, comment="")
         wandb.store_input_file(mod.input_file)
 
-        # Calculate the LSI Model
+        # Calculate the TF-IDF Model
         calculate_model(mod)
 
         # Test
