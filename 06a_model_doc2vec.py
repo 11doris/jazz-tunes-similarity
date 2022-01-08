@@ -115,22 +115,48 @@ if __name__ == "__main__":
     set_pandas_display_options()
 
     for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
-
+        print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
 
-        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
-        wandb.store_input_file(mod.input_file)
+        run = 0
+        for dbow_words in [0, 1]:
+            for vector_size in [100, 200, 300, 400]:
+                for window in [2, 3, 4]:
+                    for negative in [2, 4, 8, 10, 12]:
+                        for sample in [0.01, 0.05, 0.1, 0.2]:
+                            for epochs in [30, 40, 50, 60]:
+                                for repeat in [1, 2, 3, 4]:
+                                    mod.model_config['model']['dbow_words'] = dbow_words
+                                    mod.model_config['model']['vector_size'] = vector_size
+                                    mod.model_config['model']['window'] = window
+                                    mod.model_config['model']['negative'] = negative
+                                    mod.model_config['model']['sample'] = sample
+                                    mod.model_config['model']['epochs'] = epochs
 
-        # Calculate the LSI Model
-        calculate_model(mod)
+                                    print()
+                                    print('-'*80)
+                                    print(f"{p}, Search run: {run}")
+                                    print(f'dbow_words: {dbow_words}')
+                                    print(f'vector_size: {vector_size}')
+                                    print(f'window: {window}')
+                                    print(f'negative: {negative}')
+                                    print(f'sample: {sample}')
+                                    print(f'epoch: {epochs}')
+                                    print(f'repeat run: {repeat}')
+                                    run +=1
 
-        test_diatonic_chords(mod)
-        #plot_weights(mod, p)
+                                    wandb = UseWandB(use=True, project_name='doc2vec', data=mod, comment="")
+                                    wandb.store_input_file(mod.input_file)
 
-        # Test
-        do_contrafacts_test(mod)
+                                    # Calculate the LSI Model
+                                    calculate_model(mod)
 
+                                    test_diatonic_chords(mod)
+                                    #plot_weights(mod, p)
 
-        # Done.
-        wandb.finish()
+                                    # Test
+                                    do_contrafacts_test(mod)
+
+                                    # Done.
+                                    wandb.finish()
