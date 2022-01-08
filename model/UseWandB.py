@@ -1,5 +1,5 @@
 import wandb
-from model.config import lsi_config, get_test_tunes, preprocess_config
+from model.config import lsi_config, get_test_tunes, preprocess_config, get_doc2vec_config
 
 
 class UseWandB:
@@ -47,6 +47,8 @@ class UseWandB:
                 },
                 'model': {
                     'remove_tokens_below': preprocess_config['no_below'],
+                    'doc2vec': get_doc2vec_config()['model'],
+                    'lsi': lsi_config,
                 }
             },
             })

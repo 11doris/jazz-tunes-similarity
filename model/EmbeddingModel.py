@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
 from model.PrepareData import PrepareData
-from model.config import get_test_tunes, doc2vec_config
+from model.config import get_test_tunes, get_doc2vec_config
 from gensim import corpora
 from gensim.models import doc2vec
 
@@ -26,7 +26,7 @@ class EmbeddingModel(PrepareData):
     def prepare_corpus(self, df_clean):
 
         doc_clean = list(df_clean['chords'])
-        train_corpus = list(self.get_tagged_documents(doc_clean, doc2vec_config['general']['tag_sections_and_tunes']))
+        train_corpus = list(self.get_tagged_documents(doc_clean, get_doc2vec_config()['general']['tag_sections_and_tunes']))
         return train_corpus
 
 
@@ -44,7 +44,7 @@ class EmbeddingModel(PrepareData):
             rank = 0
             score = 0
             for s1 in self.title_to_sectionid_unique_section(tune):
-                print(f"{tune} - {similar_tune}")
+                #print(f"{tune} - {similar_tune}")
                 #print(f" s1: {s1}")
 
                 id = self.df_train_test.loc[s1]['index']
@@ -58,8 +58,7 @@ class EmbeddingModel(PrepareData):
                     #print(f"   sim {self.sectionid_to_section(sectionid)}")
                     if self.sectionid_to_title(sectionid) == similar_tune:
                         section_matches += 1
-                        print(
-                            f"Found {tune} - {similar_tune} {self.sectionid_to_sectionlabel(sectionid)} with value {value}")
+                        # print(f"Found {tune} - {similar_tune} {self.sectionid_to_sectionlabel(sectionid)} with value {value}")
                         if value > score:
                             rank = i
                             score = value

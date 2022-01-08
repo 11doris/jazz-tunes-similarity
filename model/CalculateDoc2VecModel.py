@@ -1,5 +1,5 @@
 from model.EmbeddingModel import EmbeddingModel
-from model.config import preprocess_config, doc2vec_config
+from model.config import preprocess_config, get_doc2vec_config
 from gensim.models.doc2vec import Doc2Vec
 from gensim import similarities
 
@@ -14,7 +14,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
         self.train_corpus = self.prepare_corpus(self.df_train_test)
 
         self.doc2vec = Doc2Vec(self.train_corpus,
-                               **doc2vec_config['model']
+                               **get_doc2vec_config()['model']
                 )
 
         print(self.doc2vec)
