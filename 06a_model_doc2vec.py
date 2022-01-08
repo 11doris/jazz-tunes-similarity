@@ -29,7 +29,7 @@ def do_contrafacts_test(doc2VecObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results('lsi', matches, df_sim)
+    wandb.store_results(doc2VecObject.model_name, matches, df_sim)
 
 
 def test_diatonic_chords(doc2vecObj):
@@ -119,7 +119,7 @@ if __name__ == "__main__":
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
 
-        wandb = UseWandB(use=False, project_name='model_comparison', data=mod, comment="")
+        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
         wandb.store_input_file(mod.input_file)
 
         # Calculate the LSI Model

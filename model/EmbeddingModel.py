@@ -39,8 +39,6 @@ class EmbeddingModel(PrepareData):
         results = {}
 
         for tune, similar_tune in get_test_tunes():
-            if tune == 'Tour De Force [jazz1350]':
-                print('stop')
             # loop over all sections of the tune
             section_matches = 0
             rank = 0
@@ -71,8 +69,11 @@ class EmbeddingModel(PrepareData):
             # for each title, increase matches if at least one of the section matched the expected title
             if section_matches > 0:
                 matches += 1
-                results[f'{tune}, {similar_tune}'] = 1
+                results[f'{tune}, {similar_tune}'] = {'found': 1,
+                                                      'score': score,
+                                                      'rank': rank}
             else:
-                results[f'{tune}, {similar_tune}'] = 0
-
+                results[f'{tune}, {similar_tune}'] = {'found': 0,
+                                                      'score': 0,
+                                                      'rank': 0}
         return matches, results
