@@ -31,7 +31,7 @@ class BowModel(PrepareData):
         doc_term_matrix = [dic.doc2bow(text) for text in doc_clean]
         return doc_term_matrix
 
-    def get_sim_scores(self, topn=preprocess_config['test_topN']):
+    def get_sim_scores(self, model, index, topn=preprocess_config['test_topN']):
 
         dict_sim = {
             'reference_title': [],
@@ -64,7 +64,7 @@ class BowModel(PrepareData):
                 query_bow = self.train_dictionary.doc2bow(query)
 
                 # perform a similarity query against the corpus
-                similarities = self.index_lsi[self.lsi[query_bow]]
+                similarities = index[model[query_bow]]
                 sims = sorted(enumerate(similarities), key=lambda item: -item[1])
 
                 n = 0
