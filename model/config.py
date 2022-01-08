@@ -19,26 +19,6 @@ lsi_config = {
     'num_topics': 100  # 22, # 100 gives a better value for the contrafacts test
 }
 
-def get_doc2vec_config():
-    return {
-        'general': {
-            # 'chords_preprocessing': self.chords_preprocessing,
-            'tag_sections_and_tunes': False,
-        },
-        'model': {
-            'dm': 0,
-            'dbow_words': 1,
-            'vector_size': 300,
-            'window': 3,
-            'epochs': 40,
-            # 'workers': 1,
-            'min_count': 1,
-            'negative': 10,
-            'sample': 0.1,
-            'seed': 42
-        }
-    }
-
 
 def get_test_tunes():
     return [

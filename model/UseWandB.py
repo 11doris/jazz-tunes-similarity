@@ -1,5 +1,5 @@
 import wandb
-from model.config import lsi_config, get_test_tunes, preprocess_config, get_doc2vec_config
+from model.config import lsi_config, get_test_tunes, preprocess_config
 
 
 class UseWandB:
@@ -33,7 +33,7 @@ class UseWandB:
         artifact.add_file(file_name)
         wandb.log_artifact(artifact)
 
-    def store_results(self, model_name, matches, df_sim):
+    def store_results(self, model_name, matches, df_sim, model_config):
         if not self.use:
             return
 
@@ -47,7 +47,7 @@ class UseWandB:
                 },
                 'model': {
                     'remove_tokens_below': preprocess_config['no_below'],
-                    'doc2vec': get_doc2vec_config()['model'],
+                    'doc2vec': model_config,
                     'lsi': lsi_config,
                 }
             },

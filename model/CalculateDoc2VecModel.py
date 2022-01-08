@@ -1,5 +1,5 @@
 from model.EmbeddingModel import EmbeddingModel
-from model.config import preprocess_config, get_doc2vec_config
+from model.config import preprocess_config
 from gensim.models.doc2vec import Doc2Vec
 from gensim import similarities
 
@@ -8,14 +8,32 @@ class CalculateDoc2VecModel(EmbeddingModel):
     def __init__(self, chords_preprocessing):
         self.model_name = 'doc2vec'
         super().__init__(chords_preprocessing)
+        self.model_config = {
+            'general': {
+                # 'chords_preprocessing': self.chords_preprocessing,
+                'tag_sections_and_tunes': False,
+            },
+            'model': {
+                'dm': 0,
+                'dbow_words': 1,
+                'vector_size': 300,
+                'window': 3,
+                'epochs': 40,
+                # 'workers': 1,
+                'min_count': 1,
+                'negative': 10,
+                'sample': 0.1,
+                'seed': 42
+            }
+        }
 
     def calculate_doc2vec_model(self):
         print('\n*** Calculate Doc2Vec Model ***')
         self.train_corpus = self.prepare_corpus(self.df_train_test)
 
         self.doc2vec = Doc2Vec(self.train_corpus,
-                               **get_doc2vec_config()['model']
-                )
+                               **self.model_config['model']
+                               )
 
         print(self.doc2vec)
 

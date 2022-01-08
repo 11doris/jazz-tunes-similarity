@@ -29,7 +29,7 @@ def do_contrafacts_test(doc2VecObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results(doc2VecObject.model_name, matches, df_sim)
+    wandb.store_results(doc2VecObject.model_name, matches, df_sim, doc2VecObject.model_config)
 
 
 def test_diatonic_chords(doc2vecObj):

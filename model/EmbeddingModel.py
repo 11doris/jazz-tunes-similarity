@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
 from model.PrepareData import PrepareData
-from model.config import get_test_tunes, get_doc2vec_config
+from model.config import get_test_tunes
 from gensim import corpora
 from gensim.models import doc2vec
 
@@ -26,7 +26,7 @@ class EmbeddingModel(PrepareData):
     def prepare_corpus(self, df_clean):
 
         doc_clean = list(df_clean['chords'])
-        train_corpus = list(self.get_tagged_documents(doc_clean, get_doc2vec_config()['general']['tag_sections_and_tunes']))
+        train_corpus = list(self.get_tagged_documents(doc_clean, self.model_config['general']['tag_sections_and_tunes']))
         return train_corpus
 
 
