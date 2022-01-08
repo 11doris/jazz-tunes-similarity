@@ -11,7 +11,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
 
     def calculate_doc2vec_model(self):
         print('\n*** Calculate Doc2Vec Model ***')
-        self.train_corpus = self.prepare_corpus(self.df_train)
+        self.train_corpus = self.prepare_corpus(self.df_train_test)
 
         self.doc2vec = Doc2Vec(self.train_corpus,
                                **doc2vec_config['model']

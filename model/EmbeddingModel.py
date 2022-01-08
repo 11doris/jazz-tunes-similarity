@@ -39,7 +39,8 @@ class EmbeddingModel(PrepareData):
         results = {}
 
         for tune, similar_tune in get_test_tunes():
-
+            if tune == 'Tour De Force [jazz1350]':
+                print('stop')
             # loop over all sections of the tune
             section_matches = 0
             rank = 0
@@ -47,18 +48,15 @@ class EmbeddingModel(PrepareData):
             for s1 in self.title_to_sectionid_unique_section(tune):
                 print(f"{tune} - {similar_tune}")
                 #print(f" s1: {s1}")
-                new_vector = self.doc2vec.infer_vector(self.df_test.loc[s1]['chords'])
-                sims = self.doc2vec.dv.most_similar([new_vector], topn=len(self.doc2vec.dv))
-                #sims = self.doc2vec.dv.similar_by_key(id, topn=n)
 
-                # print(sims)
-                # print(len(sims))
+                id = self.df_train_test.loc[s1]['index']
+                sims = self.doc2vec.dv.similar_by_key(id, topn=n)
 
                 # check if the section matches the expected title; consider only the first N recommendations
                 i = 0
 
                 for id, value in sims:
-                    sectionid = self.df_train.iloc[id].name
+                    sectionid = self.df_train_test.iloc[id].name
                     #print(f"   sim {self.sectionid_to_section(sectionid)}")
                     if self.sectionid_to_title(sectionid) == similar_tune:
                         section_matches += 1
