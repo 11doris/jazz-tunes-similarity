@@ -7,7 +7,9 @@ import pandas as pd
 
 
 class CalculateLsiModel(BowModel):
-    pass
+    def __init__(self, chords_preprocessing):
+        self.model_name = 'lsi'
+        super().__init__(chords_preprocessing)
 
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
@@ -23,10 +25,10 @@ class CalculateLsiModel(BowModel):
         print(self.lsi)
 
     def store_model(self):
-        self.lsi.save(f'output/model/lsi_{self.chords_preprocessing}.model')
+        self.lsi.save(f'output/model/{self.model_name}_{self.chords_preprocessing}.model')
 
     def load_model(self):
-        self.lsi = LsiModel.load(f'output/model/lsi_{self.chords_preprocessing}.model')
+        self.lsi = LsiModel.load(f'output/model/{self.model_name}_{self.chords_preprocessing}.model')
         # TODO get rid of self.train_dictionary and use self.lsi.id2word instead?
         self.train_dictionary = self.lsi.id2word
 
@@ -56,7 +58,7 @@ class CalculateLsiModel(BowModel):
         #                                          self.lsi[self.bow_corpus],
         #                                          num_features=len(self.dictionary))
         # Store index
-        self.index_lsi.save(f"output/model/lsi_matrixsim_{self.chords_preprocessing}.index")
+        self.index_lsi.save(f"output/model/{self.model_name}_matrixsim_{self.chords_preprocessing}.index")
 
     def load_similarity_matrix(self):
         self.index_lsi = similarities.MatrixSimilarity.load(f"output/model/lsi_matrixsim_{self.chords_preprocessing}.index")

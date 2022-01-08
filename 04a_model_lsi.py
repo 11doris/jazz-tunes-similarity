@@ -38,7 +38,7 @@ def do_contrafacts_test(lsiObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results(matches, df_sim)
+    wandb.store_results('lsi', matches, df_sim)
 
 
 def generate_webapp_data(lsiObject, preprocessing):
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         # initialize model with the chords preprocessing method
         mod = CalculateLsiModel(p)
 
-        wandb = UseWandB(use=True, project_name='lsi_model', data=mod, comment="")
+        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
         wandb.store_input_file(mod.input_file)
 
         # Calculate the LSI Model
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         # Generate full data for web application
         if True:
             generate_webapp_data(mod, p)
-            wandb.store_artifacts(p)
+            wandb.store_artifacts(mod, p)
 
         # Done.
         wandb.finish()

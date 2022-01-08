@@ -18,6 +18,7 @@ class UseWandB:
             config={
                 "chords_preprocessing": data.chords_preprocessing,
                 "ngrams_input": data.ngrams,
+                "model": data.model_name,
                 #"remove_repeated_chords": remove_repetitions,
                 "lsi": lsi_config,
                 "comment": comment,
@@ -32,13 +33,12 @@ class UseWandB:
         artifact.add_file(file_name)
         wandb.log_artifact(artifact)
 
-    def store_results(self, matches, df_sim):
+    def store_results(self, model_name, matches, df_sim):
         if not self.use:
             return
 
-        model_name = 'lsi'
         wandb.log(
-            {model_name: {
+            {'results': {
                 'contrafacts': {
                     'topN': preprocess_config['test_topN'],
                     'success': matches / len(get_test_tunes()),
@@ -51,19 +51,19 @@ class UseWandB:
             },
             })
 
-    def store_artifacts(self, chords_preprocessing):
+    def store_artifacts(self, data, chords_preprocessing):
         if not self.use:
             return
 
         model_artifact = wandb.Artifact(
-            "model_lsi",
+            data.model_name,
             type="model",
-            description="LSI model",
+            description=f"{data.model_name} Model",
             metadata="")
 
-        model_artifact.add_file(f"output/model/lsi_matrixsim_{chords_preprocessing}.index")
-        model_artifact.add_file(f'output/model/lsi_{chords_preprocessing}.model')
-        model_artifact.add_file(f'output/model/recommender_lsi_{chords_preprocessing}.zip')
+        model_artifact.add_file(f"output/model/{data.model_name}_matrixsim_{chords_preprocessing}.index")
+        model_artifact.add_file(f'output/model/{data.model_name}_{chords_preprocessing}.model')
+        model_artifact.add_file(f'output/model/recommender_{data.model_name}_{chords_preprocessing}.zip')
 
         wandb.log_artifact(model_artifact)
 

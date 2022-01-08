@@ -30,7 +30,7 @@ def _get_list_of_test_tunes():
 
 
 class PrepareData:
-    def __init__(self, chords_preprocessing='rootAndDegreesPlus'):
+    def __init__(self, chords_preprocessing):
         """
         Reads the input data and stores it into dataframes:
         self.df: read from the csv. dataframe with full information; one per section and tune, same sections per tune
