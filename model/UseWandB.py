@@ -21,6 +21,7 @@ class UseWandB:
                 "model": data.model_name,
                 #"remove_repeated_chords": remove_repetitions,
                 "lsi": lsi_config,
+                "doc2vec": data.model_config['model'],
                 "comment": comment,
             }
         )
@@ -47,8 +48,6 @@ class UseWandB:
                 },
                 'model': {
                     'remove_tokens_below': preprocess_config['no_below'],
-                    'doc2vec': model_config,
-                    'lsi': lsi_config,
                 }
             },
             })
