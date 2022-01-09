@@ -146,11 +146,16 @@ class PrepareData:
     # Corpus processing
 
     # depending on the configuration, remove subsequent identical chords or add ngrams of the chords.
-    def preprocess_input(self, chord_list):
+    def preprocess_input(self, chord_list, ngrams=None):
         tune_n = []
         if self.remove_repetitions:
             chord_list = _remove_chord_repetitions(chord_list)
-        for n in self.ngrams:
+
+        # if nothing is specified for ngrams, use the configuration from the config file
+        if ngrams is None:
+            ngrams = self.ngrams
+
+        for n in ngrams:
             tune_n.extend(_make_ngrams(chord_list, n=n))
         return tune_n
 
