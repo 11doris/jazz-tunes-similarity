@@ -38,7 +38,7 @@ def do_contrafacts_test(lsiObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results('lsi', matches, df_sim, lsiObject.model_config)
+    wandb.store_results('lsi', matches, df_sim, None)
 
 
 def generate_webapp_data(lsiObject, preprocessing):

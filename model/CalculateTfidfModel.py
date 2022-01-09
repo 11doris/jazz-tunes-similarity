@@ -10,6 +10,7 @@ class CalculateTfidfModel(BowModel):
     def __init__(self, chords_preprocessing):
         self.model_name = 'tfidf'
         super().__init__(chords_preprocessing)
+        self.model_config = {}
 
     def calculate_tfidf_model(self):
         print('\n*** Calculate TF-IDF Model ***')

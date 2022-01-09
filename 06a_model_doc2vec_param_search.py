@@ -29,10 +29,10 @@ def do_contrafacts_test(doc2VecObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results(doc2VecObject.model_name, matches, df_sim, doc2VecObject.model_config)
+    wandb.store_results(doc2VecObject.model_name, matches, df_sim)
 
 
-def test_diatonic_chords(doc2vecObj, preprocessing):
+def similar_chords(doc2vecObj, preprocessing):
 
     model = doc2vecObj.doc2vec
     if 1 in preprocess_config['ngrams']:
@@ -112,41 +112,43 @@ if __name__ == "__main__":
                         for negative in [10]:
                             for epochs in [40]:
                                 for min_count in [1]:
-                                    for repeat in [1, 2, 3]:
-                                        mod.model_config['model']['dbow_words'] = dbow_words
-                                        mod.model_config['model']['vector_size'] = vector_size
-                                        mod.model_config['model']['window'] = window
-                                        mod.model_config['model']['negative'] = negative
-                                        mod.model_config['model']['sample'] = sample
-                                        mod.model_config['model']['epochs'] = epochs
-                                        mod.model_config['model']['min_count'] = min_count
+                                    for hs in [0]:
+                                            for repeat in [1, 2, 3]:
+                                                mod.model_config['dbow_words'] = dbow_words
+                                                mod.model_config['vector_size'] = vector_size
+                                                mod.model_config['window'] = window
+                                                mod.model_config['negative'] = negative
+                                                mod.model_config['sample'] = sample
+                                                mod.model_config['epochs'] = epochs
+                                                mod.model_config['min_count'] = min_count
+                                                mod.model_config['hs'] = hs
+                                                print()
+                                                print('-'*80)
+                                                print(mod.model_config)
+                                                print()
+                                                print(f"{p}, Search run: {run}")
+                                                print(f'dbow_words: {dbow_words}')
+                                                print(f'vector_size: {vector_size}')
+                                                print(f'window: {window}')
+                                                print(f'negative: {negative}')
+                                                print(f'sample: {sample}')
+                                                print(f'epoch: {epochs}')
+                                                print(f'min_count: {min_count}')
+                                                print(f'hs: {hs}')
+                                                print(f'repeat run: {repeat}')
+                                                run +=1
 
-                                        print()
-                                        print('-'*80)
-                                        print(mod.model_config['model'])
-                                        print()
-                                        print(f"{p}, Search run: {run}")
-                                        print(f'dbow_words: {dbow_words}')
-                                        print(f'vector_size: {vector_size}')
-                                        print(f'window: {window}')
-                                        print(f'negative: {negative}')
-                                        print(f'sample: {sample}')
-                                        print(f'epoch: {epochs}')
-                                        print(f'min_count: {min_count}')
-                                        print(f'repeat run: {repeat}')
-                                        run +=1
+                                                wandb = UseWandB(use=True, project_name='doc2vec_dbow1', data=mod, comment="")
+                                                wandb.store_input_file(mod.input_file)
 
-                                        wandb = UseWandB(use=True, project_name='doc2vec_dbow1', data=mod, comment="")
-                                        wandb.store_input_file(mod.input_file)
+                                                # Calculate the LSI Model
+                                                calculate_model(mod)
 
-                                        # Calculate the LSI Model
-                                        calculate_model(mod)
+                                                similar_chords(mod, p)
+                                                #plot_weights(mod, p)
 
-                                        test_diatonic_chords(mod, p)
-                                        #plot_weights(mod, p)
+                                                # Test
+                                                do_contrafacts_test(mod)
 
-                                        # Test
-                                        do_contrafacts_test(mod)
-
-                                        # Done.
-                                        wandb.finish()
+                                                # Done.
+                                                wandb.finish()

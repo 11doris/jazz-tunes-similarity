@@ -1,5 +1,5 @@
 import wandb
-from model.config import lsi_config, get_test_tunes, preprocess_config
+from model.config import get_test_tunes, preprocess_config
 
 
 class UseWandB:
@@ -20,8 +20,8 @@ class UseWandB:
                 "ngrams_input": data.ngrams,
                 "model": data.model_name,
                 #"remove_repeated_chords": remove_repetitions,
-                "lsi": lsi_config,
-                "doc2vec": data.model_config['model'],
+                "lsi": data.model_config,
+                "doc2vec": data.model_config,
                 "comment": comment,
             }
         )
@@ -34,7 +34,7 @@ class UseWandB:
         artifact.add_file(file_name)
         wandb.log_artifact(artifact)
 
-    def store_results(self, model_name, matches, df_sim, model_config):
+    def store_results(self, model_name, matches, df_sim):
         if not self.use:
             return
 
@@ -44,7 +44,6 @@ class UseWandB:
                     'topN': preprocess_config['test_topN'],
                     'success': matches / len(get_test_tunes()),
                     'results': wandb.Table(data=df_sim),
-                    #'score_histogram': wandb.Image('plot.png'),
                 },
                 'model': {
                     'remove_tokens_below': preprocess_config['no_below'],

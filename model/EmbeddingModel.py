@@ -26,7 +26,7 @@ class EmbeddingModel(PrepareData):
     def prepare_corpus(self, df_clean):
 
         doc_clean = list(df_clean['chords'])
-        train_corpus = list(self.get_tagged_documents(doc_clean, self.model_config['general']['tag_sections_and_tunes']))
+        train_corpus = list(self.get_tagged_documents(doc_clean))
         return train_corpus
 
 

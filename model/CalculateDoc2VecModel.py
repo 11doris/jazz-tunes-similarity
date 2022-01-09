@@ -9,11 +9,6 @@ class CalculateDoc2VecModel(EmbeddingModel):
         self.model_name = 'doc2vec'
         super().__init__(chords_preprocessing)
         self.model_config = {
-            'general': {
-                # 'chords_preprocessing': self.chords_preprocessing,
-                'tag_sections_and_tunes': False,
-            },
-            'model': {
                 'dm': 0,
                 'dbow_words': 1,
                 'vector_size': 300,
@@ -23,8 +18,8 @@ class CalculateDoc2VecModel(EmbeddingModel):
                 'min_count': 1,
                 'negative': 10,
                 'sample': 0.1,
-                'seed': 42
-            }
+                'seed': 42,
+                'hs': 0,
         }
 
     def calculate_doc2vec_model(self):
@@ -32,7 +27,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
         self.train_corpus = self.prepare_corpus(self.df_train_test)
 
         self.doc2vec = Doc2Vec(self.train_corpus,
-                               **self.model_config['model']
+                               **self.model_config
                                )
 
         print(self.doc2vec)

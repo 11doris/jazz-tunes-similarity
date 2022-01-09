@@ -15,10 +15,6 @@ preprocess_config = {
     'remove_repetitions': False,
 }
 
-lsi_config = {
-    'num_topics': 100  # 22, # 100 gives a better value for the contrafacts test
-}
-
 
 def get_test_tunes():
     return [
