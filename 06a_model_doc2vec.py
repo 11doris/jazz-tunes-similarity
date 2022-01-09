@@ -32,29 +32,14 @@ def do_contrafacts_test(doc2VecObject):
     wandb.store_results(doc2VecObject.model_name, matches, df_sim, doc2VecObject.model_config)
 
 
-def test_diatonic_chords(doc2vecObj):
-    test_tokens = ['C',
-                   'Dm',
-                   'Em',
-                   'F',
-                   'G7',
-                   'Am',
-                   # 'Bm7b5',
-                   'F7',
-                   'D7',
-                   'A7',
-                   'E7',
-                   'B7',
-                   'F#7',
-                   'Cm',
-                   'D']
+def test_diatonic_chords(doc2vecObj, preprocessing):
 
     model = doc2vecObj.doc2vec
     if 1 in preprocess_config['ngrams']:
-        ref = 'C'
-        print(f"Similarity for Chords relative to {ref}")
-        for t in test_tokens:
-            print(f"{model.wv.similarity(ref, t):.3f}: {ref} <-> {t}")
+        if preprocessing == 'rootAndDegreesPlus':
+            ref = 'C'
+        else:
+            ref = 'CM7'
 
         print(f"\nMost similar to {ref}:")
         for t in model.wv.similar_by_word(ref, topn=20):
@@ -114,49 +99,54 @@ def plot_weights(doc2vecObj, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
+    for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
         print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
 
         run = 0
-        for dbow_words in [0, 1]:
-            for vector_size in [100, 200, 300, 400]:
-                for window in [2, 3, 4]:
-                    for negative in [2, 4, 8, 10, 12]:
-                        for sample in [0.01, 0.05, 0.1, 0.2]:
-                            for epochs in [30, 40, 50, 60]:
-                                for repeat in [1, 2, 3, 4]:
-                                    mod.model_config['model']['dbow_words'] = dbow_words
-                                    mod.model_config['model']['vector_size'] = vector_size
-                                    mod.model_config['model']['window'] = window
-                                    mod.model_config['model']['negative'] = negative
-                                    mod.model_config['model']['sample'] = sample
-                                    mod.model_config['model']['epochs'] = epochs
+        for dbow_words in [1]:
+            for sample in [0.1]:
+                for vector_size in [300]:
+                    for window in [2]:
+                        for negative in [10]:
+                            for epochs in [40]:
+                                for min_count in [1]:
+                                    for repeat in [1, 2, 3]:
+                                        mod.model_config['model']['dbow_words'] = dbow_words
+                                        mod.model_config['model']['vector_size'] = vector_size
+                                        mod.model_config['model']['window'] = window
+                                        mod.model_config['model']['negative'] = negative
+                                        mod.model_config['model']['sample'] = sample
+                                        mod.model_config['model']['epochs'] = epochs
+                                        mod.model_config['model']['min_count'] = min_count
 
-                                    print()
-                                    print('-'*80)
-                                    print(f"{p}, Search run: {run}")
-                                    print(f'dbow_words: {dbow_words}')
-                                    print(f'vector_size: {vector_size}')
-                                    print(f'window: {window}')
-                                    print(f'negative: {negative}')
-                                    print(f'sample: {sample}')
-                                    print(f'epoch: {epochs}')
-                                    print(f'repeat run: {repeat}')
-                                    run +=1
+                                        print()
+                                        print('-'*80)
+                                        print(mod.model_config['model'])
+                                        print()
+                                        print(f"{p}, Search run: {run}")
+                                        print(f'dbow_words: {dbow_words}')
+                                        print(f'vector_size: {vector_size}')
+                                        print(f'window: {window}')
+                                        print(f'negative: {negative}')
+                                        print(f'sample: {sample}')
+                                        print(f'epoch: {epochs}')
+                                        print(f'min_count: {min_count}')
+                                        print(f'repeat run: {repeat}')
+                                        run +=1
 
-                                    wandb = UseWandB(use=True, project_name='doc2vec', data=mod, comment="")
-                                    wandb.store_input_file(mod.input_file)
+                                        wandb = UseWandB(use=True, project_name='doc2vec_dbow1', data=mod, comment="")
+                                        wandb.store_input_file(mod.input_file)
 
-                                    # Calculate the LSI Model
-                                    calculate_model(mod)
+                                        # Calculate the LSI Model
+                                        calculate_model(mod)
 
-                                    test_diatonic_chords(mod)
-                                    #plot_weights(mod, p)
+                                        test_diatonic_chords(mod, p)
+                                        #plot_weights(mod, p)
 
-                                    # Test
-                                    do_contrafacts_test(mod)
+                                        # Test
+                                        do_contrafacts_test(mod)
 
-                                    # Done.
-                                    wandb.finish()
+                                        # Done.
+                                        wandb.finish()

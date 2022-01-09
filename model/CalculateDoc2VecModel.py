@@ -17,7 +17,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
                 'dm': 0,
                 'dbow_words': 1,
                 'vector_size': 300,
-                'window': 3,
+                'window': 2,
                 'epochs': 40,
                 # 'workers': 1,
                 'min_count': 1,
