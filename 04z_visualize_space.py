@@ -71,6 +71,18 @@ if __name__ == "__main__":
     assert(len(invalid) == 0)
 
 
+##
+## Before doing Rocchio, normalize vectors to unit length:
+#import numpy as np
+#from sklearn.preprocessing import normalize
+
+#x = np.random.rand(1000)*10
+#norm1 = x / np.linalg.norm(x)
+#norm2 = normalize(x[:,np.newaxis], axis=0).ravel()
+#print np.all(norm1 == norm2)
+
+
+
     ##
     # Define Reference query
 
