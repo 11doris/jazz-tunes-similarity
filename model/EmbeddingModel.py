@@ -60,7 +60,14 @@ class EmbeddingModel(PrepareData):
             for s1 in self.title_to_sectionid_unique_section(tune):
 
                 id = self.df_train_test.loc[s1]['index']
-                sims = model.dv.similar_by_key(id, topn=topn)
+
+                # check if the current tune belongs to the training set, then we can directly access the embedding vector
+                if id in model.dv.index_to_key:
+                    sims = model.dv.similar_by_key(id, topn=topn)
+                else:
+                    # infer the embedding vector for the tune which is in test set
+                    vector = self.doc2vec.infer_vector(self.df_train_test.loc[s1]['chords'])
+                    sims = self.doc2vec.dv.similar_by_vector(vector, topn=topn)
 
                 n = 0
                 for id, s2_score in sims:
@@ -103,8 +110,8 @@ class EmbeddingModel(PrepareData):
                 #print(f"{tune} - {similar_tune}")
                 #print(f" s1: {s1}")
 
-                id = self.df_train_test.loc[s1]['index']
-                sims = self.doc2vec.dv.similar_by_key(id, topn=n)
+                vector = self.doc2vec.infer_vector(self.df_train_test.loc[s1]['chords'])
+                sims = self.doc2vec.dv.similar_by_vector(vector, topn=n)
 
                 # check if the section matches the expected title; consider only the first N recommendations
                 i = 0
