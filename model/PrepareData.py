@@ -1,5 +1,4 @@
 from model.config import input_files, get_test_tunes, preprocess_config
-from gensim.models import Phrases, phrases
 import pandas as pd
 import logging
 import os
@@ -158,38 +157,40 @@ class PrepareData:
             tune_n.extend(_make_ngrams(chord_list, n=n))
         return tune_n
 
-    def make_phrases(self, texts, thres=0.2):
-        bigram = Phrases(texts, min_count=preprocess_config['no_below'], threshold=thres, connector_words=[], scoring='npmi')
-        bigram_mod = phrases.Phraser(bigram)
-        return [bigram_mod[doc] for doc in texts]
-
-    def preprocess_phrases(self, thres=0.1):
-        processed_corpus = self.make_phrases(self.df_section['chords'], thres=thres)
-
-        for i in processed_corpus[:20]:
-            print(i)
-
-        _df = pd.DataFrame(columns=['sectionid', 'chords'])
-        _df['chords'] = processed_corpus
-        _df['sectionid'] = self.df_section['sectionid']
-        _df = _df.set_index('sectionid')
-
-        return _df
-
     # process the input data, which is the unique sections of the tunes
     def __corpus(self):
+        self.df_test = pd.DataFrame(columns=['sectionid', 'chords'])
+        self.df_train = pd.DataFrame(columns=['sectionid', 'chords'])
 
-        processed_corpus = self.preprocess_phrases(thres=1.0)
+        test_corpus_chords = []
+        train_corpus_chords = []
 
-        self.df_train = processed_corpus.copy()
-        self.df_test = processed_corpus.copy()
+        test_sectionid = []
+        train_sectionid = []
 
-        self.df_test = self.df_train.loc[self.test_tune_sectionid]
-        self.df_train = self.df_train.loc[~self.df_train.index.isin(self.test_tune_sectionid)]
+        # for each unique section of a tune, process the chords
+        for id, line in self.df_section.iterrows():
+            sectionid = line['sectionid']
+            tune_n = self.preprocess_input(line['chords'])
+
+            # to the train_corpus, add only the sections which are not used by the contrafacts tests
+            if sectionid in self.test_tune_sectionid:
+                test_corpus_chords.append(tune_n)
+                test_sectionid.append(sectionid)
+            else:
+                train_corpus_chords.append(tune_n)
+                train_sectionid.append(sectionid)
+
+        self.df_test = pd.DataFrame(list(zip(test_sectionid, test_corpus_chords)),
+                                    columns=['sectionid', 'chords'])
+        self.df_test.set_index('sectionid', inplace=True)
+
+        self.df_train = pd.DataFrame(list(zip(train_sectionid, train_corpus_chords)),
+                                     columns=['sectionid', 'chords'])
+        self.df_train.set_index('sectionid', inplace=True)
 
         self.df_train_test = pd.concat([self.df_train, self.df_test]).reset_index().reset_index().set_index('sectionid')
 
-        assert(len(self.df_train) + len(self.df_test) == len(self.df_section))
         print(f'Train Corpus: {len(self.df_train)}')
         print(f'Test Corpus: {len(self.df_test)}')
 
