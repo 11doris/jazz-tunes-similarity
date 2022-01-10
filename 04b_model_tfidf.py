@@ -30,7 +30,7 @@ def do_contrafacts_test(tfidfObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results('tf-idf', matches, df_sim)
+    wandb.store_result_contrafacts('tf-idf', matches, df_sim)
 
 
 def generate_webapp_data(tfidfObject, preprocessing):
@@ -59,7 +59,7 @@ def generate_webapp_data(tfidfObject, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
+    for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
 
         # initialize model with the chords preprocessing method
         mod = CalculateTfidfModel(p)

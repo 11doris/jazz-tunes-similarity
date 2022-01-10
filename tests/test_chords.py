@@ -187,7 +187,7 @@ def test_chords_rootAndDegreesPlus():
     data_obj.set_json_paths(tunes_path=tunes_path, meta_path=meta_path)
 
     # generate the chord sequence
-    data, names = data_obj.rootAndDegreesPlus()
+    data, names, beats = data_obj.rootAndDegreesPlus()
 
     # print()
     # for i in data[1]:

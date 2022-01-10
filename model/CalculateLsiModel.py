@@ -1,5 +1,5 @@
 from model.BowModel import BowModel
-from model.config import lsi_config, preprocess_config
+from model.config import preprocess_config
 from gensim.models.lsimodel import LsiModel
 from gensim import similarities
 from gensim.matutils import sparse2full
@@ -10,17 +10,18 @@ class CalculateLsiModel(BowModel):
     def __init__(self, chords_preprocessing):
         self.model_name = 'lsi'
         super().__init__(chords_preprocessing)
+        self.model_config = {
+            'num_topics': 100  # 22, # 100 gives a better value for the contrafacts test
+        }
 
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
         self.train_dictionary, self.train_bow_corpus = self.prepare_dict_and_corpus(self.df_train)
         self.test_bow_corpus = self.prepare_corpus(self.df_test, self.train_dictionary)
 
-        num_topics = lsi_config['num_topics']
-
         self.lsi = LsiModel(self.train_bow_corpus,
                             id2word=self.train_dictionary,
-                            num_topics=num_topics)
+                            num_topics=self.model_config['num_topics'])
 
         print(self.lsi)
 
