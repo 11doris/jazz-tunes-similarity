@@ -60,6 +60,20 @@ class UseWandB:
                 },
             })
 
+    def store_result_chord_analogy(self, analogy, topn):
+        if not self.use:
+            return
+
+        wandb.log(
+            {
+                'analogy': {
+                    'perfect': analogy[0],
+                    'topn': analogy[1],
+                    'n': topn,
+                },
+            })
+
+
     def store_artifacts(self, data, chords_preprocessing):
         if not self.use:
             return
