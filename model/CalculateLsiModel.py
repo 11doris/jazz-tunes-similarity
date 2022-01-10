@@ -1,5 +1,5 @@
 from model.BowModel import BowModel
-from model.config import lsi_config, preprocess_config
+from model.config import preprocess_config
 from gensim.models.lsimodel import LsiModel
 from gensim import similarities
 from gensim.matutils import sparse2full

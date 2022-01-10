@@ -113,7 +113,7 @@ if __name__ == "__main__":
                             for epochs in [40]:
                                 for min_count in [1]:
                                     for hs in [0]:
-                                            for repeat in [1, 2, 3]:
+                                            for repeat in range(3):
                                                 mod.model_config['dbow_words'] = dbow_words
                                                 mod.model_config['vector_size'] = vector_size
                                                 mod.model_config['window'] = window
