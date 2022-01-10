@@ -1,7 +1,7 @@
 import pandas as pd
 from tqdm import tqdm
 from model.PrepareData import PrepareData
-from model.config import get_test_tunes
+from model.config import get_test_tunes, preprocess_config
 from gensim import corpora
 from gensim.models import doc2vec
 
@@ -24,11 +24,67 @@ class EmbeddingModel(PrepareData):
 
 
     def prepare_corpus(self, df_clean):
-
         doc_clean = list(df_clean['chords'])
         train_corpus = list(self.get_tagged_documents(doc_clean))
         return train_corpus
 
+
+    def get_sim_scores(self, model, topn=preprocess_config['test_topN']):
+
+        dict_sim = {
+            'reference_title': [],
+            'reference_titleid': [],
+            'ref_sectionid': [],
+            'ref_section': [],
+            'ref_section_label': [],
+            'similar_title': [],
+            'similar_titleid': [],
+            'similar_sectionid': [],
+            'similar_section': [],
+            'similar_section_label': [],
+            'score': [],
+        }
+
+        tunes = list(self.tunes['title_playlist'].values())
+
+        # # for debugging only
+        # tunes = [
+        #     "Sweet Sue, Just You [jazz1350]",
+        #     "On The Sunny Side Of The Street [jazz1350]",
+        #     "These Foolish Things [jazz1350]",
+        #     "Blue Moon [jazz1350]",
+        #     "I Got Rhythm [jazz1350]",
+        # ]
+
+        for tune in tqdm(tunes):
+            for s1 in self.title_to_sectionid_unique_section(tune):
+
+                id = self.df_train_test.loc[s1]['index']
+                sims = model.dv.similar_by_key(id, topn=topn)
+
+                n = 0
+                for id, s2_score in sims:
+                    s2 = self.get_train_test_sectionid(id)
+                    # don't count self-similarity between sections of the same tune
+                    if s2 not in self.title_to_sectionid(tune):
+                        # print(f"\t{s2_score:.3f} {sectionid_to_section[s2]}")
+                        n += 1
+
+                        dict_sim['reference_title'].append(tune)
+                        dict_sim['reference_titleid'].append(self.title_to_titleid(tune))
+                        dict_sim['ref_sectionid'].append(s1)
+                        dict_sim['ref_section'].append(self.sectionid_to_section(s1))
+                        dict_sim['ref_section_label'].append(self.sectionid_to_sectionlabel(s1))
+                        dict_sim['similar_title'].append(self.sectionid_to_title(s2))
+                        dict_sim['similar_titleid'].append(self.sectionid_to_titleid(s2))
+                        dict_sim['similar_sectionid'].append(s2)
+                        dict_sim['similar_section'].append(self.sectionid_to_section(s2))
+                        dict_sim['similar_section_label'].append(self.sectionid_to_sectionlabel(s2))
+                        dict_sim['score'].append(s2_score)
+
+        df_sim = pd.DataFrame.from_dict(dict_sim)
+
+        return df_sim
 
     def test_contrafacts(self, tunes, n=15):
         """
@@ -76,3 +132,4 @@ class EmbeddingModel(PrepareData):
                                                       'score': 0,
                                                       'rank': 0}
         return matches, results
+

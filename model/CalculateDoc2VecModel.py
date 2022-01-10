@@ -41,3 +41,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
     def doc2vec_test_contrafacts(self):
         matches, results = self.test_contrafacts(self.doc2vec, n=preprocess_config['test_topN'])
         return matches, results
+
+    def get_tune_similarity(self):
+        df_sim = self.get_sim_scores(self.doc2vec, topn=preprocess_config['test_topN'])
+        return df_sim

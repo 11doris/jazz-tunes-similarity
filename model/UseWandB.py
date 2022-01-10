@@ -1,6 +1,6 @@
 import wandb
 from model.config import get_test_tunes, preprocess_config
-
+from os.path import exists
 
 class UseWandB:
     def __init__(self, use, project_name='', data=None, comment=""):
@@ -61,9 +61,15 @@ class UseWandB:
             description=f"{data.model_name} Model",
             metadata="")
 
-        model_artifact.add_file(f"output/model/{data.model_name}_matrixsim_{chords_preprocessing}.index")
+        # upload the model and the webapp recommender file
         model_artifact.add_file(f'output/model/{data.model_name}_{chords_preprocessing}.model')
         model_artifact.add_file(f'output/model/recommender_{data.model_name}_{chords_preprocessing}.zip')
+
+        # not all methods use an index, so upload the index file only if is available
+        index_file = f"output/model/{data.model_name}_matrixsim_{chords_preprocessing}.index"
+        if exists(index_file):
+            model_artifact.add_file(f"output/model/{data.model_name}_matrixsim_{chords_preprocessing}.index")
+
 
         wandb.log_artifact(model_artifact)
 
