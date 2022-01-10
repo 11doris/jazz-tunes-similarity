@@ -27,112 +27,97 @@ def year_to_period(year):
         return "1950+"
 
 
-##
-if __name__ == "__main__":
-    set_pandas_display_options()
-    np.random.seed(31)
+def get_model_weights(model):
 
-    # Load the LSI Model
-    preprocessing = 'rootAndDegreesPlus'
+    if model.model_name == 'lsi':
+        topics = mod.lsi.get_topics()
+        vocab = list(mod.lsi.id2word.id2token.values())
+        return {'weights': topics,
+                'vocab': vocab}
 
-    mod = CalculateLsiModel(preprocessing)
-    mod.load_model()
-
-
-    # a) Plot topics
-    topics = mod.lsi.get_topics()
-    vocab = list(mod.lsi.id2word.id2token.values())
-
+def plot_model_weights(model, preprocessing, vocab_weights):
+    weights = vocab_weights['weights']
+    vocab = vocab_weights['vocab']
     data = xr.DataArray(
-        topics,
+        weights,
         coords={
-            "topics": list(range(mod.lsi.num_topics)),
+            "weights": list(range(len(weights))),
             "vocab": vocab,
         },
-        dims=["topics", "vocab"],
+        dims=["weights", "vocab"],
     )
     data = data.sortby("vocab")
 
-
     fig = px.imshow(data,
-                    title=f"Visualization of LSI Topics<br><sup>{preprocessing}</sup>",
+                    title=f"Visualization of {model.model_name} Weights<br><sup>{preprocessing}</sup>",
                     color_continuous_scale='RdBu',
                     #color_continuous_midpoint=0.5,
                     #width=500, height=400
                     )
     fig.update_layout(coloraxis_showscale=False)
-    fig.show()
+    return fig
+
+def plot_section_vectors(model, preprocessing, df):
+    data = xr.DataArray(
+        df.T,
+        coords={
+            "topics": list(range(mod.lsi.num_topics)),
+            "sectionid": list(mod.df_section['sectionid']),
+        },
+        dims=["topics", "sectionid"],
+    )
+
+    fig = px.imshow(data,
+                    title=f"Visualization of Tune Vectors<br><sup>{preprocessing}</sup>",
+                    color_continuous_scale='RdBu',
+                    #hover_data=titles['title_section'], # imshow does not have a hover_data function...
+                    # color_continuous_midpoint=0.5,
+                    # width=500, height=400
+                    )
+    fig.update_layout(coloraxis_showscale=False)
+    return fig
 
 
-    # get the LSI topics for each tune
-    df_vectors = mod.get_train_tune_vectors()
-    titles = mod.get_train_test_meta()
-
-    # b) Plot Tunes
-
-    if True:
-        data = xr.DataArray(
-            df_vectors.T,
-            coords={
-                "topics": list(range(mod.lsi.num_topics)),
-                "sectionid": list(mod.df_section['sectionid']),
-            },
-            dims=["topics", "sectionid"],
-        )
-
-        fig = px.imshow(data,
-                        title=f"Visualization of Tune Vectors<br><sup>{preprocessing}</sup>",
-                        color_continuous_scale='RdBu',
-                        #color_continuous_midpoint=0.5,
-                        #width=500, height=400
+def plot_umap(df, metric='euclidean'):
+    n_neighbors = 40
+    min_dist = 0.01
+    umap_2d = umap.UMAP(n_components=2,
+                        init='random',
+                        random_state=31,
+                        n_neighbors=n_neighbors,
+                        min_dist=min_dist,
+                        metric=metric,
                         )
-        fig.update_layout(coloraxis_showscale=False)
-        fig.show()
 
-    ##
-    # UMAP
-    if True:
-        metric = 'euclidean'
-        n_neighbors = 40
-        min_dist = 0.01
-        umap_2d = umap.UMAP(n_components=2,
-                            init='random',
-                            random_state=31,
-                            n_neighbors=n_neighbors,
-                            min_dist=min_dist,
-                            metric=metric,
-                            )
+    scaled_data = MinMaxScaler().fit_transform(df)
+    proj_2d = umap_2d.fit_transform(scaled_data)
+    df_umap = pd.DataFrame(proj_2d, columns=['UMAP0', 'UMAP1'])
+    df_umap['tune_mode'] = titles['tune_mode']
+    df_umap['title_section'] = titles['title_section']
+    df_umap['titleid'] = titles['tune_id']
+    df_umap['sectionid'] = titles['sectionid']
+    df_umap['year'] = titles['year_truncated']
+    df_umap['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
+    df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
-        scaled_data = MinMaxScaler().fit_transform(df_vectors)  # scale to range 0..1 because Hellinger cannot handle negative values
-        proj_2d = umap_2d.fit_transform(scaled_data)
-        df_umap = pd.DataFrame(proj_2d, columns=['UMAP0', 'UMAP1'])
-        df_umap['tune_mode'] = titles['tune_mode']
-        df_umap['title_section'] = titles['title_section']
-        df_umap['titleid'] = titles['tune_id']
-        df_umap['sectionid'] = titles['sectionid']
-        df_umap['year'] = titles['year_truncated']
-        df_umap['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
-        df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
+    fig = px.scatter(
+        df_umap,
+        x='UMAP0', y='UMAP1',
+        opacity=0.5,
+        color=df_umap['period'].astype(str),
+        hover_name='title_section',
+        title=f"UMAP for {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+        width=800, height=700,
+    )
 
+    f = 'output/model/umap'
+    df_umap.to_csv(f'{f}_{preprocessing}.csv', encoding='utf8', index=None)
+    with zipfile.ZipFile(f'{f}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{f}_{preprocessing}.csv')
 
-        fig_2d = px.scatter(
-            df_umap,
-            x='UMAP0', y='UMAP1',
-            opacity=0.5,
-            color=df_umap['period'].astype(str),
-            hover_name='title_section',
-            title=f"UMAP for {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
-            width=800, height=700,
-        )
-        fig_2d.show()
+    return fig
 
-        f = 'output/model/umap'
-        df_umap.to_csv(f'{f}_{preprocessing}.csv', encoding='utf8', index=None)
-        with zipfile.ZipFile(f'{f}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-            zf.write(f'{f}_{preprocessing}.csv')
-
-
-    ## TSNE
+def plot_tsne(df, metric='euclidean'):
     perplexity = 10
     init = 'random'
     tsne = TSNE(n_components=2,
@@ -144,7 +129,7 @@ if __name__ == "__main__":
                 # n_iter_without_progress=200,
                 # n_iter=2000
                 )
-    scaled_data = StandardScaler().fit_transform(df_vectors)  # scale to range 0..1 because Hellinger cannot handle negative values
+    scaled_data = StandardScaler().fit_transform(df)  # scale to range 0..1 because Hellinger cannot handle negative values
 
     T = tsne.fit_transform(scaled_data)
 
@@ -154,8 +139,8 @@ if __name__ == "__main__":
     df_tsne['titleid'] = titles['tune_id']
     df_tsne['sectionid'] = titles['sectionid']
     df_tsne['year'] = titles['year_truncated']
-    df_tsne['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
-    df_tsne['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
+    df_tsne['decade'] = df_tsne['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
+    df_tsne['period'] = df_tsne['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
     fig = px.scatter(
         df_tsne,
@@ -166,4 +151,47 @@ if __name__ == "__main__":
         width=800, height=700,
         title=f"T-SNE for {preprocessing}<br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
     )
+    return fig
+
+
+
+##
+if __name__ == "__main__":
+    set_pandas_display_options()
+    np.random.seed(31)
+
+    # Load the LSI Model
+    preprocessing = 'rootAndDegreesPlus'
+    mod = CalculateLsiModel(preprocessing)
+    mod.load_model()
+
+    # get the LSI topics for the vocab
+    vocab_weights = get_model_weights(mod)
+    # get the LSI topics for each tune
+    df_vectors = mod.get_train_tune_vectors()
+
+    # a) Plot model weights (topics for LSI)
+    fig = plot_model_weights(mod, preprocessing, vocab_weights)
     fig.show()
+
+    # b) Plot Tunes
+    if True:
+        fig = plot_section_vectors(mod, preprocessing, df_vectors)
+        fig.show()
+
+
+    ## Plot weights in 2D scatter plot
+    #
+    titles = mod.get_train_test_meta()
+    metric = 'euclidean'
+
+    # UMAP
+    if True:
+        fig = plot_umap(df_vectors, metric)
+        fig.show()
+
+
+    # TSNE
+    if True:
+        fig = plot_tsne(df_vectors, metric)
+        fig.show()
