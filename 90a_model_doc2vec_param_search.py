@@ -29,8 +29,18 @@ def do_contrafacts_test(doc2VecObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results(doc2VecObject.model_name, matches, df_sim)
+    wandb.store_result_contrafacts(doc2VecObject.model_name, matches, df_sim)
 
+
+# Evaluate self-similarity of the sections
+def do_self_similarity_test(doc2vecObj):
+    counter, self_similar_prop = doc2vecObj.self_similarity_test()
+    print(counter)
+    print(f"Sections that are self-similar in first rank: {self_similar_prop[0]*100:.3f}%")
+    print(f"Sections that are self-similar in first or second rank: {self_similar_prop[1]*100:.3f}%")
+    print()
+
+    wandb.store_result_self_similarity(self_similar_prop)
 
 def similar_chords(doc2vecObj, preprocessing):
 
@@ -112,8 +122,8 @@ if __name__ == "__main__":
                         for negative in [10]:
                             for epochs in [40]:
                                 for min_count in [1]:
-                                    for hs in [0]:
-                                            for repeat in range(3):
+                                    for hs in [0, 1]:
+                                            for repeat in range(1):
                                                 mod.model_config['dbow_words'] = dbow_words
                                                 mod.model_config['vector_size'] = vector_size
                                                 mod.model_config['window'] = window
@@ -149,6 +159,7 @@ if __name__ == "__main__":
 
                                                 # Test
                                                 do_contrafacts_test(mod)
+                                                do_self_similarity_test(mod)
 
                                                 # Done.
                                                 wandb.finish()

@@ -2,8 +2,9 @@ import pandas as pd
 from dataset.utils import set_pandas_display_options
 from model.CalculateDoc2VecModel import *
 from model.UseWandB import *
-import numpy as np
 import zipfile
+import collections
+from tqdm import tqdm
 
 
 def do_contrafacts_test(doc2VecObject):
@@ -21,7 +22,17 @@ def do_contrafacts_test(doc2VecObject):
     print()
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
-    wandb.store_results(doc2VecObject.model_name, matches, df_sim)
+    wandb.store_result_contrafacts(doc2VecObject.model_name, matches, df_sim)
+
+# Evaluate self-similarity of the sections
+def do_self_similarity_test(doc2vecObj):
+    counter, self_similar_prop = doc2vecObj.self_similarity_test()
+    print(counter)
+    print(f"Sections that are self-similar in first rank: {self_similar_prop[0]*100:.3f}%")
+    print(f"Sections that are self-similar in first or second rank: {self_similar_prop[1]*100:.3f}%")
+    print()
+
+    wandb.store_result_self_similarity(self_similar_prop)
 
 
 def similar_chords(doc2vecObj, preprocessing):
@@ -69,7 +80,7 @@ if __name__ == "__main__":
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
 
-        wandb = UseWandB(use=False, project_name='doc2vec_dbow1', data=mod, comment="")
+        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
         wandb.store_input_file(mod.input_file)
 
         if True:
@@ -84,6 +95,7 @@ if __name__ == "__main__":
 
         # Test
         do_contrafacts_test(mod)
+        do_self_similarity_test(mod)
 
         # Generate full data for web application
         if True:
