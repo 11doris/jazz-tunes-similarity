@@ -140,3 +140,20 @@ class EmbeddingModel(PrepareData):
                                                       'rank': 0}
         return matches, results
 
+    def get_train_tune_vectors(self):
+        tunes_matrix = []
+        model = self.doc2vec
+        for s1 in self.df_train_test.index:
+            id = self.df_train_test.loc[s1]['index']
+
+            if id in model.dv.index_to_key:
+                vector = model.dv.vectors[id]
+            else:
+                # infer the embedding vector for the tune which is in test set
+                vector = self.doc2vec.infer_vector(self.df_train_test.loc[s1]['chords'])
+            tunes_matrix.append(vector)
+
+        _df = pd.DataFrame(tunes_matrix)
+        _df['sectionid'] = self.df_train_test.index
+        _df.set_index('sectionid', inplace=True)
+        return _df
