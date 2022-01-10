@@ -8,9 +8,12 @@ if __name__ == "__main__":
 
     set_pandas_display_options()
 
+    # define here from which model the results of the two different chord preprocessing strategies should be unified.
+    model = 'lsi'
+
     input_files = [
-        'output/model/recommender_lsi_rootAndDegreesPlus.zip',
-        'output/model/recommender_lsi_rootAndDegreesSimplified.zip'
+        f'output/model/recommender_{model}_rootAndDegreesPlus.zip',
+        f'output/model/recommender_{model}_rootAndDegreesSimplified.zip'
     ]
 
     df_list = []
@@ -87,11 +90,11 @@ if __name__ == "__main__":
 
     ax1 = plt.subplot(1, 2, 1)
     plt.hist(common_count, bins=30)
-    ax1.set_title('Common')
+    ax1.set_title(f'Common for {model}')
 
     ax2 = plt.subplot(1, 2, 2, sharex=ax1)
     plt.hist(unique_count, bins=30)
-    ax2.set_title('Unique')
+    ax2.set_title(f'Unique for {model}')
 
     plt.show()
 

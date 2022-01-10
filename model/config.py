@@ -9,34 +9,28 @@ input_files = {
 }
 
 preprocess_config = {
-    'ngrams': [1, 2],
+    'ngrams': [1,2],
     'test_topN': 30,
     'no_below': 10,
     'remove_repetitions': False,
-}
-
-lsi_config = {
-    'num_topics': 100  # 22, # 100 gives a better value for the contrafacts test
 }
 
 
 def get_test_tunes():
     return [
         ("26-2 [jazz1350]", "Confirmation [jazz1350]"),
-        ("52nd Street Theme [jazz1350]", "I Got Rhythm [jazz1350]"),  # not a good match
+        ("52nd Street Theme [jazz1350]", "Honeysuckle Rose [jazz1350]"),
         ("Ablution [jazz1350]", "All The Things You Are [jazz1350]"),
         ("Anthropology [jazz1350]", "I Got Rhythm [jazz1350]"),
-        ("Bright Mississippi [jazz1350]", "Sweet Georgia Brown [jazz1350]"),
+        ("Sweet Georgia Brown [jazz1350]", "Bright Mississippi [jazz1350]"),
         ("C.T.A. [jazz1350]", "I Got Rhythm [jazz1350]"),
-        # ( "Celia [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Cottontail [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Countdown [jazz1350]", "Tune Up [jazz1350]"),
         ("Dewey Square [jazz1350]", "Oh, Lady Be Good [jazz1350]"),
         ("Dexterity [jazz1350]", "I Got Rhythm [jazz1350]"),
-        ("Dig [jazz1350]", "Sweet Georgia Brown [jazz1350]"),
+        ("Sweet Georgia Brown [jazz1350]", "Dig [jazz1350]"),
         ("Donna Lee [jazz1350]", "Indiana (Back Home Again In) [jazz1350]"),
-        ("Don't Be That Way [jazz1350]", "I Got Rhythm [jazz1350]"),  # cannot be found; bridge in different key
-        # ("Eternal Triangle [jazz1350]", "I Got Rhythm [jazz1350]"),
+        #("Don't Be That Way [jazz1350]", "I Got Rhythm [jazz1350]"),  # cannot be found; bridge in different key
         ("Evidence [jazz1350]", "Just You, Just Me [jazz1350]"),
         ("Flintstones [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Four On Six [jazz1350]", "Summertime [jazz1350]"),
@@ -50,11 +44,11 @@ def get_test_tunes():
         ("Ko Ko [jazz1350]", "Cherokee [jazz1350]"),
         ("Lennie's Pennies [jazz1350]", "Pennies From Heaven [jazz1350]"),
         # Lennie's Pennies is in minor and therefore transposed to Amin... not possible to recognize like that
-        # ( "Let's Call This [jazz1350]", "Honeysuckle Rose [jazz1350]"),
+        # ( "Let's Call This [jazz1350]", "Honeysuckle Rose [jazz1350]"), # bridge is in different key
         ("Little Rootie Tootie [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Little Willie Leaps [jazz1350]", "All God's Chillun Got Rhythm [jazz1350]"),
         ("Lullaby Of Birdland [jazz1350]", "Love Me Or Leave Me [jazz1350]"),
-        # ("Moose The Mooche [jazz1350]", "I Got Rhythm [jazz1350]"),
+        ("Moose The Mooche [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("My Little Suede Shoes [jazz1350]", "Jeepers Creepers [jazz1350]"),
         # ("Oleo [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Ornithology [jazz1350]", "How High The Moon [jazz1350]"),
@@ -62,16 +56,11 @@ def get_test_tunes():
         ("Quasimodo (Theme) [jazz1350]", "Embraceable You [jazz1350]"),
         # ("Rhythm-a-ning [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Room 608 [jazz1350]", "I Got Rhythm [jazz1350]"),
-        # ("Salt Peanuts [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Satellite [jazz1350]", "How High The Moon [jazz1350]"),
         ("Scrapple From The Apple [jazz1350]", "Honeysuckle Rose [jazz1350]"),  # A section
         ("Scrapple From The Apple [jazz1350]", "I Got Rhythm [jazz1350]"),  # B section
-        # ("Segment [jazz1350]", "I Got Rhythm [jazz1350]"),
-        # ("Seven Come Eleven [jazz1350]", "I Got Rhythm [jazz1350]"),
-        # ("Shaw 'Nuff [jazz1350]", "I Got Rhythm [jazz1350]"),
-        # ("Theme, The [jazz1350]", "I Got Rhythm [jazz1350]"),
         ("Tour De Force [jazz1350]", "Jeepers Creepers [jazz1350]"),
-        ("Wow [jazz1350]", "You Can Depend On Me [jazz1350]"),
+        ("You Can Depend On Me [jazz1350]", "Wow [jazz1350]"),
         ("Yardbird Suite [jazz1350]", "Rosetta [jazz1350]"),
 
         # following tunes are not from wikipedia),
@@ -89,15 +78,12 @@ def get_test_tunes():
 
         # identical tunes
         ("Five Foot Two [trad]", "Please Don't Talk About Me When I'm Gone [trad]"),
-        ("What Is This Thing Called Love [jazz1350]", "Subconscious Lee [jazz1350]"),
-        ("Sweet Georgia Brown [jazz1350]", "Dig [jazz1350]"),
+        ("Subconscious Lee [jazz1350]", "What Is This Thing Called Love [jazz1350]"),
 
         # almost identical tunes
-        ("What Is This Thing Called Love [jazz1350]", "Hot House [jazz1350]"),
         ("Jeannie's Song [jazz1350]", "Shiny Stockings [jazz1350]"),
-        ("Alone Together [jazz1350]", "Segment [jazz1350]"),
         ("Baubles, Bangles and Beads [jazz1350]", "Bossa Antigua [jazz1350]"),
-        ("There Will Never Be Another You [jazz1350]", "A Weaver Of Dreams [jazz1350]"),
+        ("A Weaver Of Dreams [jazz1350]", "There Will Never Be Another You [jazz1350]"),
         ("Moten Swing [jazz1350]", "Once In A While (Ballad) [trad]"),  # same bridge, similar A
         ("All I Do Is Dream Of You [trad]", "L-O-V-E [jazz1350]"),
 
@@ -107,7 +93,7 @@ def get_test_tunes():
         ("Exactly Like You [jazz1350]", "Jersey Bounce [jazz1350]"),
         ("Take The A Train [jazz1350]", "Girl From Ipanema, The [jazz1350]"),
         ("My Heart Stood Still [jazz1350]", "All Too Soon [jazz1350]"),
-        ("Undecided [jazz1350]", "Broadway [jazz1350]"),
+        ("Broadway [jazz1350]", "Undecided [jazz1350]"),
         ("Let's Fall In Love [jazz1350]", "Heart And Soul [jazz1350]"),
         ("Come Back To Me [jazz1350]", "I Wish I Knew [jazz1350]"),
         ("Wait Till You See Her [jazz1350]", "A Certain Smile [jazz1350]"),
@@ -118,17 +104,17 @@ def get_test_tunes():
         ("Coquette [trad]", "Pretend You're Happy When You're Blue [trad]"),
         ("Softly, As In A Morning Sunrise [jazz1350]", "Strode Rode [jazz1350]"),
         ("Glory Of Love, The [jazz1350]", "I've Got My Fingers Crossed [trad]"),
-        ("Charleston, The [jazz1350]", "As Long As I Live [trad]"),
+        ("As Long As I Live [trad]", "Charleston, The [jazz1350]"),
         ("Fine And Dandy [jazz1350]", "I Can't Give You Anything But Love [jazz1350]"),
         ("I'll Close My Eyes [jazz1350]", "Bluesette [jazz1350]"),
         ("I'll Close My Eyes [jazz1350]", "There Will Never Be Another You [jazz1350]"),
 
         # same bridge
         ("If I Had You [jazz1350]", "Too Young To Go Steady [jazz1350]"),
-        ("Undecided [jazz1350]", "Satin Doll [jazz1350]"),
+        ("Satin Doll [jazz1350]", "Undecided [jazz1350]"),
         ("Billy Boy [jazz1350]", "Elora [jazz1350]"),
         ("Dearly Beloved [jazz1350]", "We See [jazz1350]"),
-        ("Alone Together [jazz1350]", "A Night In Tunisia [jazz1350]"),
+        ("A Night In Tunisia [jazz1350]", "Alone Together [jazz1350]"),
         ("A Night In Tunisia [jazz1350]", "Segment [jazz1350]"),
         ("Oh! Lady Be Good [trad]", "Sentimental Journey [jazz1350]"),
         ("You Can Depend On Me [jazz1350]", "Move [jazz1350]"),
@@ -140,18 +126,17 @@ def get_test_tunes():
         ("On The Sunny Side Of The Street [jazz1350]", "I'm Confessin' That I Love You [jazz1350]"),
         ("On The Sunny Side Of The Street [jazz1350]", "Eclypso [jazz1350]"),
         ("On The Sunny Side Of The Street [jazz1350]", "You Stepped Out Of A Dream [jazz1350]"),
-        ("Satin Doll [jazz1350]", "Undecided [jazz1350]"),
 
         # similar A section
         ("I Like The Likes Of You [jazz1350]", "Mountain Greenery [jazz1350]"),
         ("My Secret Love [jazz1350]", "Samba De Orfeu [jazz1350]"),
-        ("Let's Call The Whole Thing Off [jazz1350]", "Fine And Dandy [jazz1350]"),
+        ("Fine And Dandy [jazz1350]", "Let's Call The Whole Thing Off [jazz1350]"),
 
         # similar B section
-        ("Folks Who Live On The Hill, The [jazz1350]", "My One And Only Love [jazz1350]"),
+        ("My One And Only Love [jazz1350]", "Folks Who Live On The Hill, The [jazz1350]"),
         ("As Long As I Live [trad]", "I'm Glad There Is You [jazz1350]"),
-        ("I May Be Wrong [jazz1350]", "Teach Me Tonight [jazz1350]"),
-        ("Am I Blue [jazz1350]", "Come Back To Me [jazz1350]"),
+        ("Teach Me Tonight [jazz1350]", "I May Be Wrong [jazz1350]"),
+        ("Come Back To Me [jazz1350]", "Am I Blue [jazz1350]"),
         ("My One And Only Love [jazz1350]", "Am I Blue [jazz1350]"),
         ("On The Sunny Side Of The Street [jazz1350]", "September In The Rain [jazz1350]"),
         ("On The Sunny Side Of The Street [jazz1350]", "Mountain Greenery [jazz1350]"),
@@ -167,7 +152,7 @@ def get_test_tunes():
 
         # similar vocabulary, different progressions
         ("Tangerine [jazz1350]", "Tea For Two [jazz1350]"),
-        ("I Can't Give You Anything But Love [jazz1350]", "You Can Depend On Me [jazz1350]"),
+        ("You Can Depend On Me [jazz1350]", "I Can't Give You Anything But Love [jazz1350]"),
         ("This Year's Kisses [jazz1350]", "My Monday Date [trad]"),
         ("A Blossom Fell [jazz1350]", "Among My Souvenirs [jazz1350]"),
 
