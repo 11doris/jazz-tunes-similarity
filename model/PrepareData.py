@@ -23,8 +23,6 @@ def _get_list_of_test_tunes():
     for ref, sim in get_test_tunes():
         if ref not in test_tunes:
             test_tunes.append(ref)
-        if sim not in test_tunes:
-            test_tunes.append(sim)
     test_tunes.sort()
     return test_tunes
 
