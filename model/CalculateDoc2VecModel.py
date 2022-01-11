@@ -12,14 +12,14 @@ class CalculateDoc2VecModel(EmbeddingModel):
                 'dm': 0,
                 'dbow_words': 1,
                 'vector_size': 300,
-                'window': 2,
-                'epochs': 40,
+                'window': 3,
+                'epochs': 50,
                 # 'workers': 1,
-                'min_count': 1,
-                'negative': 10,
-                'sample': 0.1,
+                'min_count': 20,
+                'negative': 14,
+                'sample': 0.001,
                 'seed': 42,
-                'hs': 0,
+                'hs': 1,
         }
 
     def calculate_doc2vec_model(self):
