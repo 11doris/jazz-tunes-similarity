@@ -9,7 +9,7 @@ input_files = {
 }
 
 preprocess_config = {
-    'ngrams': [1,2,3,4],
+    'ngrams': [1,2],
     'test_topN': 30,
     'no_below': 10,
     'remove_repetitions': False,
