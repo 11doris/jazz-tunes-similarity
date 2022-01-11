@@ -85,32 +85,34 @@ if __name__ == "__main__":
 
         diatonic_chords(mod, p)
 
-        df = corpus_chord_ngram(mod, ngrams=[1, 2, 3, 4])
+        df = corpus_chord_ngram(mod, ngrams=[1, 2, 3, 4, 5, 6, 7, 8])
 
-        pairs = [
-            ['G7', 'C', 'C7', 'F'],
-            ['G', 'C', 'C', 'F'],
-            ['Am', 'C', 'Cm', 'Eb']
-        ]
-
-        with open('chords_analogy2.txt') as f:
-            lines = f.read().splitlines()
-
-        pairs = [line.split(" ") for line in lines]
-
-        do_chord_analogy_test(mod, pairs)
+        # pairs = [
+        #     ['G7', 'C', 'C7', 'F'],
+        #     ['G', 'C', 'C', 'F'],
+        #     ['Am', 'C', 'Cm', 'Eb']
+        # ]
+        #
+        # with open('chords_analogy2.txt') as f:
+        #     lines = f.read().splitlines()
+        #
+        # pairs = [line.split(" ") for line in lines]
+        #
+        # do_chord_analogy_test(mod, pairs)
 
         print()
         df_chords = raw_chords_to_df(df)
         df_chords['ngram'] = df_chords['chord'].str.count('-') + 1
+        df_chords.to_csv('chord_ngrams.csv')
+
         #df_chords.sort_values(by=['count'], ascending=False, inplace=True)
         df_chords_top = df_chords.query('count > 100')
 
-        fig = px.bar(df_chords_top,
-                     x='count', y='chord',
-                     orientation='h',
-                     log_x=True)
-        fig.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
-        fig.show()
+        # fig = px.bar(df_chords_top,
+        #              x='count', y='chord',
+        #              orientation='h',
+        #              log_x=True)
+        # fig.update_layout(barmode='stack', xaxis={'categoryorder': 'total descending'})
+        # fig.show()
 
         print()

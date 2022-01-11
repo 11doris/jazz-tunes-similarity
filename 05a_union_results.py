@@ -89,11 +89,11 @@ if __name__ == "__main__":
     unique_count = unique.value_counts(['reference_titleid', 'ref_section_label'])
 
     ax1 = plt.subplot(1, 2, 1)
-    plt.hist(common_count, bins=30)
+    plt.hist(common_count, bins=15)
     ax1.set_title(f'Common for {model}')
 
     ax2 = plt.subplot(1, 2, 2, sharex=ax1)
-    plt.hist(unique_count, bins=30)
+    plt.hist(unique_count, bins=15)
     ax2.set_title(f'Unique for {model}')
 
     plt.show()

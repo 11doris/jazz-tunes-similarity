@@ -124,7 +124,8 @@ if __name__ == "__main__":
         do_contrafacts_test(mod)
         do_self_similarity_test(mod)
 
-        do_chord_analogy_test(mod)
+        if p == 'rootAndDegreesPlus':
+            do_chord_analogy_test(mod)
 
         # Generate full data for web application
         if True:
