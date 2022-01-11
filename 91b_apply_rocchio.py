@@ -10,13 +10,13 @@ from sklearn.metrics import pairwise_distances
 
 def apply_pca(input_matrix):
     # scale input data to unit variance for PCA
-    scaled_data = StandardScaler().fit_transform(input_matrix)
+    #scaled_data = StandardScaler().fit_transform(input_matrix)
     pca = PCA(n_components=2, random_state=31)
 
     # Create the transformation model for this data. Internally, it gets the rotation matrix and the explained variance
-    pcaTr = pca.fit(scaled_data)
+    pcaTr = pca.fit(input_matrix)
     # apply PCA
-    rotatedData = pcaTr.transform(scaled_data)
+    rotatedData = pcaTr.transform(input_matrix)
 
     # Create a data frame with the new variables for the two principal components
     _df = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2']).reset_index()
@@ -33,19 +33,19 @@ def visualize_pca(pca, subset, title="", comment=""):
         x='PC1', y='PC2',
         title=f"{title}<br><sup>{comment}</sup>",
         hover_name='title',
-        color='score',
+        color='relevance',
         symbol='relevance',
         symbol_sequence={0: 'circle', 1: 'x', 2: 'diamond'},
         size='marker_size',
         size_max=12,
-        # color_continuous_scale='RdBu',
-        # color_continuous_midpoint=0.5,
-        width=500, height=400
+        width=600, height=500
     )
     fig.update_traces(marker=dict(line=dict(width=0,
                                             color=None)),
                       selector=dict(mode='markers'))
-    fig.update_layout(coloraxis_showscale=False)
+    fig.update_layout(coloraxis_showscale=False,
+                      yaxis_range=[-0.5,0.5],
+                      xaxis_range=[-0.5,0.5])
     return fig
 
 
@@ -129,6 +129,9 @@ if __name__ == "__main__":
     df_plot = get_relevant_and_irrelevant_tunes(vectors_norm, ref_tune, topn)
     print(df_plot)
 
+    print(df_plot.loc[:,['title', 'score']].head(topn))
+
+
     ##
     # PCA: Visualize Vectors of relevant and irrelevant recommendations
     # Note: plots are not identical because StandardScaler is used. Use MinMaxScaler to keep them consistent if needed.
@@ -146,7 +149,7 @@ if __name__ == "__main__":
     q0 = A[ref_tune['id']]
     vec_positive = A[pos_tune['id']]
 
-    _alpha = 0.8
+    _alpha = 0.9
     _beta = 1.0 - _alpha
     q1 = _alpha * q0 + _beta * vec_positive
 
@@ -155,7 +158,7 @@ if __name__ == "__main__":
 
     # Get the new recommendations
     df_plot2 = get_relevant_and_irrelevant_tunes(A, ref_tune, topn)
-    print(df_plot2)
+    print(df_plot2.loc[:,['title', 'score']].head(topn))
     print()
 
     # Re-evaluate PCA and visualize
@@ -164,4 +167,35 @@ if __name__ == "__main__":
                         comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
     fig.show()
 
+    ##
+    # Do the same again
 
+    q0 = A[ref_tune['id']]
+    vec_positive = A[pos_tune['id']]
+
+    _alpha = 0.9
+    _beta = 1.0 - _alpha
+    q1 = _alpha * q0 + _beta * vec_positive
+
+    # Update the weights of the reference tune with the new vector
+    A[ref_tune['id']] = q1
+
+    # Get the new recommendations
+    df_plot3 = get_relevant_and_irrelevant_tunes(A, ref_tune, topn)
+    print(df_plot3.loc[:,['title', 'score']].head(topn))
+    print()
+
+    # Re-evaluate PCA and visualize
+    dataPCA = apply_pca(A)
+    fig = visualize_pca(pca=dataPCA, subset=df_plot3, title=ref_tune['title'],
+                        comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
+    fig.show()
+
+    # Visualize the momevent of the positive feedback
+    # df_par = df_plot.loc[:topn,['title', 'score']].merge(df_plot2.loc[:topn,['title', 'score']], on='title')
+    # df_par = df_par.merge(df_plot3.loc[:topn,['title', 'score']], on='title')
+    # df_par.columns = ['title', 'score1', 'score2', 'score3']
+    # df_par['color'] = 1
+    # df_par.at[df_par[df_par['title'] == pos_tune['title']].index[0], 'color'] = 0
+    # fig = px.parallel_coordinates(df_par, color='color')
+    # fig.show()
