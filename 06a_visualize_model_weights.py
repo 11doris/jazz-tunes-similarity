@@ -343,7 +343,7 @@ if __name__ == "__main__":
         fig.show()
 
     if True:
-        plot_umap_tunes(df_vectors, metric, cluster_size=10)
+        plot_umap_tunes(df_vectors, metric, cluster_size=8)
 
 
     # TSNE
