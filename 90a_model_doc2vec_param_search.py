@@ -59,7 +59,7 @@ def similar_chords(doc2vecObj, preprocessing):
 def do_chord_analogy_test(model):
     n = 5
 
-    with open('chords_analogy2.txt') as f:
+    with open('chords_analogy.txt') as f:
         lines = f.read().splitlines()
 
     pairs = [line.split(" ") for line in lines]
@@ -137,21 +137,21 @@ def plot_weights(doc2vecObj, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
+    for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
         print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
 
         run = 0
         for dbow_words in [1]:
-            for sample in [0.005]:
+            for sample in [0.01, 0.001]:
                 for vector_size in [300]:
-                    for window in [2]:
-                        for negative in [10]:
-                            for epochs in [40]:
-                                for min_count in [10]:
+                    for window in [2,3,4]:
+                        for negative in [10, 14]:
+                            for epochs in [50]:
+                                for min_count in [20]:
                                     for hs in [1]:
-                                        for repeat in range(3):
+                                        for repeat in range(5):
                                             mod.model_config['dbow_words'] = dbow_words
                                             mod.model_config['vector_size'] = vector_size
                                             mod.model_config['window'] = window
@@ -187,7 +187,9 @@ if __name__ == "__main__":
 
                                             # Test
                                             do_contrafacts_test(mod)
-                                            do_chord_analogy_test(mod)
+
+                                            if p == 'rootAndDegreesPlus':
+                                                do_chord_analogy_test(mod)
 
                                             if False:
                                                 do_self_similarity_test(mod)
