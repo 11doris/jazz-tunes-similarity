@@ -12,7 +12,7 @@ class Note:
             "Fb": 7,  "F": 8,  "F#": 9,
             "Gb": 9,  "G": 10, "G#": 11
         }
-        self.unique = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "G#"]
+        self.unique = ["A", "Bb", "B", "C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab"]
 
     def isNoteSymbol(self) -> bool:
         for key in self.mapping:
