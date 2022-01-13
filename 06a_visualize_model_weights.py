@@ -90,7 +90,15 @@ def plot_section_vectors(model, preprocessing, df):
     return fig
 
 
-def plot_umap_tunes(df, metric='euclidean', cluster_size=10):
+def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10):
+    df = df.reset_index(drop=True)
+    if section_label is not None:
+        indices = titles[titles['section_name'] == section_label].index
+        sections = section_label
+    else:
+        indices = titles.index
+        sections = 'all'
+
     n_neighbors = 40
     min_dist = 0.01
     umap_2d = umap.UMAP(n_components=2,
@@ -101,14 +109,18 @@ def plot_umap_tunes(df, metric='euclidean', cluster_size=10):
                         metric=metric,
                         )
 
-    scaled_data = MinMaxScaler().fit_transform(df)
+    scaled_data = MinMaxScaler().fit_transform(df.loc[indices])
     U = umap_2d.fit_transform(scaled_data)
+
+    meta = titles.loc[indices]
+    meta = meta.reset_index(drop=True)
     df_umap = pd.DataFrame(U, columns=['UMAP0', 'UMAP1'])
-    df_umap['tune_mode'] = titles['tune_mode']
-    df_umap['title_section'] = titles['title_section']
-    df_umap['titleid'] = titles['tune_id']
-    df_umap['sectionid'] = titles['sectionid']
-    df_umap['year'] = titles['year_truncated']
+    df_umap['tune_mode'] = meta['tune_mode']
+    df_umap['title_section'] = meta['title_section']
+    df_umap['titleid'] = meta['tune_id']
+    df_umap['sectionid'] = meta['sectionid']
+    df_umap['section_label'] = meta['section_name']
+    df_umap['year'] = meta['year_truncated']
     df_umap['decade'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_decade(year))
     df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
@@ -123,7 +135,7 @@ def plot_umap_tunes(df, metric='euclidean', cluster_size=10):
         opacity=0.5,
         color=clusterer.labels_.astype(str),
         hover_name='title_section',
-        title=f"UMAP for {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}, cluster_size: {cluster_size}</sup>",
+        title=f"UMAP for {preprocessing}, sections: {sections}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}, cluster_size: {cluster_size}</sup>",
         width=800, height=700,
     )
     fig.show()
@@ -135,7 +147,7 @@ def plot_umap_tunes(df, metric='euclidean', cluster_size=10):
         opacity=0.5,
         color=df_umap['period'].astype(str),
         hover_name='title_section',
-        title=f"UMAP for {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+        title=f"UMAP for {preprocessing}, sections: {sections}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
         width=800, height=700,
     )
     fig.show()
@@ -263,21 +275,26 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
     return fig
 
 
-def plot_pca_vocab(vocab_weights, metric='euclidean'):
-    weights= vocab_weights['weights'].T
-    vocab = vocab_weights['vocab']
-
-    df_style = get_chord_plot_styling(vocab)
-
+def get_pca(data):
     pca = PCA(n_components=2)
-    scaled_data = MinMaxScaler().fit_transform(weights)
+    scaled_data = MinMaxScaler().fit_transform(data)
 
     pcaTr = pca.fit(scaled_data)
     rotatedData = pcaTr.transform(scaled_data)
 
     # # Create a data frame with the new variables. We call these new variables PC1 and PC2
     df_pca = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2'])
-    df_pca['vocab'] = vocab
+
+    return df_pca
+
+def plot_pca_vocab(vocab_weights):
+    weights= vocab_weights['weights'].T
+    vocab = vocab_weights['vocab']
+    df_style = get_chord_plot_styling(vocab)
+
+    df_pca = get_pca(weights)
+
+    df_pca['vocab'] = df_style['chord']
     df_pca['print_size'] = df_style['print_size']
     df_pca['mode'] = df_style['mode']
 
@@ -293,8 +310,25 @@ def plot_pca_vocab(vocab_weights, metric='euclidean'):
     )
     fig.update_traces(textposition='top center')
     fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
+
     return fig
 
+def plot_pca_tunes(weights):
+    df_pca = get_pca(weights)
+
+    fig = px.scatter(
+        df_pca,
+        x='PC1', y='PC2',
+        #text='vocab',
+        #color='mode',
+        #size='print_size',
+        opacity=0.5,
+        title=f"Tunes PCA, {preprocessing}",
+        width=800, height=700,
+    )
+    fig.update_traces(textposition='top center')
+    fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
+    fig.show()
 
 
 ##
@@ -335,18 +369,20 @@ if __name__ == "__main__":
     metric = 'cosine'
 
     # UMAP
-    if False:
-        fig = plot_pca_vocab(vocab_weights, metric)
+    if True:
+        fig = plot_pca_vocab(vocab_weights)
         fig.show()
 
         fig = plot_umap_vocab(vocab_weights, metric)
         fig.show()
 
+        plot_pca_tunes(df_vectors)
+
     if True:
-        plot_umap_tunes(df_vectors, metric, cluster_size=8)
+        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=8)
 
 
     # TSNE
-    if False:
+    if True:
         fig = plot_tsne_tunes(df_vectors, metric)
         fig.show()
