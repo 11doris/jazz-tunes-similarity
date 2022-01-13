@@ -206,12 +206,12 @@ class PrepareData:
     def get_train_test_meta(self):
 
         meta = pd.read_csv(f'output/preprocessing/02c_tune_sql_import.csv', sep='\t')
-        meta = meta[['id', 'title_playlist', 'year_truncated', 'tune_mode']].drop_duplicates()
+        meta = meta[['id', 'year_truncated', 'tune_mode']].drop_duplicates()
         assert (len(meta) == len(self.df.loc[:, ['tune_id']].drop_duplicates()))
 
         _df = pd.DataFrame()
         _df['sectionid'] = self.df_train_test.index.to_list()
-        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_id']]
+        _df = (self.df.loc[:,['title_playlist', 'title_section', 'tune_id', 'section_name']]
                .merge(_df, left_index=True, right_on='sectionid')
                )
         _df = _df.sort_index()
