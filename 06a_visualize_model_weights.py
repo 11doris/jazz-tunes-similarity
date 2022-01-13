@@ -266,6 +266,7 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
         text='vocab',
         color='mode',
         size='print_size',
+        size_max=16,
         opacity=0.5,
         title=f"Vocabulary UMAP, {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
         width=800, height=700,
@@ -304,6 +305,7 @@ def plot_pca_vocab(vocab_weights):
         text='vocab',
         color='mode',
         size='print_size',
+        size_max=16,
         opacity=0.5,
         title=f"Vocabulary PCA, {preprocessing}<br><sup>metric: {metric}</sup>",
         width=800, height=700,
@@ -354,7 +356,7 @@ if __name__ == "__main__":
     df_vectors = mod.get_train_tune_vectors()
 
     if False:
-        # a) Plot model weights (topics for LSI)
+        # a) Plot model weights
         fig = plot_model_weights(mod, preprocessing, vocab_weights)
         fig.show()
 
@@ -373,16 +375,16 @@ if __name__ == "__main__":
         fig = plot_pca_vocab(vocab_weights)
         fig.show()
 
-        fig = plot_umap_vocab(vocab_weights, metric)
-        fig.show()
-
         plot_pca_tunes(df_vectors)
 
     if True:
+        fig = plot_umap_vocab(vocab_weights, metric)
+        fig.show()
+
         plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=8)
 
 
     # TSNE
-    if True:
+    if False:
         fig = plot_tsne_tunes(df_vectors, metric)
         fig.show()
