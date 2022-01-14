@@ -4,8 +4,8 @@ use_wandb = True
 
 input_files = {
     # M7 and 6 reduced to major triad, m7 reduced to m, dominant 7, m7b5, diminished, and all (b5) left as they are.
-    'rootAndDegreesPlus': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_rootAndDegreesPlus.csv',
-    'rootAndDegreesSimplified': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_simplified.csv',
+    'chordsBasic': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_chordsBasic.csv',
+    'chordsSimplified': f'{output_preprocessing_directory}/03b_input_wordembedding_sections_chordsSimplified.csv',
 }
 
 preprocess_config = {

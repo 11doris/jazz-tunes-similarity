@@ -46,7 +46,7 @@ def similar_chords(doc2vecObj, preprocessing):
 
     model = doc2vecObj.doc2vec
     if 1 in preprocess_config['ngrams']:
-        if preprocessing == 'rootAndDegreesPlus':
+        if preprocessing == 'chordsBasic':
             ref = 'C'
         else:
             ref = 'CM7'
@@ -137,7 +137,7 @@ def plot_weights(doc2vecObj, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesSimplified', 'rootAndDegreesPlus']:
+    for p in ['chordsSimplified', 'chordsBasic']:
         print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
@@ -188,7 +188,7 @@ if __name__ == "__main__":
                                             # Test
                                             do_contrafacts_test(mod)
 
-                                            if p == 'rootAndDegreesPlus':
+                                            if p == 'chordsBasic':
                                                 do_chord_analogy_test(mod)
 
                                             if False:

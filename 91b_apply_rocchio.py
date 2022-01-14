@@ -102,7 +102,7 @@ if __name__ == "__main__":
     topn = 15  # number of documents to consider for the relevance feedback
 
     # Load the LSI Model
-    mod = CalculateDoc2VecModel('rootAndDegreesPlus')
+    mod = CalculateDoc2VecModel('chordsBasic')
     mod.load_model()
     model = mod.doc2vec
 

@@ -59,7 +59,7 @@ if __name__ == "__main__":
     topn = 15  # number of documents to consider for the relevance feedback
 
     # Load the LSI Model
-    prep = CalculateLsiModel('rootAndDegreesPlus')
+    prep = CalculateLsiModel('chordsBasic')
     prep.load_model()
     prep.load_similarity_matrix()
 

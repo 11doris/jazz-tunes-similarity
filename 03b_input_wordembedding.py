@@ -10,7 +10,7 @@ if __name__ == "__main__":
     cs = ChordSequence(chord_style='ascii')
 
     # get data including section info
-    cs.split_tunes_in_sections(chords='rootAndDegreesPlus')
+    cs.split_tunes_in_sections(chords='chordsBasic')
     cs.split_tunes_in_sections(chords='simplified')
 
     print("Done.")

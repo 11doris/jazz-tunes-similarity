@@ -66,7 +66,7 @@ def do_chord_analogy_test(model):
 def similar_chords(doc2vecObj, preprocessing):
     model = doc2vecObj.doc2vec
     if 1 in preprocess_config['ngrams']:
-        if preprocessing == 'rootAndDegreesPlus':
+        if preprocessing == 'chordsBasic':
             ref = 'F'
         else:
             ref = 'FM7'
@@ -102,7 +102,7 @@ def generate_webapp_data(doc2vecObj, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
+    for p in ['chordsBasic', 'chordsSimplified']:
         print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         if True:
           do_self_similarity_test(mod)
 
-        if p == 'rootAndDegreesPlus':
+        if p == 'chordsBasic':
             do_chord_analogy_test(mod)
 
         # Generate full data for web application

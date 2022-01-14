@@ -69,12 +69,12 @@ if __name__ == "__main__":
 
     for runs in range(1):
 
-        for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
+        for p in ['chordsBasic', 'chordsSimplified']:
 
             # initialize model with the chords preprocessing method
             mod = CalculateLsiModel(p)
 
-            wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
+            wandb = UseWandB(use=False, project_name='model_comparison', data=mod, comment="")
             wandb.store_input_file(mod.input_file)
 
             # Calculate the LSI Model
