@@ -15,10 +15,13 @@ import hdbscan
 import os
 
 
+SIZE_MAX = 10
+
+
 def year_to_decade(year):
     return int(np.floor(year / 10) * 10)
 
-
+    
 def year_to_period(year):
     _year = int(year)
     if _year == 0:
@@ -64,7 +67,7 @@ def plot_model_weights(model, preprocessing, vocab_weights):
     data = data.sortby("vocab")
 
     fig = px.imshow(data,
-                    title=f"Visualization of {model.model_name} Weights<br><sup>{preprocessing}</sup>",
+                    title=f"Visualization of {model.model_name} Vocabulary Vectors<br><sup>{preprocessing}</sup>",
                     color_continuous_scale='RdBu',
                     # color_continuous_midpoint=0.5,
                     # width=500, height=400
@@ -84,7 +87,7 @@ def plot_section_vectors(model, preprocessing, df):
     )
 
     fig = px.imshow(data,
-                    title=f"Visualization of Tune Vectors<br><sup>{preprocessing}</sup>",
+                    title=f"Visualization of Tune Section Vectors<br><sup>{preprocessing}</sup>",
                     color_continuous_scale='RdBu',
                     # hover_data=titles['title_section'], # imshow does not have a hover_data function...
                     # color_continuous_midpoint=0.5,
@@ -139,9 +142,14 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         opacity=0.5,
         color=clusterer.labels_.astype(str),
         hover_name='title_section',
-        title=f"UMAP for {preprocessing}, sections: {sections}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}, cluster_size: {cluster_size}</sup>",
-        width=800, height=700,
+        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}, cluster_size: {cluster_size}</sup>",
+        width=800, height=500,
     )
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      )
     fig.show()
 
     # plot
@@ -151,10 +159,17 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         opacity=0.5,
         color=df_umap['period'].astype(str),
         hover_name='title_section',
-        title=f"UMAP for {preprocessing}, sections: {sections}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
-        width=800, height=700,
+        title=f"{model} Publication Date of Tune Sections <br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+        width=800, height=500,
     )
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      )
     fig.show()
+    for format in ["pdf", "png", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap.{format}")
 
     f = 'output/model/umap'
     df_umap.to_csv(f'{f}_{preprocessing}.csv', encoding='utf8', index=None)
@@ -194,9 +209,16 @@ def plot_tsne_tunes(df, metric='euclidean'):
         opacity=0.5,
         color='period',
         hover_name='title_section',
-        width=800, height=700,
-        title=f"T-SNE for {preprocessing}<br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
+        width=800, height=500,
+        title=f"{model} Tunes<br><sup>T-SNE, {preprocessing}</sup><br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
     )
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      )
+    for format in ["pdf", "png", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_tsne.{format}")
     return fig
 
 
@@ -269,12 +291,12 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
     fig = px.scatter(
         df_umap,
         x='UMAP1', y='UMAP2',
-        text='vocab',
+        #text='vocab',
         color='mode',
         size='print_size',
-        size_max=16,
+        size_max=SIZE_MAX,
         opacity=0.5,
-        title=f"Vocabulary UMAP, {preprocessing}<br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+        title=f"{model} Vocabulary<br><sup>UMAP, {preprocessing}</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
         width=800, height=500,
     )
     fig.update_traces(textposition='top center')
@@ -285,7 +307,8 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
                       plot_bgcolor="white",
                       )
     fig.write_image("images/06a_weights_vocab_umap.pdf")
-
+    for format in ["pdf", "png", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_vocab_umap_notext.{format}")
     return fig
 
 
@@ -316,12 +339,12 @@ def plot_pca_vocab(vocab_weights):
     fig = px.scatter(
         df_pca,
         x='PC1', y='PC2',
-        text='vocab',
+        #text='vocab',
         color='mode',
         size='print_size',
-        size_max=16,
+        size_max=SIZE_MAX,
         opacity=0.5,
-        title=f"Vocabulary PCA, {preprocessing}",
+        title=f"{model} Vocabulary<br><sup>PCA, {preprocessing}</sup>",
         width=800, height=500,
     )
     fig.update_traces(textposition='top center')
@@ -331,7 +354,8 @@ def plot_pca_vocab(vocab_weights):
                       margin=dict(l=25, b=0),
                       plot_bgcolor="white",
                       )
-    fig.write_image("images/06a_weights_vocab_pca.pdf")
+    for format in ["pdf", "png", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_vocab_pca_notext.{format}")
     return fig
 
 
@@ -341,17 +365,17 @@ def plot_pca_tunes(weights):
     fig = px.scatter(
         df_pca,
         x='PC1', y='PC2',
-        # text='vocab',
-        # color='mode',
-        # size='print_size',
         opacity=0.5,
-        title=f"Tunes PCA, {preprocessing}",
+        title=f"{model} Tunes<br><sup>PCA, {preprocessing}</sup>",
         width=800, height=700,
     )
     fig.update_traces(textposition='top center')
     fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
     fig.show()
 
+    for format in ["pdf", "png", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_pca.{format}")
+    return fig
 
 ##
 if __name__ == "__main__":
@@ -361,23 +385,25 @@ if __name__ == "__main__":
     np.random.seed(31)
 
     # select the model
-    model = 'doc2vec'
-    preprocessing = 'rootAndDegreesPlus'
+    model = 'LSI'
+    preprocessing = 'rootAndDegreesSimplified'
 
     # Load the Model
-    if model == 'lsi':
+    if model == 'LSI':
         mod = CalculateLsiModel(preprocessing)
     elif model == 'doc2vec':
         mod = CalculateDoc2VecModel(preprocessing)
+
 
     mod.load_model()
 
     # get the LSI topics for the vocab
     vocab_weights = get_model_term_weights(mod)
+
     # get the LSI topics for each tune
     df_vectors = mod.get_train_tune_vectors()
 
-    if False:
+    if True:
         # a) Plot model weights
         fig = plot_model_weights(mod, preprocessing, vocab_weights)
         fig.show()
@@ -397,11 +423,11 @@ if __name__ == "__main__":
 
         plot_pca_tunes(df_vectors)
 
-    if False:
+    if True:
         fig = plot_umap_vocab(vocab_weights, metric)
         fig.show()
 
-    if False:
+    if True:
         plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=8)
 
     # TSNE

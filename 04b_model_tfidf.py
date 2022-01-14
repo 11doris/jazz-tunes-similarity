@@ -59,7 +59,7 @@ def generate_webapp_data(tfidfObject, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
+    for p in ['chordsBasic', 'rootAndDegreesSimplified']:
 
         # initialize model with the chords preprocessing method
         mod = CalculateTfidfModel(p)

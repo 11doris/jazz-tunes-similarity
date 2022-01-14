@@ -9,10 +9,10 @@ if __name__ == "__main__":
     set_pandas_display_options()
 
     # define here from which model the results of the two different chord preprocessing strategies should be unified.
-    model = 'doc2vec'
+    model = 'lsi'
 
     input_files = [
-        f'output/model/recommender_{model}_rootAndDegreesPlus.zip',
+        f'output/model/recommender_{model}_chordsBasic.zip',
         f'output/model/recommender_{model}_rootAndDegreesSimplified.zip'
     ]
 

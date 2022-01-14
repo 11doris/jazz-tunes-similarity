@@ -9,7 +9,7 @@ import plotly.express as px
 def diatonic_chords(doc2vecObj, preprocessing):
     model = doc2vecObj.doc2vec
     if 1 in preprocess_config['ngrams']:
-        if preprocessing == 'rootAndDegreesPlus':
+        if preprocessing == 'chordsBasic':
             ref = 'F'
         else:
             ref = 'FM7'
@@ -76,7 +76,7 @@ def raw_chords_to_df(df):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesPlus']:  # , 'rootAndDegreesSimplified']:
+    for p in ['chordsBasic']:  # , 'rootAndDegreesSimplified']:
         print(f'*** Chord Preprocessing: {p} ***')
 
         # initialize model with the chords preprocessing method

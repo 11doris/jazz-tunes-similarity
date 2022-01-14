@@ -128,7 +128,7 @@ class ReadData():
 
         return self.readData(modifier)
 
-    def rootAndDegreesPlus(self):
+    def chordsBasic(self):
         """
         Reduce 9, 11, 13 chords to 7 chords
         Reduce aug to 7 chords

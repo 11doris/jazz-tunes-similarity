@@ -139,11 +139,11 @@ class ChordSequence:
         return df
 
 
-    def split_tunes_in_sections(self, chords='rootAndDegreesPlus'):
+    def split_tunes_in_sections(self, chords='chordsBasic'):
 
-        if chords == 'rootAndDegreesPlus':
-            data, names, beats = self.data_obj.rootAndDegreesPlus()
-            filename = '03b_input_wordembedding_sections_rootAndDegreesPlus.csv'
+        if chords == 'chordsBasic':
+            data, names, beats = self.data_obj.chordsBasic()
+            filename = '03b_input_wordembedding_sections_chordsBasic.csv'
         else:
             data, names, beats = self.data_obj.rootAndDegreesSimplified()
             filename = '03b_input_wordembedding_sections_simplified.csv'
