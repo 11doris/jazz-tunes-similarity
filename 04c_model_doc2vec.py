@@ -3,8 +3,6 @@ from dataset.utils import set_pandas_display_options
 from model.CalculateDoc2VecModel import *
 from model.UseWandB import *
 import zipfile
-import collections
-from tqdm import tqdm
 
 
 def do_contrafacts_test(doc2VecObject):
@@ -23,6 +21,7 @@ def do_contrafacts_test(doc2VecObject):
     print(f"Found matches: {matches} out of {len(results)}: {100 * matches / len(results):.3f}%")
 
     wandb.store_result_contrafacts(doc2VecObject.model_name, matches, df_sim)
+
 
 # Evaluate self-similarity of the sections
 def do_self_similarity_test(doc2vecObj):
@@ -47,14 +46,14 @@ def do_chord_analogy_test(model):
     for pair in pairs:
         sims = model.doc2vec.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
         if sims[0][0] == pair[3]:
-            #print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+            # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
             perfect_match += 1
             topn_match += 1
         else:
             if pair[3] in [item[0] for item in sims]:
-                #print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
                 topn_match += 1
-            #else:
+            # else:
             #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
 
     prop_perfect = perfect_match / len(pairs)
@@ -118,13 +117,16 @@ if __name__ == "__main__":
 
         mod.load_model()
 
+        # Store vocab size and number of total terms to wandb
+        wandb.store_result_vocab(mod.get_vocab_info())
+
         # just as a visual cross-check, visualize similar chords
         similar_chords(mod, p)
 
         # Test
         do_contrafacts_test(mod)
-		if True:
-        	do_self_similarity_test(mod)
+        if True:
+          do_self_similarity_test(mod)
 
         if p == 'rootAndDegreesPlus':
             do_chord_analogy_test(mod)

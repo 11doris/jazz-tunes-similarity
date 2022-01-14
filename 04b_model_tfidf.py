@@ -70,6 +70,9 @@ if __name__ == "__main__":
         # Calculate the TF-IDF Model
         calculate_model(mod)
 
+        # Store vocab size and number of total terms to wandb
+        wandb.store_result_vocab(mod.get_vocab_info())
+
         # Test
         do_contrafacts_test(mod)
 

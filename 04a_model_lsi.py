@@ -67,24 +67,29 @@ def generate_webapp_data(lsiObject, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
+    for runs in range(1):
 
-        # initialize model with the chords preprocessing method
-        mod = CalculateLsiModel(p)
+        for p in ['rootAndDegreesPlus', 'rootAndDegreesSimplified']:
 
-        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
-        wandb.store_input_file(mod.input_file)
+            # initialize model with the chords preprocessing method
+            mod = CalculateLsiModel(p)
 
-        # Calculate the LSI Model
-        calculate_model(mod)
+            wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
+            wandb.store_input_file(mod.input_file)
 
-        # Test
-        do_contrafacts_test(mod)
+            # Calculate the LSI Model
+            calculate_model(mod)
 
-        # Generate full data for web application
-        if True:
-            generate_webapp_data(mod, p)
-            wandb.store_artifacts(mod, p)
+            # Store vocab size and number of total terms to wandb
+            wandb.store_result_vocab(mod.get_vocab_info())
 
-        # Done.
-        wandb.finish()
+            # Test
+            do_contrafacts_test(mod)
+
+            # Generate full data for web application
+            if True:
+                generate_webapp_data(mod, p)
+                wandb.store_artifacts(mod, p)
+
+            # Done.
+            wandb.finish()

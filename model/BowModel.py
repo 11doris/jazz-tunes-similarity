@@ -95,6 +95,13 @@ class BowModel(PrepareData):
 
         return df_sim
 
+    def get_vocab_counts(self, model):
+        return {
+            'num_docs': model.id2word.num_docs,
+            'vocab_size_reduced': len(model.id2word.token2id),
+            'total_tokens_full': model.id2word.num_pos,
+        }
+
     def test_contrafacts(self, model, index, n=15):
         matches = 0
         results = {}

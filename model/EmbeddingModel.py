@@ -4,6 +4,7 @@ from model.PrepareData import PrepareData
 from model.config import get_test_tunes, preprocess_config
 from gensim import corpora
 from gensim.models import doc2vec
+import re
 
 
 class EmbeddingModel(PrepareData):
@@ -92,6 +93,17 @@ class EmbeddingModel(PrepareData):
         df_sim = pd.DataFrame.from_dict(dict_sim)
 
         return df_sim
+
+    def get_vocab_counts(self, model):
+        return {
+            'num_docs': model.corpus_count,
+            # below information is only as a text message available in the lifecycle_event[0]
+            'vocab_size_full': int(re.search(r"of original (\d*),", model.lifecycle_events[0]['msg'])[1]),
+            'vocab_size_reduced': len(model.wv.key_to_index),
+            'total_tokens_full': model.corpus_total_words,
+            # below information is only as a text message available in the lifecycle_event[1]
+            'total_tokens_reduced': int(re.search(r"leaves (\d*) ", model.lifecycle_events[1]['msg'])[1]),
+        }
 
     def test_contrafacts(self, tunes, n=15):
         """
