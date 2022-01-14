@@ -100,3 +100,6 @@ class CalculateLsiModel(BowModel):
             return sims
         else:
             return sims[1:topn + 1]
+
+    def get_vocab_info(self):
+        return self.get_vocab_counts(self.lsi)

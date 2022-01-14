@@ -14,7 +14,6 @@ class CalculateDoc2VecModel(EmbeddingModel):
                 'vector_size': 300,
                 'window': 3,
                 'epochs': 50,
-                # 'workers': 1,
                 'min_count': 20,
                 'negative': 14,
                 'sample': 0.001,
@@ -61,3 +60,6 @@ class CalculateDoc2VecModel(EmbeddingModel):
         self_similar1 = counter[0] / len(train_corpus)
         self_similar2 = (counter[0] + counter[1]) / len(train_corpus)
         return counter, [self_similar1, self_similar2]
+
+    def get_vocab_info(self):
+        return self.get_vocab_counts(self.doc2vec)

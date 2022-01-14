@@ -17,14 +17,14 @@ class UseWandB:
 
             # Track hyperparameters and run metadata
             config={
+                "comment": comment,
+                "model": data.model_name,
                 "chords_preprocessing": data.chords_preprocessing,
                 "ngrams_input": data.ngrams,
-                "model": data.model_name,
                 'remove_tokens_below': preprocess_config['no_below'],
-                # "remove_repeated_chords": remove_repetitions,
-                "lsi": data.model_config,
-                "doc2vec": data.model_config,
-                "comment": comment,
+                "remove_repeated_chords": preprocess_config['remove_repetitions'],
+                "params": data.model_config,
+
             }
         )
 
@@ -34,6 +34,11 @@ class UseWandB:
         artifact = wandb.Artifact('input_data', type='dataset')
         artifact.add_file(file_name)
         wandb.log_artifact(artifact)
+
+    def store_result_vocab(self, vocab_counts):
+        if not self.use:
+            return
+        wandb.log(vocab_counts)
 
     def store_result_contrafacts(self, model_name, matches, df_sim):
         if not self.use:
