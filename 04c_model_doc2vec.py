@@ -38,23 +38,24 @@ def do_self_similarity_test(doc2vecObj):
 def do_chord_analogy_test(model):
     n = 5
 
-    with open('chords_analogy.txt') as f:
+    with open('tests/fixtures/test_chord_analogies.txt') as f:
         lines = f.read().splitlines()
 
     pairs = [line.split(" ") for line in lines]
     perfect_match = 0
     topn_match = 0
     for pair in pairs:
-        # print(f"{pair[0]}-{pair[1]} is like {pair[2]} to ?")
         sims = model.doc2vec.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
         if sims[0][0] == pair[3]:
-            print(f"Perfect: {pair[0]}-{pair[1]} is like {pair[2]}-{pair[3]}")
+            #print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
             perfect_match += 1
             topn_match += 1
         else:
             if pair[3] in [item[0] for item in sims]:
-                print(f"Top {n}: {pair[0]}-{pair[1]} is like {pair[2]}-{pair[3]}")
+                #print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
                 topn_match += 1
+            #else:
+            #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
 
     prop_perfect = perfect_match / len(pairs)
     prop_topn = topn_match / len(pairs)
@@ -122,7 +123,8 @@ if __name__ == "__main__":
 
         # Test
         do_contrafacts_test(mod)
-        do_self_similarity_test(mod)
+		if True:
+        	do_self_similarity_test(mod)
 
         if p == 'rootAndDegreesPlus':
             do_chord_analogy_test(mod)
