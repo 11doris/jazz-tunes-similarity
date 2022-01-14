@@ -79,7 +79,7 @@ def test_chords():
     assert errors == 0
 
 
-def test_chords_rootAndDegreesSimplified():
+def test_chords_chordsSimplified():
     files = ['./fixtures/All Chords Part1.xml',
              './fixtures/All Chords Part2.xml']
 
@@ -109,7 +109,7 @@ def test_chords_rootAndDegreesSimplified():
     data_obj.set_json_paths(tunes_path=tunes_path, meta_path=meta_path)
 
     # generate the chord sequence
-    data, names = data_obj.rootAndDegreesSimplified()
+    data, names = data_obj.chordsSimplified()
 
     sequences = []
     for i in range(len(data)):

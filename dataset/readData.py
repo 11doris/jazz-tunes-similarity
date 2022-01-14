@@ -103,7 +103,7 @@ class ReadData():
         return self.readData(modifier)
 
 
-    def rootAndDegreesSimplified(self):
+    def chordsSimplified(self):
         """
         Reduce 9, 11, 13 chords to 7 chords
         Reduce aug, sus to 7 chords

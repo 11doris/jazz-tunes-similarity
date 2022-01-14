@@ -386,7 +386,7 @@ if __name__ == "__main__":
 
     # select the model
     model = 'LSI'
-    preprocessing = 'rootAndDegreesSimplified'
+    preprocessing = 'chordsSimplified'
 
     # Load the Model
     if model == 'LSI':

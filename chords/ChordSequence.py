@@ -145,8 +145,8 @@ class ChordSequence:
             data, names, beats = self.data_obj.chordsBasic()
             filename = '03b_input_wordembedding_sections_chordsBasic.csv'
         else:
-            data, names, beats = self.data_obj.rootAndDegreesSimplified()
-            filename = '03b_input_wordembedding_sections_simplified.csv'
+            data, names, beats = self.data_obj.chordsSimplified()
+            filename = '03b_input_wordembedding_sections_chordsSimplified.csv'
 
         seq = self.create_sequence(data, names, mode='relative')
 

@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     input_files = [
         f'output/model/recommender_{model}_chordsBasic.zip',
-        f'output/model/recommender_{model}_rootAndDegreesSimplified.zip'
+        f'output/model/recommender_{model}_chordsSimplified.zip'
     ]
 
     df_list = []

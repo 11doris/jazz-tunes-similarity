@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
     for runs in range(1):
 
-        for p in ['chordsBasic', 'rootAndDegreesSimplified']:
+        for p in ['chordsBasic', 'chordsSimplified']:
 
             # initialize model with the chords preprocessing method
             mod = CalculateLsiModel(p)

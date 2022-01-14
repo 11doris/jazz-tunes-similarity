@@ -137,7 +137,7 @@ def plot_weights(doc2vecObj, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['rootAndDegreesSimplified', 'chordsBasic']:
+    for p in ['chordsSimplified', 'chordsBasic']:
         print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
         mod = CalculateDoc2VecModel(p)

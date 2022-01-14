@@ -76,7 +76,7 @@ def raw_chords_to_df(df):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['chordsBasic']:  # , 'rootAndDegreesSimplified']:
+    for p in ['chordsBasic']:  # , 'chordsSimplified']:
         print(f'*** Chord Preprocessing: {p} ***')
 
         # initialize model with the chords preprocessing method
