@@ -12,6 +12,7 @@ import zipfile
 import re
 from sklearn.decomposition import PCA
 import hdbscan
+import os
 
 
 def year_to_decade(year):
@@ -354,6 +355,8 @@ def plot_pca_tunes(weights):
 
 ##
 if __name__ == "__main__":
+    if not os.path.exists('images'):
+        os.makedirs('images')
     set_pandas_display_options()
     np.random.seed(31)
 
