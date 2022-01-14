@@ -6,9 +6,6 @@
   },
   "config": {
     "input": "full",
-	"use_basic_chords": true,
-    "reduce_consecutive_chords": true,
-	"N_ngrams": 4,
     "output_directory": "./chord_sequences"
   }
 }
