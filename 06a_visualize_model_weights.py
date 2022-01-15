@@ -171,10 +171,10 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
     for format in ["pdf", "png", "svg"]:
         fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap.{format}")
 
-    f = 'output/model/umap'
-    df_umap.to_csv(f'{f}_{preprocessing}.csv', encoding='utf8', index=None)
-    with zipfile.ZipFile(f'{f}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'{f}_{preprocessing}.csv')
+    f = f'output/model/umap_{mod.model_name}_{preprocessing}_{mod.get_ngrams_as_str()}'
+    df_umap.to_csv(f'{f}.csv', encoding='utf8', index=None)
+    with zipfile.ZipFile(f'{f}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{f}.csv')
 
 
 def plot_tsne_tunes(df, metric='euclidean'):
@@ -384,14 +384,15 @@ if __name__ == "__main__":
     np.random.seed(31)
 
     # select the model
-    model = 'LSA'
+    model = 'doc2vec'
     preprocessing = 'chordsBasic'
+    ngrams = [1,2]
 
     # Load the Model
     if model == 'LSA':
-        mod = CalculateLsiModel(preprocessing)
+        mod = CalculateLsiModel(preprocessing, ngrams=ngrams)
     elif model == 'doc2vec':
-        mod = CalculateDoc2VecModel(preprocessing)
+        mod = CalculateDoc2VecModel(preprocessing, ngrams=ngrams)
 
 
     mod.load_model()

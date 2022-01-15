@@ -7,12 +7,14 @@ import pandas as pd
 
 
 class CalculateLsiModel(BowModel):
-    def __init__(self, chords_preprocessing):
+    def __init__(self, chords_preprocessing, ngrams):
         self.model_name = 'lsi'
-        super().__init__(chords_preprocessing)
+        super().__init__(chords_preprocessing, ngrams)
         self.model_config = {
             'num_topics': 100  # 22, # 100 gives a better value for the contrafacts test
         }
+        self.model_filename = f'output/model/{self.model_name}_{self.chords_preprocessing}_{self.get_ngrams_as_str()}.model'
+
 
     def calculate_lsi_model(self):
         print('\n*** Calculate LSI Model ***')
@@ -26,10 +28,11 @@ class CalculateLsiModel(BowModel):
         print(self.lsi)
 
     def store_model(self):
-        self.lsi.save(f'output/model/{self.model_name}_{self.chords_preprocessing}.model')
+        self.lsi.save(f'output/model/{self.model_name}_{self.chords_preprocessing}_{self.get_ngrams_as_str()}.model')
 
     def load_model(self):
-        self.lsi = LsiModel.load(f'output/model/{self.model_name}_{self.chords_preprocessing}.model')
+        self.lsi = LsiModel.load(f'output/model/{self.model_name}_{self.chords_preprocessing}_{self.get_ngrams_as_str()}.model')
+
         # TODO get rid of self.train_dictionary and use self.lsi.id2word instead?
         self.train_dictionary = self.lsi.id2word
 

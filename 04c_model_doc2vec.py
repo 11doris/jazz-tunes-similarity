@@ -2,6 +2,7 @@ import pandas as pd
 from dataset.utils import set_pandas_display_options
 from model.CalculateDoc2VecModel import *
 from model.UseWandB import *
+from model.config import preprocess_config
 import zipfile
 
 
@@ -65,7 +66,7 @@ def do_chord_analogy_test(model):
 
 def similar_chords(doc2vecObj, preprocessing):
     model = doc2vecObj.doc2vec
-    if 1 in preprocess_config['ngrams']:
+    if 1 in doc2vecObj.ngrams:
         if preprocessing == 'chordsBasic':
             ref = 'F'
         else:
@@ -76,7 +77,7 @@ def similar_chords(doc2vecObj, preprocessing):
             print(t)
 
 
-def generate_webapp_data(doc2vecObj, preprocessing):
+def generate_webapp_data(doc2vecObj, filename):
     df_webapp = doc2vecObj.get_tune_similarity()
 
     # save to file
@@ -92,49 +93,52 @@ def generate_webapp_data(doc2vecObj, preprocessing):
               'score'
               ]]
      .reset_index()
-     .to_csv(f'output/model/recommender_{doc2vecObj.model_name}_{preprocessing}.csv', encoding='utf8', index=False)
+     .to_csv(f'{filename}.csv', encoding='utf8', index=False)
      )
 
-    with zipfile.ZipFile(f'output/model/recommender_{doc2vecObj.model_name}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'output/model/recommender_{doc2vecObj.model_name}_{preprocessing}.csv')
+    with zipfile.ZipFile(f'{filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{filename}.csv')
 
 
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['chordsBasic', 'chordsSimplified']:
-        print(f'*** Chord Preprocessing: {p} ***')
-        # initialize model with the chords preprocessing method
-        mod = CalculateDoc2VecModel(p)
+    for run in range(1):
+        for p in ['chordsBasic', 'chordsSimplified']:
+            for ngram in [[1, 2], [1, 2, 3]]:
+                print(f'*** Chord Preprocessing: {p} ***')
+                # initialize model with the chords preprocessing method
+                mod = CalculateDoc2VecModel(p, ngram)
 
-        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
-        wandb.store_input_file(mod.input_file)
+                wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
+                wandb.store_input_file(mod.input_file)
 
-        if True:
-            # Calculate the Model
-            mod.calculate_doc2vec_model()
-            mod.store_model()
+                if True:
+                    # Calculate the Model
+                    mod.calculate_doc2vec_model()
+                    mod.store_model()
 
-        mod.load_model()
+                mod.load_model()
 
-        # Store vocab size and number of total terms to wandb
-        wandb.store_result_vocab(mod.get_vocab_info())
+                # Store vocab size and number of total terms to wandb
+                wandb.store_result_vocab(mod.get_vocab_info())
 
-        # just as a visual cross-check, visualize similar chords
-        similar_chords(mod, p)
+                # just as a visual cross-check, visualize similar chords
+                similar_chords(mod, p)
 
-        # Test
-        do_contrafacts_test(mod)
-        if True:
-          do_self_similarity_test(mod)
+                # Test
+                do_contrafacts_test(mod)
+                if True:
+                  do_self_similarity_test(mod)
 
-        if p == 'chordsBasic':
-            do_chord_analogy_test(mod)
+                if p == 'chordsBasic' and 1 in ngram:
+                    do_chord_analogy_test(mod)
 
-        # Generate full data for web application
-        if True:
-            generate_webapp_data(mod, p)
-            wandb.store_artifacts(mod, p)
+                # Generate full data for web application
+                if True:
+                    f = f'output/model/recommender_{mod.model_name}_{p}_{mod.get_ngrams_as_str()}'
+                    generate_webapp_data(mod, filename=f)
+                    wandb.store_artifacts(mod, p, recommender_filename=f)
 
-        # Done.
-        wandb.finish()
+                # Done.
+                wandb.finish()

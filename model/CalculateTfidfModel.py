@@ -7,10 +7,14 @@ import pandas as pd
 
 
 class CalculateTfidfModel(BowModel):
-    def __init__(self, chords_preprocessing):
+    def __init__(self, chords_preprocessing, ngrams):
         self.model_name = 'tfidf'
-        super().__init__(chords_preprocessing)
+        super().__init__(chords_preprocessing, ngrams)
         self.model_config = {}
+        filename = f'output/model/{self.model_name}_{self.chords_preprocessing}_{self.get_ngrams_as_str()}'
+        self.model_filename = f'{filename}.model'
+        self.index_filename = f'{filename}.index'
+
 
     def calculate_tfidf_model(self):
         print('\n*** Calculate TF-IDF Model ***')
@@ -23,10 +27,10 @@ class CalculateTfidfModel(BowModel):
         print(self.tfidf)
 
     def store_model(self):
-        self.tfidf.save(f'output/model/{self.model_name}_{self.chords_preprocessing}.model')
+        self.tfidf.save(self.model_filename)
 
     def load_model(self):
-        self.tfidf = TfidfModel.load(f'output/model/{self.model_name}_{self.chords_preprocessing}.model')
+        self.tfidf = TfidfModel.load(self.model_filename)
         # TODO get rid of self.train_dictionary and use self.tfidf.id2word instead?
         self.train_dictionary = self.tfidf.id2word
 
@@ -38,10 +42,10 @@ class CalculateTfidfModel(BowModel):
         self.index_tfidf = similarities.MatrixSimilarity(self.tfidf[self.train_bow_corpus + self.test_bow_corpus],
                                                        num_features=len(self.train_dictionary))
         # Store index
-        self.index_tfidf.save(f"output/model/{self.model_name}_matrixsim_{self.chords_preprocessing}.index")
+        self.index_tfidf.save(self.index_filename)
 
     def load_similarity_matrix(self):
-        self.index_tfidf = similarities.MatrixSimilarity.load(f"output/model/{self.model_name}_matrixsim_{self.chords_preprocessing}.index")
+        self.index_tfidf = similarities.MatrixSimilarity.load(self.index_filename)
 
     def tfidf_test_contrafacts(self):
         matches, results = self.test_contrafacts(self.tfidf, self.index_tfidf, n=preprocess_config['test_topN'])

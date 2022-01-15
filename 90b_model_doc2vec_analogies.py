@@ -8,7 +8,7 @@ import plotly.express as px
 
 def diatonic_chords(doc2vecObj, preprocessing):
     model = doc2vecObj.doc2vec
-    if 1 in preprocess_config['ngrams']:
+    if 1 in doc2vecObj.ngrams:
         if preprocessing == 'chordsBasic':
             ref = 'F'
         else:
