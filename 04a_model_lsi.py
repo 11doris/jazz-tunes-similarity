@@ -9,8 +9,6 @@ import zipfile
 def calculate_model(lsiObject):
     # train the model on the train data
     lsiObject.calculate_lsi_model()
-    # after training, add the test data to the model for later querying
-    lsiObject.add_test_documents_to_model()
 
     # get the LSI topics for each tune
     df_vectors = lsiObject.get_train_tune_vectors()
@@ -68,7 +66,6 @@ if __name__ == "__main__":
     set_pandas_display_options()
 
     for runs in range(1):
-
         for p in ['chordsBasic', 'chordsSimplified']:
 
             # initialize model with the chords preprocessing method
