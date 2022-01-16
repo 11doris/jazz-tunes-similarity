@@ -1,8 +1,5 @@
 from chords.ChordSequence import ChordSequence
 from dataset.utils import set_pandas_display_options
-import pandas as pd
-from data_preparation.utils import output_preprocessing_directory
-
 
 if __name__ == "__main__":
     set_pandas_display_options()
@@ -11,6 +8,7 @@ if __name__ == "__main__":
 
     # get data including section info
     cs.split_tunes_in_sections(chords='chordsBasic')
-    cs.split_tunes_in_sections(chords='simplified')
+    cs.split_tunes_in_sections(chords='chordsSimplified')
+    cs.split_tunes_in_sections(chords='chordsFull')
 
     print("Done.")

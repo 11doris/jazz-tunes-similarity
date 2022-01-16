@@ -54,7 +54,7 @@ class ReadData():
 
         return seqs, names, beats
 
-    # return root, 'm' for minor, '7' for dominant, 'm7' for minor dominant, 'dim' for diminished TODO m7b5?
+    # return full chords
     def rootAndDegrees(self):
         return self.readData(lambda x: x)
 

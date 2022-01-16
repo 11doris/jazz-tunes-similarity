@@ -144,9 +144,14 @@ class ChordSequence:
         if chords == 'chordsBasic':
             data, names, beats = self.data_obj.chordsBasic()
             filename = '03b_input_wordembedding_sections_chordsBasic.csv'
-        else:
+        elif chords == 'chordsSimplified':
             data, names, beats = self.data_obj.chordsSimplified()
             filename = '03b_input_wordembedding_sections_chordsSimplified.csv'
+        elif chords == 'chordsFull':
+            data, names, beats = self.data_obj.rootAndDegrees()
+            filename = '03b_input_wordembedding_sections_chordsFull.csv'
+        else:
+            raise ValueError(f'Unsupported chords vocabulary: {chords}. Should be chordsBasic, chordsSimplified, or chordsFull.')
 
         seq = self.create_sequence(data, names, mode='relative')
 
@@ -198,19 +203,3 @@ class ChordSequence:
         print(f'Wrote dataframe to {filename}.')
 
         return df
-
-
-    # TODO this is probably not used; repeated chords are removed in the colab file.
-    def remove_repeated_chords(self, seq):
-        out = []
-        for tune in seq:
-            last_chord = None
-            tune_norep = []
-            flattened_chords = [chord for bar in tune for chord in bar]
-            for chord in flattened_chords:
-                if chord != last_chord:
-                    tune_norep.append(chord)
-                    last_chord = chord
-            out.append(tune_norep)
-        return out
-
