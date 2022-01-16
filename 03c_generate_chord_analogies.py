@@ -22,6 +22,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": minor-to-dominant"] = test_list
+    test_list = []
 
     print('major to minor progressions')
     chord_1 = ''
@@ -32,6 +34,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": major-to-minor"] = test_list
+    test_list = []
 
     print('dominant to minor progressions')
     chord_1 = '7'
@@ -42,6 +46,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": dominant-to-minor"] = test_list
+    test_list = []
 
     print('dominant-to-minor half-step down')
     chord_1 = '7'
@@ -52,6 +58,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": dominant-to-minor-half-step-down"] = test_list
+    test_list = []
 
     print('minor-to-dominant half-step down')
     chord_1 = 'm'
@@ -62,6 +70,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": minor-to-dominant-half-step-down"] = test_list
+    test_list = []
 
     print('V-I progressions')
     chord_1 = '7'
@@ -72,6 +82,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": V-I"] = test_list
+    test_list = []
 
     print('II-V progressions')
     chord_1 = 'm'
@@ -82,6 +94,8 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord_1 + " " + KEYS[(note + interval) % 12] + chord_2 + " " + KEYS[
                 (diff + note) % 12] + chord_1 + " " + KEYS[(diff + note + interval) % 12] + chord_2
             test_list.append(row)
+    test_dict[": ii-V"] = test_list
+    test_list = []
 
     print('generate V/V-V_progression')
     chord = '7'
@@ -91,6 +105,12 @@ def generate_validation_file(file_name):
             row = KEYS[note] + chord + " " + KEYS[(note + interval) % 12] + chord + " " + KEYS[
                 (diff + note) % 12] + chord + " " + KEYS[(diff + note + interval) % 12] + chord
             test_list.append(row)
+    test_dict[": V/V-V"] = test_list
+
+    test_list = []
+    for k, v in zip(test_dict.keys(), test_dict.values()):
+        test_list.append(k)
+        test_list = test_list + v
 
     print(f"Generated {len(test_list)} chord analogies.")
     print("Saving test file: " + file_name)

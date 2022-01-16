@@ -1,3 +1,4 @@
+: minor-to-dominant
 Am A7 Bbm Bb7
 Am A7 Bm B7
 Am A7 Cm C7
@@ -130,6 +131,7 @@ Abm Ab7 Em E7
 Abm Ab7 Fm F7
 Abm Ab7 F#m F#7
 Abm Ab7 Gm G7
+: major-to-minor
 A Am Bb Bbm
 A Am B Bm
 A Am C Cm
@@ -262,6 +264,7 @@ Ab Abm E Em
 Ab Abm F Fm
 Ab Abm F# F#m
 Ab Abm G Gm
+: dominant-to-minor
 A7 Am Bb7 Bbm
 A7 Am B7 Bm
 A7 Am C7 Cm
@@ -394,6 +397,7 @@ Ab7 Abm E7 Em
 Ab7 Abm F7 Fm
 Ab7 Abm F#7 F#m
 Ab7 Abm G7 Gm
+: dominant-to-minor-half-step-down
 A7 Abm Bb7 Am
 A7 Abm B7 Bbm
 A7 Abm C7 Bm
@@ -526,6 +530,7 @@ Ab7 Gm E7 Ebm
 Ab7 Gm F7 Em
 Ab7 Gm F#7 Fm
 Ab7 Gm G7 F#m
+: minor-to-dominant-half-step-down
 Am Ab7 Bbm A7
 Am Ab7 Bm Bb7
 Am Ab7 Cm B7
@@ -658,6 +663,7 @@ Abm G7 Em Eb7
 Abm G7 Fm E7
 Abm G7 F#m F7
 Abm G7 Gm F#7
+: V-I
 A7 D Bb7 Eb
 A7 D B7 E
 A7 D C7 F
@@ -790,6 +796,7 @@ Ab7 C# E7 A
 Ab7 C# F7 Bb
 Ab7 C# F#7 B
 Ab7 C# G7 C
+: ii-V
 Am D7 Bbm Eb7
 Am D7 Bm E7
 Am D7 Cm F7
@@ -922,6 +929,7 @@ Abm C#7 Em A7
 Abm C#7 Fm Bb7
 Abm C#7 F#m B7
 Abm C#7 Gm C7
+: V/V-V
 A7 D7 Bb7 Eb7
 A7 D7 B7 E7
 A7 D7 C7 F7
