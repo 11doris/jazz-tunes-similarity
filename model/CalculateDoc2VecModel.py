@@ -69,6 +69,10 @@ class CalculateDoc2VecModel(EmbeddingModel):
     def chord_analogy(self, n=5):
         model = self.doc2vec
 
+        word_analogies_file = 'tests/fixtures/test_chord_analogies.txt'
+        score = round(model.wv.evaluate_word_analogies(word_analogies_file)[0], 4)
+        print(score)
+
         with open('tests/fixtures/test_chord_analogies.txt') as f:
             lines = f.read().splitlines()
 
@@ -76,17 +80,20 @@ class CalculateDoc2VecModel(EmbeddingModel):
         perfect_match = 0
         topn_match = 0
         for pair in pairs:
-            sims = model.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
-            if sims[0][0] == pair[3]:
-                # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-                perfect_match += 1
-                topn_match += 1
+            if pair[0] == ':':
+                continue
             else:
-                if pair[3] in [item[0] for item in sims]:
-                    # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                sims = model.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
+                if sims[0][0] == pair[3]:
+                    # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                    perfect_match += 1
                     topn_match += 1
-                # else:
-                #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                else:
+                    if pair[3] in [item[0] for item in sims]:
+                        # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                        topn_match += 1
+                    # else:
+                    #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
 
         prop_perfect = perfect_match / len(pairs)
         prop_topn = topn_match / len(pairs)
