@@ -130,16 +130,16 @@ def test_chords_chordsSimplified():
             'Cm7b5', 'CM7', 'Cm7', 'C7',
             'C7sus4', 'CM7', 'Cm7', 'C13',
             'C7sus4', 'C6', 'Cm6', 'CmM7',
-            'CmM7', 'CM7', 'CM7', 'Cm'
+            'CmM7', 'CM7', 'CM7', 'Cm(+b6)'
         ],
         [
-            'Cm', 'CdimM7', 'CM7', 'C',
+            'Cmaug', 'CdimM7', 'CaugM7', 'C',
             'Cm', 'Cm7b5', 'Cm7b5', 'C',
-            'C', 'C', 'Cdim', 'Cm7b5',
-            'C7', 'C7', 'C7(+b5)', 'C7',
+            'C', 'Caug', 'Cdim', 'Cm7b5',
+            'C7', 'C7', 'C7(+b5)', 'Caug7',
             'C7', 'C7', 'C7', 'C13',
-            'C7', 'C7', 'C7(+b5)', 'C7',
-            'C7', 'C7(+b5)', 'C7', 'C7'
+            'C7', 'Caug7', 'C7(+b5)', 'C7',
+            'Caug7', 'C7(+b5)', 'C7', 'C7'
         ]
     ]
 
