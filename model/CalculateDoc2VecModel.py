@@ -4,6 +4,18 @@ from gensim.models.doc2vec import Doc2Vec
 from tqdm import tqdm
 from collections import Counter
 
+
+def _evaluate_word_analogies(section):
+    correct = len(section['correct'])
+    topn = len(section['topn'])
+    incorrect = len(section['incorrect'])
+
+    if correct + topn + incorrect > 0:
+        perfect = correct / (correct + topn + incorrect)
+        topn = topn / (correct + topn + incorrect)
+        return perfect, topn
+
+
 class CalculateDoc2VecModel(EmbeddingModel):
     def __init__(self, chords_preprocessing, ngrams):
         self.model_name = 'doc2vec'
@@ -73,32 +85,79 @@ class CalculateDoc2VecModel(EmbeddingModel):
         score = round(model.wv.evaluate_word_analogies(word_analogies_file)[0], 4)
         print(score)
 
-        with open('tests/fixtures/test_chord_analogies.txt') as f:
-            lines = f.read().splitlines()
+        analogies = 'tests/fixtures/test_chord_analogies.txt'
+        sections = []
+        scores = []
+        section = None
 
-        pairs = [line.split(" ") for line in lines]
-        perfect_match = 0
-        topn_match = 0
-        for pair in pairs:
-            if pair[0] == ':':
-                continue
-            else:
-                sims = model.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
-                if sims[0][0] == pair[3]:
-                    # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-                    perfect_match += 1
-                    topn_match += 1
+        with open(analogies, 'rb') as fin:
+            for line_no, line in enumerate(fin):
+                line = line.decode('unicode-escape')
+                if line.startswith(': '):
+                    # a new section starts => store the old section
+                    if section:
+                        sections.append(section)
+                        perfect, topn = _evaluate_word_analogies(section)
+                        scores.append({'section': section['section'], 'correct': perfect, 'topn': topn,
+                                       'incorrect': 1 - perfect - topn})
+                        print(
+                            f"{section['section']}, {100 * perfect:.2f}% perfect match, {100 * topn:.2f}% top {n} match")
+
+                    section = {'section': line.lstrip(': ').strip(), 'correct': [], 'topn': [], 'incorrect': []}
                 else:
-                    if pair[3] in [item[0] for item in sims]:
-                        # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                    perfect_match = 0
+                    topn_match = 0
+                    pair = line.strip().split(" ")
+                    sims = self.doc2vec.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
+                    if sims[0][0] == pair[3]:
+                        # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                        section['correct'].append(pair)
+                        perfect_match += 1
                         topn_match += 1
-                    # else:
-                    #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                    else:
+                        if pair[3] in [item[0] for item in sims]:
+                            # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                            topn_match += 1
+                            section['topn'].append(pair)
+                        else:
+                            section['incorrect'].append(pair)
+            # append last section
+            if section:
+                sections.append(section)
+                perfect, topn = _evaluate_word_analogies(section)
+                scores.append({'section': section['section'], 'correct': perfect, 'topn': topn, 'incorrect': 1 - perfect - topn})
+                print(f"{section['section']}, {100 * perfect:.2f}% perfect match, {100 * topn:.2f}% top {n} match")
 
-        prop_perfect = perfect_match / len(pairs)
-        prop_topn = topn_match / len(pairs)
+                # append overall result
+                correct = 0.0
+                topn = 0.0
+                incorrect = 0.0
+                for score in scores:
+                    correct += score['correct']
+                    topn += score['topn']
+                    incorrect += score['incorrect']
+                overall = {'section': 'overall', 'correct': correct/len(scores), 'topn': topn/len(scores), 'incorrect': incorrect/len(scores)}
 
-        return {
-            'perfect': prop_perfect,
-            'topn': prop_topn,
-        }
+        print()
+        print("Found these perfect matches for chord analogies:")
+        for section in sections:
+            print(f"{section['section']}: ")
+            for analogy in section['correct']:
+                print(f"\t{analogy}")
+
+        print()
+        print(f"Found these top {n} matches for chord analogies:")
+        for section in sections:
+            print(f"{section['section']}: ")
+            for analogy in section['topn']:
+                print(f"\t{analogy}")
+
+        print()
+        print("Scores")
+        print()
+        for score in scores:
+            print(score)
+        print('Overall:')
+        print(overall)
+
+        return scores, overall

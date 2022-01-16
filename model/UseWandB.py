@@ -65,16 +65,17 @@ class UseWandB:
                 },
             })
 
-    def store_result_chord_analogy(self, analogy, topn):
+    def store_result_chord_analogy(self, analogy, df_scores, topn):
         if not self.use:
             return
 
         wandb.log(
             {
                 'analogy': {
-                    'perfect': analogy[0],
+                    'correct': analogy[0],
                     'topn': analogy[1],
                     'n': topn,
+                    'results': wandb.Table(data=df_scores),
                 },
             })
 

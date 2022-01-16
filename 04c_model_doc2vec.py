@@ -36,13 +36,21 @@ def do_self_similarity_test(doc2vecObj):
 
 
 def do_chord_analogy_test(model):
+    if p != 'chordsBasic':
+        print("Chord Analogy Test: Can only do test for chordsBasic vocabulary.")
+        return
+    if  1 not in ngram:
+        print("Chord Analogy Test: Can only do test if ngrams=1 are contained in the vocabulary.")
+
     n = 5
-    result = model.chord_analogy(n=5)
+    single_scores, overall = model.chord_analogy(n=5)
     print()
     print(f"Chord Analogy Test:")
-    print(f"Perfect matches: {100 * result['perfect']:.3}%")
-    print(f"Top {n} matches: {100 * result['topn']:.3}%")
-    wandb.store_result_chord_analogy([result['perfect'], result['topn']], n)
+    print(f"Correct matches: {100 * overall['correct']:.3}%")
+    print(f"Top {n} matches: {100 * overall['topn']:.3}%")
+    wandb.store_result_chord_analogy([overall['correct'], overall['topn']],
+                                     pd.DataFrame(single_scores),
+                                     n)
 
 
 def similar_chords(doc2vecObj, preprocessing):
@@ -86,7 +94,7 @@ if __name__ == "__main__":
 
     for run in range(1):
         for p in ['chordsBasic', 'chordsSimplified']:
-            for ngram in [[1, 2], [1, 2, 3]]:
+            for ngram in [[1, 2]]:
                 print(f'*** Chord Preprocessing: {p} ***')
                 # initialize model with the chords preprocessing method
                 mod = CalculateDoc2VecModel(p, ngram)

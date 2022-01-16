@@ -57,13 +57,21 @@ def similar_chords(doc2vecObj, preprocessing):
 
 
 def do_chord_analogy_test(model):
+    if p != 'chordsBasic':
+        print("Chord Analogy Test: Can only do test for chordsBasic vocabulary.")
+        return
+    if  1 not in ngram:
+        print("Chord Analogy Test: Can only do test if ngrams=1 are contained in the vocabulary.")
+
     n = 5
-    result = model.chord_analogy(n=5)
+    single_scores, overall = model.chord_analogy(n=5)
     print()
     print(f"Chord Analogy Test:")
-    print(f"Perfect matches: {100 * result['perfect']:.3}%")
-    print(f"Top {n} matches: {100 * result['topn']:.3}%")
-    wandb.store_result_chord_analogy([result['perfect'], result['topn']], n)
+    print(f"Correct matches: {100 * overall['correct']:.3}%")
+    print(f"Top {n} matches: {100 * overall['topn']:.3}%")
+    wandb.store_result_chord_analogy([overall['correct'], overall['topn']],
+                                     pd.DataFrame(single_scores),
+                                     n)
 
 
 def plot_weights(doc2vecObj, preprocessing):
@@ -124,7 +132,7 @@ if __name__ == "__main__":
         # initialize model with the chords preprocessing method
         run = 0
 
-        for ngram in [[1],[2],[1,2],[1,2,3]]:
+        for ngram in [[1,2],[1,2,3],[1],[2]]:
             mod = CalculateDoc2VecModel(p, ngram)
 
             for dbow_words in [1]:
@@ -167,7 +175,6 @@ if __name__ == "__main__":
                                                 calculate_model(mod)
 
                                                 similar_chords(mod, p)
-                                                #plot_weights(mod, p)
 
                                                 # Test
                                                 do_contrafacts_test(mod)
