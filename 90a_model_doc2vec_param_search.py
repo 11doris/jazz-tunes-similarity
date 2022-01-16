@@ -62,6 +62,7 @@ def do_chord_analogy_test(model):
         return
     if  1 not in ngram:
         print("Chord Analogy Test: Can only do test if ngrams=1 are contained in the vocabulary.")
+        return
 
     n = 5
     single_scores, overall = model.chord_analogy(n=5)
