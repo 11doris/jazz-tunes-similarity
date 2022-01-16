@@ -58,30 +58,12 @@ def similar_chords(doc2vecObj, preprocessing):
 
 def do_chord_analogy_test(model):
     n = 5
-
-    with open('chords_analogy.txt') as f:
-        lines = f.read().splitlines()
-
-    pairs = [line.split(" ") for line in lines]
-    perfect_match = 0
-    topn_match = 0
-    for pair in pairs:
-        # print(f"{pair[0]}-{pair[1]} is like {pair[2]} to ?")
-        sims = model.doc2vec.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
-        if sims[0][0] == pair[3]:
-            print(f"Perfect: {pair[0]}-{pair[1]} is like {pair[2]}-{pair[3]}")
-            perfect_match += 1
-            topn_match += 1
-        else:
-            if pair[3] in [item[0] for item in sims]:
-                print(f"Top {n}: {pair[0]}-{pair[1]} is like {pair[2]}-{pair[3]}")
-                topn_match += 1
-
-    prop_perfect = perfect_match / len(pairs)
-    prop_topn = topn_match / len(pairs)
-    print(f"Perfect matches: {100 * prop_perfect:.3}%")
-    print(f"Top {n} matches: {100 * prop_topn:.3}%")
-    wandb.store_result_chord_analogy([prop_perfect, prop_topn], n)
+    result = model.chord_analogy(n=5)
+    print()
+    print(f"Chord Analogy Test:")
+    print(f"Perfect matches: {100 * result['perfect']:.3}%")
+    print(f"Top {n} matches: {100 * result['topn']:.3}%")
+    wandb.store_result_chord_analogy([result['perfect'], result['topn']], n)
 
 
 def plot_weights(doc2vecObj, preprocessing):
@@ -137,62 +119,64 @@ def plot_weights(doc2vecObj, preprocessing):
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['chordsSimplified', 'chordsBasic']:
+    for p in ['chordsBasic', 'chordsSimplified']:
         print(f'*** Chord Preprocessing: {p} ***')
         # initialize model with the chords preprocessing method
-        mod = CalculateDoc2VecModel(p)
-
         run = 0
-        for dbow_words in [1]:
-            for sample in [0.01, 0.001]:
-                for vector_size in [300]:
-                    for window in [2,3,4]:
-                        for negative in [10, 14]:
-                            for epochs in [50]:
-                                for min_count in [20]:
-                                    for hs in [1]:
-                                        for repeat in range(5):
-                                            mod.model_config['dbow_words'] = dbow_words
-                                            mod.model_config['vector_size'] = vector_size
-                                            mod.model_config['window'] = window
-                                            mod.model_config['negative'] = negative
-                                            mod.model_config['sample'] = sample
-                                            mod.model_config['epochs'] = epochs
-                                            mod.model_config['min_count'] = min_count
-                                            mod.model_config['hs'] = hs
-                                            print()
-                                            print('-'*80)
-                                            print(mod.model_config)
-                                            print()
-                                            print(f"{p}, Search run: {run}")
-                                            print(f'dbow_words: {dbow_words}')
-                                            print(f'vector_size: {vector_size}')
-                                            print(f'window: {window}')
-                                            print(f'negative: {negative}')
-                                            print(f'sample: {sample}')
-                                            print(f'epoch: {epochs}')
-                                            print(f'min_count: {min_count}')
-                                            print(f'hs: {hs}')
-                                            print(f'repeat run: {repeat}')
-                                            run +=1
 
-                                            wandb = UseWandB(use=True, project_name='doc2vec_dbow1', data=mod, comment="")
-                                            wandb.store_input_file(mod.input_file)
+        for ngram in [[1],[2],[1,2],[1,2,3]]:
+            mod = CalculateDoc2VecModel(p, ngram)
 
-                                            # Calculate the LSI Model
-                                            calculate_model(mod)
+            for dbow_words in [1]:
+                for sample in [0.01, 0.001]:
+                    for vector_size in [300]:
+                        for window in [2,3]:
+                            for negative in [10, 12, 14]:
+                                for epochs in [50]:
+                                    for min_count in [10, 20]:
+                                        for hs in [1]:
+                                            for repeat in range(5):
+                                                mod.model_config['dbow_words'] = dbow_words
+                                                mod.model_config['vector_size'] = vector_size
+                                                mod.model_config['window'] = window
+                                                mod.model_config['negative'] = negative
+                                                mod.model_config['sample'] = sample
+                                                mod.model_config['epochs'] = epochs
+                                                mod.model_config['min_count'] = min_count
+                                                mod.model_config['hs'] = hs
+                                                print()
+                                                print('-'*80)
+                                                print(mod.model_config)
+                                                print()
+                                                print(f"{p}, Search run: {run}")
+                                                print(f'dbow_words: {dbow_words}')
+                                                print(f'vector_size: {vector_size}')
+                                                print(f'window: {window}')
+                                                print(f'negative: {negative}')
+                                                print(f'sample: {sample}')
+                                                print(f'epoch: {epochs}')
+                                                print(f'min_count: {min_count}')
+                                                print(f'hs: {hs}')
+                                                print(f'repeat run: {repeat}')
+                                                run +=1
 
-                                            similar_chords(mod, p)
-                                            #plot_weights(mod, p)
+                                                wandb = UseWandB(use=True, project_name='doc2vec_paramsearch', data=mod, comment="")
+                                                wandb.store_input_file(mod.input_file)
 
-                                            # Test
-                                            do_contrafacts_test(mod)
+                                                # Calculate the LSI Model
+                                                calculate_model(mod)
 
-                                            if p == 'chordsBasic':
-                                                do_chord_analogy_test(mod)
+                                                similar_chords(mod, p)
+                                                #plot_weights(mod, p)
 
-                                            if False:
-                                                do_self_similarity_test(mod)
+                                                # Test
+                                                do_contrafacts_test(mod)
 
-                                            # Done.
-                                            wandb.finish()
+                                                if p == 'chordsBasic':
+                                                    do_chord_analogy_test(mod)
+
+                                                if False:
+                                                    do_self_similarity_test(mod)
+
+                                                # Done.
+                                                wandb.finish()

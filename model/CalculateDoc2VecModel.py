@@ -65,3 +65,33 @@ class CalculateDoc2VecModel(EmbeddingModel):
 
     def get_vocab_info(self):
         return self.get_vocab_counts(self.doc2vec)
+
+    def chord_analogy(self, n=5):
+        model = self.doc2vec
+
+        with open('tests/fixtures/test_chord_analogies.txt') as f:
+            lines = f.read().splitlines()
+
+        pairs = [line.split(" ") for line in lines]
+        perfect_match = 0
+        topn_match = 0
+        for pair in pairs:
+            sims = model.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
+            if sims[0][0] == pair[3]:
+                # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                perfect_match += 1
+                topn_match += 1
+            else:
+                if pair[3] in [item[0] for item in sims]:
+                    # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+                    topn_match += 1
+                # else:
+                #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
+
+        prop_perfect = perfect_match / len(pairs)
+        prop_topn = topn_match / len(pairs)
+
+        return {
+            'perfect': prop_perfect,
+            'topn': prop_topn,
+        }

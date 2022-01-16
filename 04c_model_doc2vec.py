@@ -37,31 +37,12 @@ def do_self_similarity_test(doc2vecObj):
 
 def do_chord_analogy_test(model):
     n = 5
-
-    with open('tests/fixtures/test_chord_analogies.txt') as f:
-        lines = f.read().splitlines()
-
-    pairs = [line.split(" ") for line in lines]
-    perfect_match = 0
-    topn_match = 0
-    for pair in pairs:
-        sims = model.doc2vec.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
-        if sims[0][0] == pair[3]:
-            # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-            perfect_match += 1
-            topn_match += 1
-        else:
-            if pair[3] in [item[0] for item in sims]:
-                # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-                topn_match += 1
-            # else:
-            #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-
-    prop_perfect = perfect_match / len(pairs)
-    prop_topn = topn_match / len(pairs)
-    print(f"Perfect matches: {100 * prop_perfect:.3}%")
-    print(f"Top {n} matches: {100 * prop_topn:.3}%")
-    wandb.store_result_chord_analogy([prop_perfect, prop_topn], n)
+    result = model.chord_analogy(n=5)
+    print()
+    print(f"Chord Analogy Test:")
+    print(f"Perfect matches: {100 * result['perfect']:.3}%")
+    print(f"Top {n} matches: {100 * result['topn']:.3}%")
+    wandb.store_result_chord_analogy([result['perfect'], result['topn']], n)
 
 
 def similar_chords(doc2vecObj, preprocessing):
