@@ -109,7 +109,7 @@ def test_chords_chordsSimplified():
     data_obj.set_json_paths(tunes_path=tunes_path, meta_path=meta_path)
 
     # generate the chord sequence
-    data, names = data_obj.chordsSimplified()
+    data, names, beats = data_obj.chordsSimplified()
 
     sequences = []
     for i in range(len(data)):
@@ -207,21 +207,21 @@ def test_chords_chordsBasic():
     correct_chords = [
         [
             'C', 'C', 'Cm', 'C7',
-            'C7sus4', 'C', 'Cm', 'C7',
+            'C7sus4', 'C', 'Cm', 'C7(+b5)',
             'Csus4', 'C', 'Cm', 'Cdim',
             'Cm7b5', 'C', 'Cm', 'C7',
             'C7sus4', 'C', 'Cm', 'C7',
             'C7sus4', 'C', 'Cm', 'Cm',
-            'Cm', 'C', 'C', 'Cm'
+            'Cm', 'C', 'C', 'Cm(+b6)'
         ],
         [
-            'Cm', 'Cdim', 'C', 'C',
+            'Cmaug', 'Cdim', 'Caug', 'C',
             'Cm', 'Cm7b5', 'Cm7b5', 'C',
-            'C', 'C', 'Cdim', 'Cm7b5',
+            'C', 'Caug', 'Cdim', 'Cm7b5',
+            'C7', 'C7', 'C7(+b5)', 'Caug7',
             'C7', 'C7', 'C7', 'C7',
-            'C7', 'C7', 'C7', 'C7',
-            'C7', 'C7', 'C7', 'C7',
-            'C7', 'C7', 'C7', 'C7'
+            'C7', 'Caug7', 'C7(+b5)', 'C7',
+            'Caug7', 'C7(+b5)', 'C7', 'C7'
         ]
     ]
 
@@ -231,7 +231,7 @@ def test_chords_chordsBasic():
         for num, chord in enumerate(sequences[i]):
             if chord != correct_chords[i][num]:
                 errors += 1
-                print(num + 1, chord, f'!! Wrong - should be {correct_chords[i][num]}')
+                print(num + 1, chord, f'!! Wrong - should be {correct_chords[i][num]} but is {chord}')
             else:
                 print(num + 1, chord)
 
