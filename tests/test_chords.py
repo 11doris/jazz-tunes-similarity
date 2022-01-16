@@ -51,9 +51,10 @@ def test_chords():
             'C7sus4', 'CM7', 'Cm', 'C7alt',
             'Csus4', 'C6', 'Cm6', 'Cdim7',
             'Cm7b5', 'CM9', 'Cm9', 'C9',
-            'C9sus4', 'CM13', 'Cm11', 'C13',
-            'C13sus4', 'C6(+9)', 'Cm6(+9)', 'CmM7',
-            'CmM9', 'CM7(+#11)', 'CM9(+#11)', 'Cm(+b6)'
+            'C9sus4', 'CM13', 'Cm11', 'C11',
+            'C13', 'C13sus4', 'C6(+9)', 'Cm6(+9)',
+            'CmM7','CmM9', 'CM7(+#11)', 'CM9(+#11)',
+            'Cm(+b6)'
         ],
         [
             'Cmaug', 'CdimM7', 'CaugM7', 'C(+9)',
@@ -128,16 +129,17 @@ def test_chords_chordsSimplified():
             'C7sus4', 'CM7', 'Cm', 'C7(+b5)',
             'Csus4', 'C6', 'Cm6', 'Cdim7',
             'Cm7b5', 'CM7', 'Cm7', 'C7',
-            'C7sus4', 'CM7', 'Cm7', 'C13',
-            'C7sus4', 'C6', 'Cm6', 'CmM7',
-            'CmM7', 'CM7', 'CM7', 'Cm(+b6)'
+            'C7sus4', 'CM7', 'Cm7', 'C7sus4',
+            'C7', 'C7sus4', 'C6', 'Cm6',
+            'CmM7', 'CmM7', 'CM7', 'CM7',
+            'Cm(+b6)'
         ],
         [
             'Cmaug', 'CdimM7', 'CaugM7', 'C',
             'Cm', 'Cm7b5', 'Cm7b5', 'C',
             'C', 'Caug', 'Cdim', 'Cm7b5',
             'C7', 'C7', 'C7(+b5)', 'Caug7',
-            'C7', 'C7', 'C7', 'C13',
+            'C7', 'C7', 'C7', 'C7',
             'C7', 'Caug7', 'C7(+b5)', 'C7',
             'Caug7', 'C7(+b5)', 'C7', 'C7'
         ]
@@ -211,8 +213,9 @@ def test_chords_chordsBasic():
             'Csus4', 'C', 'Cm', 'Cdim',
             'Cm7b5', 'C', 'Cm', 'C7',
             'C7sus4', 'C', 'Cm', 'C7',
-            'C7sus4', 'C', 'Cm', 'Cm',
-            'Cm', 'C', 'C', 'Cm(+b6)'
+            'C7', 'C7sus4', 'C', 'Cm',
+            'Cm', 'Cm', 'C', 'C',
+            'Cm(+b6)'
         ],
         [
             'Cmaug', 'Cdim', 'Caug', 'C',

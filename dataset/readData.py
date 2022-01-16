@@ -117,6 +117,8 @@ class ReadData():
             if 1 in no7: no7.remove(1)
             if 2 in no7: no7.remove(2)
             if 3 in no7 and 4 in no7: no7.remove(3)
+            if 4 in no7 and 7 in no7 and 9 in no7 and 10 in no7: no7.remove(9) # reduce 13 to 7
+            if 4 in no7 and 5 in no7 and 7 in no7 and 10 in no7: no7.remove(4) # reduce 11 to 7
             if no7 == [7]: no7 += [4] # extend C5 to C
             if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
             if 6 in no7 and 8 in no7: no7.remove(8)
