@@ -117,9 +117,12 @@ class ReadData():
             if 1 in no7: no7.remove(1)
             if 2 in no7: no7.remove(2)
             if 3 in no7 and 4 in no7: no7.remove(3)
+            if 4 in no7 and 7 in no7 and 9 in no7 and 10 in no7: no7.remove(9) # reduce 13 to 7
+            if 4 in no7 and 5 in no7 and 7 in no7 and 10 in no7: no7.remove(4) # reduce 11 to 7
             if no7 == [7]: no7 += [4] # extend C5 to C
             if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
-            if 8 in no7: no7.remove(8)
+            if 6 in no7 and 8 in no7: no7.remove(8)
+            if 7 in no7 and 8 in no7 and not 3 in no7: no7.remove(8)  # don't remove (+b6)
             if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
             if 3 in no7 and 5 in no7 and 7 in no7 and 10 in no7: no7.remove(5)  # reduce m11 to m
             if 5 in no7 and 9 in no7: no7.remove(9)
@@ -146,8 +149,8 @@ class ReadData():
             if no7 == [7]: no7 += [4] # extend C5 to C
             if 4 in no7 and 5 in no7: no7.remove(5)
             if 6 in no7 and 7 in no7: no7.remove(6)  # remove #11
-            if 6 in no7 and 4 in no7: no7.remove(6)  # remove b5 for major chords
-            if 8 in no7: no7.remove(8)
+            if 6 in no7 and 8 in no7: no7.remove(8)
+            if 7 in no7 and 8 in no7 and not 3 in no7: no7.remove(8)    # don't remove (+b6)
             if 9 in no7 and not 6 in no7: no7.remove(9)  # reduce m6 and 6, leave dim7
             if 9 in no7 and 11 in no7: no7.remove(9) # remove #13
             if 9 in no7 and 6 in no7: no7.remove(9)  # reduce dim7 to dim
