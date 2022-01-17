@@ -2,6 +2,7 @@ import pandas as pd
 from dataset.utils import set_pandas_display_options
 from model.CalculateDoc2VecModel import *
 from model.UseWandB import *
+from model.config import preprocess_config
 import zipfile
 
 
@@ -35,37 +36,26 @@ def do_self_similarity_test(doc2vecObj):
 
 
 def do_chord_analogy_test(model):
+    if p != 'chordsBasic':
+        print("Chord Analogy Test: Can only do test for chordsBasic vocabulary.")
+        return
+    if  1 not in ngram:
+        print("Chord Analogy Test: Can only do test if ngrams=1 are contained in the vocabulary.")
+
     n = 5
-
-    with open('tests/fixtures/test_chord_analogies.txt') as f:
-        lines = f.read().splitlines()
-
-    pairs = [line.split(" ") for line in lines]
-    perfect_match = 0
-    topn_match = 0
-    for pair in pairs:
-        sims = model.doc2vec.wv.most_similar(positive=[pair[1], pair[2]], negative=[pair[0]], topn=n)
-        if sims[0][0] == pair[3]:
-            # print(f"Found:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-            perfect_match += 1
-            topn_match += 1
-        else:
-            if pair[3] in [item[0] for item in sims]:
-                # print(f"Top {n}:     {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-                topn_match += 1
-            # else:
-            #    print(f"Not found: {pair[0]}-{pair[1]} and {pair[2]}-{pair[3]}")
-
-    prop_perfect = perfect_match / len(pairs)
-    prop_topn = topn_match / len(pairs)
-    print(f"Perfect matches: {100 * prop_perfect:.3}%")
-    print(f"Top {n} matches: {100 * prop_topn:.3}%")
-    wandb.store_result_chord_analogy([prop_perfect, prop_topn], n)
+    single_scores, overall = model.chord_analogy(n=5)
+    print()
+    print(f"Chord Analogy Test:")
+    print(f"Correct matches: {100 * overall['correct']:.3}%")
+    print(f"Top {n} matches: {100 * overall['topn']:.3}%")
+    wandb.store_result_chord_analogy([overall['correct'], overall['topn']],
+                                     pd.DataFrame(single_scores),
+                                     n)
 
 
 def similar_chords(doc2vecObj, preprocessing):
     model = doc2vecObj.doc2vec
-    if 1 in preprocess_config['ngrams']:
+    if 1 in doc2vecObj.ngrams:
         if preprocessing == 'chordsBasic':
             ref = 'F'
         else:
@@ -76,7 +66,7 @@ def similar_chords(doc2vecObj, preprocessing):
             print(t)
 
 
-def generate_webapp_data(doc2vecObj, preprocessing):
+def generate_webapp_data(doc2vecObj, filename):
     df_webapp = doc2vecObj.get_tune_similarity()
 
     # save to file
@@ -92,49 +82,52 @@ def generate_webapp_data(doc2vecObj, preprocessing):
               'score'
               ]]
      .reset_index()
-     .to_csv(f'output/model/recommender_{doc2vecObj.model_name}_{preprocessing}.csv', encoding='utf8', index=False)
+     .to_csv(f'{filename}.csv', encoding='utf8', index=False)
      )
 
-    with zipfile.ZipFile(f'output/model/recommender_{doc2vecObj.model_name}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'output/model/recommender_{doc2vecObj.model_name}_{preprocessing}.csv')
+    with zipfile.ZipFile(f'{filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{filename}.csv')
 
 
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['chordsBasic', 'chordsSimplified']:
-        print(f'*** Chord Preprocessing: {p} ***')
-        # initialize model with the chords preprocessing method
-        mod = CalculateDoc2VecModel(p)
+    for run in range(1):
+        for p in ['chordsBasic', 'chordsSimplified']:
+            for ngram in [[1,2,3]]:
+                print(f'*** Chord Preprocessing: {p} ***')
+                # initialize model with the chords preprocessing method
+                mod = CalculateDoc2VecModel(p, ngram)
 
-        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
-        wandb.store_input_file(mod.input_file)
+                wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="with b5, b6, #5")
+                wandb.store_input_file(mod.input_file)
 
-        if True:
-            # Calculate the Model
-            mod.calculate_doc2vec_model()
-            mod.store_model()
+                if True:
+                    # Calculate the Model
+                    mod.calculate_doc2vec_model()
+                    mod.store_model()
 
-        mod.load_model()
+                mod.load_model()
 
-        # Store vocab size and number of total terms to wandb
-        wandb.store_result_vocab(mod.get_vocab_info())
+                # Store vocab size and number of total terms to wandb
+                wandb.store_result_vocab(mod.get_vocab_info())
 
-        # just as a visual cross-check, visualize similar chords
-        similar_chords(mod, p)
+                # just as a visual cross-check, visualize similar chords
+                similar_chords(mod, p)
 
-        # Test
-        do_contrafacts_test(mod)
-        if True:
-          do_self_similarity_test(mod)
+                # Test
+                do_contrafacts_test(mod)
+                if True:
+                  do_self_similarity_test(mod)
 
-        if p == 'chordsBasic':
-            do_chord_analogy_test(mod)
+                if p == 'chordsBasic' and 1 in ngram:
+                    do_chord_analogy_test(mod)
 
-        # Generate full data for web application
-        if True:
-            generate_webapp_data(mod, p)
-            wandb.store_artifacts(mod, p)
+                # Generate full data for web application
+                if True:
+                    f = f'output/model/recommender_{mod.model_name}_{p}_{mod.get_ngrams_as_str()}'
+                    generate_webapp_data(mod, filename=f)
+                    wandb.store_artifacts(mod, p, recommender_filename=f)
 
-        # Done.
-        wandb.finish()
+                # Done.
+                wandb.finish()

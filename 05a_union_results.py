@@ -2,24 +2,28 @@ import pandas as pd
 from dataset.utils import set_pandas_display_options
 import matplotlib.pyplot as plt
 import zipfile
-
+from model.PrepareData import PrepareData
 
 if __name__ == "__main__":
 
     set_pandas_display_options()
 
     # define here from which model the results of the two different chord preprocessing strategies should be unified.
-    model = 'lsi'
+    model = 'doc2vec'
+    ngrams = [1,2,3,4]
+
+    # this is a hack to instantiate the get_ngrams_as_str function
+    ngram = PrepareData('chordsBasic', ngrams).get_ngrams_as_str()
 
     input_files = [
-        f'output/model/recommender_{model}_chordsBasic.zip',
-        f'output/model/recommender_{model}_chordsSimplified.zip'
+        f'output/model/recommender_{model}_chordsBasic_{ngram}.zip',
+        f'output/model/recommender_{model}_chordsBasic_ngrams-1-2-3.zip'
     ]
 
     df_list = []
     for f in input_files:
         temp_df = pd.read_csv(f)
-        temp_df['method'] = "Basic" if "Plus" in f.split('/')[-1].split('.')[0] else "Simplified"
+        temp_df['method'] = "1-2-3-4" if "1-2-3-4" in f.split('/')[-1].split('.')[0] else "1-2-3"
         df_list.append(temp_df)
 
     df_list

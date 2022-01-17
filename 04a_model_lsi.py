@@ -9,8 +9,6 @@ import zipfile
 def calculate_model(lsiObject):
     # train the model on the train data
     lsiObject.calculate_lsi_model()
-    # after training, add the test data to the model for later querying
-    lsiObject.add_test_documents_to_model()
 
     # get the LSI topics for each tune
     df_vectors = lsiObject.get_train_tune_vectors()
@@ -41,7 +39,7 @@ def do_contrafacts_test(lsiObject):
     wandb.store_result_contrafacts('lsi', matches, df_sim)
 
 
-def generate_webapp_data(lsiObject, preprocessing):
+def generate_webapp_data(lsiObject, filename):
     df_webapp = lsiObject.get_tune_similarity()
 
     # save to file
@@ -57,39 +55,40 @@ def generate_webapp_data(lsiObject, preprocessing):
               'score'
               ]]
      .reset_index()
-     .to_csv(f'output/model/recommender_lsi_{preprocessing}.csv', encoding='utf8', index=False)
+     .to_csv(f'{filename}.csv', encoding='utf8', index=False)
      )
 
-    with zipfile.ZipFile(f'output/model/recommender_lsi_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'output/model/recommender_lsi_{preprocessing}.csv')
+    with zipfile.ZipFile(f'{filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{filename}.csv')
 
 
 if __name__ == "__main__":
     set_pandas_display_options()
 
     for runs in range(1):
-
         for p in ['chordsBasic', 'chordsSimplified']:
+            for ngram in [[1,2], [1,2,3]]:
 
-            # initialize model with the chords preprocessing method
-            mod = CalculateLsiModel(p)
+                # initialize model with the chords preprocessing method
+                mod = CalculateLsiModel(p, ngram)
 
-            wandb = UseWandB(use=False, project_name='model_comparison', data=mod, comment="")
-            wandb.store_input_file(mod.input_file)
+                wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
+                wandb.store_input_file(mod.input_file)
 
-            # Calculate the LSI Model
-            calculate_model(mod)
+                # Calculate the LSI Model
+                calculate_model(mod)
 
-            # Store vocab size and number of total terms to wandb
-            wandb.store_result_vocab(mod.get_vocab_info())
+                # Store vocab size and number of total terms to wandb
+                wandb.store_result_vocab(mod.get_vocab_info())
 
-            # Test
-            do_contrafacts_test(mod)
+                # Test
+                do_contrafacts_test(mod)
 
-            # Generate full data for web application
-            if True:
-                generate_webapp_data(mod, p)
-                wandb.store_artifacts(mod, p)
+                # Generate full data for web application
+                if True:
+                    f = f'output/model/recommender_{mod.model_name}_{p}_{mod.get_ngrams_as_str()}'
+                    generate_webapp_data(mod, filename=f)
+                    wandb.store_artifacts(mod, p, recommender_filename=f)
 
-            # Done.
-            wandb.finish()
+                # Done.
+                wandb.finish()

@@ -33,7 +33,7 @@ def do_contrafacts_test(tfidfObject):
     wandb.store_result_contrafacts('tf-idf', matches, df_sim)
 
 
-def generate_webapp_data(tfidfObject, preprocessing):
+def generate_webapp_data(tfidfObject, filename):
     df_webapp = tfidfObject.get_tune_similarity()
 
     # save to file
@@ -49,37 +49,39 @@ def generate_webapp_data(tfidfObject, preprocessing):
               'score'
               ]]
      .reset_index()
-     .to_csv(f'output/model/recommender_tfidf_{preprocessing}.csv', encoding='utf8', index=False)
+     .to_csv(f'{filename}.csv', encoding='utf8', index=False)
      )
 
-    with zipfile.ZipFile(f'output/model/recommender_tfidf_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'output/model/recommender_tfidf_{preprocessing}.csv')
+    with zipfile.ZipFile(f'{filename}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{filename}.csv')
 
 
 if __name__ == "__main__":
     set_pandas_display_options()
 
-    for p in ['chordsBasic', 'chordsSimplified']:
+    for run in range(1):
+        for p in ['chordsBasic', 'chordsSimplified']:
+            for ngram in [[1,2], [1,2,3]]:
+                # initialize model with the chords preprocessing method and ngram config
+                mod = CalculateTfidfModel(p, ngram)
 
-        # initialize model with the chords preprocessing method
-        mod = CalculateTfidfModel(p)
+                wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
+                wandb.store_input_file(mod.input_file)
 
-        wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
-        wandb.store_input_file(mod.input_file)
+                # Calculate the TF-IDF Model
+                calculate_model(mod)
 
-        # Calculate the TF-IDF Model
-        calculate_model(mod)
+                # Store vocab size and number of total terms to wandb
+                wandb.store_result_vocab(mod.get_vocab_info())
 
-        # Store vocab size and number of total terms to wandb
-        wandb.store_result_vocab(mod.get_vocab_info())
+                # Test
+                do_contrafacts_test(mod)
 
-        # Test
-        do_contrafacts_test(mod)
+                # Generate full data for web application
+                if True:
+                    f = f'output/model/recommender_{mod.model_name}_{p}_{mod.get_ngrams_as_str()}'
+                    generate_webapp_data(mod, filename=f)
+                    wandb.store_artifacts(mod, p, recommender_filename=f)
 
-        # Generate full data for web application
-        if True:
-            generate_webapp_data(mod, p)
-            wandb.store_artifacts(mod, p)
-
-        # Done.
-        wandb.finish()
+                # Done.
+                wandb.finish()

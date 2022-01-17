@@ -28,7 +28,7 @@ def _get_list_of_test_tunes():
 
 
 class PrepareData:
-    def __init__(self, chords_preprocessing):
+    def __init__(self, chords_preprocessing, ngrams):
         """
         Reads the input data and stores it into dataframes:
         self.df: read from the csv. dataframe with full information; one per section and tune, same sections per tune
@@ -42,7 +42,7 @@ class PrepareData:
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
         self.chords_preprocessing = chords_preprocessing
-        self.ngrams = preprocess_config['ngrams']
+        self.ngrams = ngrams
         self.remove_repetitions = preprocess_config['remove_repetitions']
 
         self.input_file = input_files[chords_preprocessing]
@@ -218,3 +218,6 @@ class PrepareData:
         _df = (_df
                .merge(meta, left_on='tune_id', right_on='id'))
         return _df
+
+    def get_ngrams_as_str(self):
+        return "ngrams-" + "-".join([str(i) for i in self.ngrams])

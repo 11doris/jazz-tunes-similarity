@@ -65,21 +65,22 @@ class UseWandB:
                 },
             })
 
-    def store_result_chord_analogy(self, analogy, topn):
+    def store_result_chord_analogy(self, analogy, df_scores, topn):
         if not self.use:
             return
 
         wandb.log(
             {
                 'analogy': {
-                    'perfect': analogy[0],
+                    'correct': analogy[0],
                     'topn': analogy[1],
                     'n': topn,
+                    'results': wandb.Table(data=df_scores),
                 },
             })
 
 
-    def store_artifacts(self, data, chords_preprocessing):
+    def store_artifacts(self, data, chords_preprocessing, recommender_filename):
         if not self.use:
             return
 
@@ -90,8 +91,8 @@ class UseWandB:
             metadata="")
 
         # upload the model and the webapp recommender file
-        model_artifact.add_file(f'output/model/{data.model_name}_{chords_preprocessing}.model')
-        model_artifact.add_file(f'output/model/recommender_{data.model_name}_{chords_preprocessing}.zip')
+        model_artifact.add_file(data.model_filename)
+        model_artifact.add_file(f'{recommender_filename}.zip')
 
         # not all methods use an index, so upload the index file only if is available
         index_file = f"output/model/{data.model_name}_matrixsim_{chords_preprocessing}.index"

@@ -67,7 +67,7 @@ def plot_model_weights(model, preprocessing, vocab_weights):
     data = data.sortby("vocab")
 
     fig = px.imshow(data,
-                    title=f"Visualization of {model.model_name} Vocabulary Vectors<br><sup>{preprocessing}</sup>",
+                    title=f"Visualization of {model.model_name} Token Vectors<br><sup>{preprocessing}</sup>",
                     color_continuous_scale='RdBu',
                     # color_continuous_midpoint=0.5,
                     # width=500, height=400
@@ -171,10 +171,10 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
     for format in ["pdf", "png", "svg"]:
         fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap.{format}")
 
-    f = 'output/model/umap'
-    df_umap.to_csv(f'{f}_{preprocessing}.csv', encoding='utf8', index=None)
-    with zipfile.ZipFile(f'{f}_{preprocessing}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
-        zf.write(f'{f}_{preprocessing}.csv')
+    f = f'output/model/umap_{mod.model_name}_{preprocessing}_{mod.get_ngrams_as_str()}'
+    df_umap.to_csv(f'{f}.csv', encoding='utf8', index=None)
+    with zipfile.ZipFile(f'{f}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
+        zf.write(f'{f}.csv')
 
 
 def plot_tsne_tunes(df, metric='euclidean'):
@@ -291,12 +291,12 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
     fig = px.scatter(
         df_umap,
         x='UMAP1', y='UMAP2',
-        #text='vocab',
+        text='vocab',
         color='mode',
         size='print_size',
         size_max=SIZE_MAX,
         opacity=0.5,
-        title=f"{model} Vocabulary<br><sup>UMAP, {preprocessing}</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+        title=f"{model} Token Vectors<br><sup>UMAP, {preprocessing}</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
         width=800, height=500,
     )
     fig.update_traces(textposition='top center')
@@ -306,9 +306,8 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
                       margin=dict(l=25, b=0),
                       plot_bgcolor="white",
                       )
-    fig.write_image("images/06a_weights_vocab_umap.pdf")
     for format in ["pdf", "png", "svg"]:
-        fig.write_image(f"images/06a_{model}_{preprocessing}_vocab_umap_notext.{format}")
+        fig.write_image(f"images/06a_{model}_{preprocessing}_token_umap.{format}")
     return fig
 
 
@@ -339,12 +338,12 @@ def plot_pca_vocab(vocab_weights):
     fig = px.scatter(
         df_pca,
         x='PC1', y='PC2',
-        #text='vocab',
+        text='vocab',
         color='mode',
         size='print_size',
         size_max=SIZE_MAX,
         opacity=0.5,
-        title=f"{model} Vocabulary<br><sup>PCA, {preprocessing}</sup>",
+        title=f"{model} Token Vectors<br><sup>PCA, {preprocessing}</sup>",
         width=800, height=500,
     )
     fig.update_traces(textposition='top center')
@@ -354,8 +353,8 @@ def plot_pca_vocab(vocab_weights):
                       margin=dict(l=25, b=0),
                       plot_bgcolor="white",
                       )
-    for format in ["pdf", "png", "svg"]:
-        fig.write_image(f"images/06a_{model}_{preprocessing}_vocab_pca_notext.{format}")
+    for format in ["pdf", "png", "jpg", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_token_pca.{format}")
     return fig
 
 
@@ -385,14 +384,15 @@ if __name__ == "__main__":
     np.random.seed(31)
 
     # select the model
-    model = 'LSI'
-    preprocessing = 'chordsSimplified'
+    model = 'doc2vec'
+    preprocessing = 'chordsBasic'
+    ngrams = [1,2,3,4]
 
     # Load the Model
-    if model == 'LSI':
-        mod = CalculateLsiModel(preprocessing)
+    if model == 'LSA':
+        mod = CalculateLsiModel(preprocessing, ngrams=ngrams)
     elif model == 'doc2vec':
-        mod = CalculateDoc2VecModel(preprocessing)
+        mod = CalculateDoc2VecModel(preprocessing, ngrams=ngrams)
 
 
     mod.load_model()
