@@ -10,20 +10,20 @@ if __name__ == "__main__":
 
     # define here from which model the results of the two different chord preprocessing strategies should be unified.
     model = 'doc2vec'
-    ngrams = [1,2]
+    ngrams = [1,2,3,4]
 
     # this is a hack to instantiate the get_ngrams_as_str function
     ngram = PrepareData('chordsBasic', ngrams).get_ngrams_as_str()
 
     input_files = [
         f'output/model/recommender_{model}_chordsBasic_{ngram}.zip',
-        f'output/model/recommender_{model}_chordsSimplified_{ngram}.zip'
+        f'output/model/recommender_{model}_chordsBasic_ngrams-1-2-3.zip'
     ]
 
     df_list = []
     for f in input_files:
         temp_df = pd.read_csv(f)
-        temp_df['method'] = "Basic" if "Plus" in f.split('/')[-1].split('.')[0] else "Simplified"
+        temp_df['method'] = "1-2-3-4" if "1-2-3-4" in f.split('/')[-1].split('.')[0] else "1-2-3"
         df_list.append(temp_df)
 
     df_list
