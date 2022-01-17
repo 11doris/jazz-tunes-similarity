@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2019-10-29</encoding-date>
+            <encoding-date>2022-01-17</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -84,13 +84,6 @@
           <line>2</line>
         </clef>
       </attributes>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine/>
       <direction placement="above">
         <direction-type>
@@ -285,6 +278,9 @@
     <measure number="8">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>D</root-step>
@@ -322,6 +318,12 @@
     <measure number="9">
       <print new-system="yes"/>
       <attributes/>
+      <barLine/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>B</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>C</root-step>
@@ -485,6 +487,9 @@
     <measure number="16">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>A</root-step>
@@ -523,16 +528,9 @@
       <print new-system="yes"/>
       <attributes/>
       <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <direction placement="above">
         <direction-type>
-          <rehearsal>B</rehearsal>
+          <rehearsal>A</rehearsal>
         </direction-type>
       </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -723,6 +721,9 @@
     <measure number="24">
       <print/>
       <attributes/>
+      <barLine location="right">
+        <bar-style>light-light</bar-style>
+      </barLine>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>D</root-step>
@@ -760,6 +761,12 @@
     <measure number="25">
       <print new-system="yes"/>
       <attributes/>
+      <barLine/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>C</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>C</root-step>
@@ -955,30 +962,6 @@
     <measure number="32">
       <print/>
       <attributes/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
-      <barLine/>
       <barLine location="right">
         <bar-style>light-heavy</bar-style>
       </barLine>
