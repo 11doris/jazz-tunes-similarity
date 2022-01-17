@@ -386,7 +386,7 @@ if __name__ == "__main__":
     # select the model
     model = 'doc2vec'
     preprocessing = 'chordsBasic'
-    ngrams = [1,2]
+    ngrams = [1,2,3,4]
 
     # Load the Model
     if model == 'LSA':
