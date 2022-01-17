@@ -27,7 +27,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
                 'window': 3,
                 'epochs': 50,
                 'min_count': 20,
-                'negative': 14,
+                'negative': 12,
                 'sample': 0.001,
                 'seed': 42,
                 'hs': 1,

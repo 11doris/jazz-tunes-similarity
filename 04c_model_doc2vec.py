@@ -94,12 +94,12 @@ if __name__ == "__main__":
 
     for run in range(1):
         for p in ['chordsBasic', 'chordsSimplified']:
-            for ngram in [[1, 2]]:
+            for ngram in [[1,2,3]]:
                 print(f'*** Chord Preprocessing: {p} ***')
                 # initialize model with the chords preprocessing method
                 mod = CalculateDoc2VecModel(p, ngram)
 
-                wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="")
+                wandb = UseWandB(use=True, project_name='model_comparison', data=mod, comment="with b5, b6, #5")
                 wandb.store_input_file(mod.input_file)
 
                 if True:

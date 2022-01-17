@@ -133,7 +133,7 @@ if __name__ == "__main__":
         # initialize model with the chords preprocessing method
         run = 0
 
-        for ngram in [[1,2],[1,2,3],[1],[2]]:
+        for ngram in [[1,2],[1,2,3],[1], [1,2,3,4]]:
             mod = CalculateDoc2VecModel(p, ngram)
 
             for dbow_words in [1]:
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                         for window in [2,3]:
                             for negative in [10, 12, 14]:
                                 for epochs in [50]:
-                                    for min_count in [10, 20]:
+                                    for min_count in [10, 20, 30]:
                                         for hs in [1]:
                                             for repeat in range(5):
                                                 mod.model_config['dbow_words'] = dbow_words
@@ -158,6 +158,7 @@ if __name__ == "__main__":
                                                 print(mod.model_config)
                                                 print()
                                                 print(f"{p}, Search run: {run}")
+                                                print(f"ngram: {ngram}")
                                                 print(f'dbow_words: {dbow_words}')
                                                 print(f'vector_size: {vector_size}')
                                                 print(f'window: {window}')
@@ -169,7 +170,7 @@ if __name__ == "__main__":
                                                 print(f'repeat run: {repeat}')
                                                 run +=1
 
-                                                wandb = UseWandB(use=True, project_name='doc2vec_paramsearch', data=mod, comment="")
+                                                wandb = UseWandB(use=True, project_name='doc2vec_paramsearch', data=mod, comment="added b5, b6, #5")
                                                 wandb.store_input_file(mod.input_file)
 
                                                 # Calculate the LSI Model
@@ -180,8 +181,7 @@ if __name__ == "__main__":
                                                 # Test
                                                 do_contrafacts_test(mod)
 
-                                                if p == 'chordsBasic':
-                                                    do_chord_analogy_test(mod)
+                                                do_chord_analogy_test(mod)
 
                                                 if False:
                                                     do_self_similarity_test(mod)
