@@ -17,13 +17,13 @@ if __name__ == "__main__":
 
     input_files = [
         f'output/model/recommender_{model}_chordsBasic_{ngram}.zip',
-        f'output/model/recommender_{model}_chordsBasic_ngrams-1-2-3.zip'
+        f'output/model/recommender_{model}_chordsSimplified_{ngram}.zip'
     ]
 
     df_list = []
     for f in input_files:
         temp_df = pd.read_csv(f)
-        temp_df['method'] = "1-2-3-4" if "1-2-3-4" in f.split('/')[-1].split('.')[0] else "1-2-3"
+        temp_df['method'] = "Simplified" if "Simplified" in f.split('/')[-1].split('.')[0] else "Basic"
         df_list.append(temp_df)
 
     df_list

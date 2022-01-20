@@ -16,6 +16,9 @@ import os
 
 
 SIZE_MAX = 10
+WIDTH = 700
+HEIGHT = 350
+SCALE = 5
 
 
 def year_to_decade(year):
@@ -67,7 +70,7 @@ def plot_model_weights(model, preprocessing, vocab_weights):
     data = data.sortby("vocab")
 
     fig = px.imshow(data,
-                    title=f"Visualization of {model.model_name} Token Vectors<br><sup>{preprocessing}</sup>",
+                    title=f"Visualization of {model.model_name} Chord n-gram Weights<br><sup>{preprocessing}</sup>",
                     color_continuous_scale='RdBu',
                     # color_continuous_midpoint=0.5,
                     # width=500, height=400
@@ -97,7 +100,7 @@ def plot_section_vectors(model, preprocessing, df):
     return fig
 
 
-def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10):
+def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10, min_samples=10):
     df = df.reset_index(drop=True)
     if section_label is not None:
         indices = titles[titles['section_name'] == section_label].index
@@ -106,8 +109,8 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         indices = titles.index
         sections = 'all'
 
-    n_neighbors = 40
-    min_dist = 0.01
+    n_neighbors = 20
+    min_dist = 0.0001
     umap_2d = umap.UMAP(n_components=2,
                         init='random',
                         random_state=31,
@@ -132,9 +135,11 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
     df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
     # cluster the result
-    clusterer = hdbscan.HDBSCAN(min_cluster_size=cluster_size)
+    clusterer = hdbscan.HDBSCAN(min_cluster_size=cluster_size,
+                                min_samples=min_samples)
     clusterer.fit(U)
     df_umap['cluster'] = clusterer.labels_.astype(str)
+    prop_noise = 100 * len(df_umap[df_umap['cluster'] == '-1']) / len(df_umap)
 
     fig = px.scatter(
         df_umap,
@@ -142,8 +147,8 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         opacity=0.5,
         color=clusterer.labels_.astype(str),
         hover_name='title_section',
-        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}, cluster_size: {cluster_size}</sup>",
-        width=800, height=500,
+        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>UMAP metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}. HDBSCAN: cluster_size: {cluster_size}, min_samples: {min_samples}.<br>Number of Clusters: {max(clusterer.labels_)}, Noise proportion: {prop_noise:.2f}%</sup>",
+        width=WIDTH, height=450,
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
                       xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -152,7 +157,28 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
                       )
     fig.show()
 
-    # plot
+    # do the same figure but without the noise cluster and without the legend
+    fig = px.scatter(
+        df_umap[df_umap['cluster'] != "-1"],
+        x='UMAP1', y='UMAP2',
+        opacity=0.5,
+        color='cluster',
+        hover_name='title_section',
+        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>UMAP metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}. HDBSCAN: cluster_size: {cluster_size}, min_samples: {min_samples}.<br>Number of Clusters: {max(clusterer.labels_)}, Noise proportion: {prop_noise:.2f}%</sup>",
+        width=WIDTH, height=450,
+    )
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      showlegend=False
+                      )
+    for format in ["pdf", "png", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap_sections-{sections}.{format}")
+
+
+
+    # plot Publication Date
     fig = px.scatter(
         df_umap,
         x='UMAP1', y='UMAP2',
@@ -160,7 +186,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         color=df_umap['period'].astype(str),
         hover_name='title_section',
         title=f"{model} Publication Date of Tune Sections <br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
-        width=800, height=500,
+        width=WIDTH, height=450,
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
                       xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -169,9 +195,10 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
                       )
     fig.show()
     for format in ["pdf", "png", "svg"]:
-        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap.{format}")
+        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap_publicationdate.{format}")
 
-    f = f'output/model/umap_{mod.model_name}_{preprocessing}_{mod.get_ngrams_as_str()}'
+    # save UMAP restults to csv for use in the web application
+    f = f'output/model/umap_{mod.model_name}_{preprocessing}_{mod.get_ngrams_as_str()}_sections-{sections}'
     df_umap.to_csv(f'{f}.csv', encoding='utf8', index=None)
     with zipfile.ZipFile(f'{f}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
         zf.write(f'{f}.csv')
@@ -209,7 +236,7 @@ def plot_tsne_tunes(df, metric='euclidean'):
         opacity=0.5,
         color='period',
         hover_name='title_section',
-        width=800, height=500,
+        width=WIDTH, height=HEIGHT,
         title=f"{model} Tunes<br><sup>T-SNE, {preprocessing}</sup><br><sup>metric: {metric}, perplexity: {perplexity}, init: {init}</sup>"
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -296,8 +323,8 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
         size='print_size',
         size_max=SIZE_MAX,
         opacity=0.5,
-        title=f"{model} Token Vectors<br><sup>UMAP, {preprocessing}</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
-        width=800, height=500,
+        title=f"{model} Chord n-gram Weights<br><sup>UMAP, {preprocessing}</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
+        width=WIDTH, height=HEIGHT,
     )
     fig.update_traces(textposition='top center')
     fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
@@ -313,38 +340,114 @@ def plot_umap_vocab(vocab_weights, metric='euclidean'):
 
 def get_pca(data):
     pca = PCA(n_components=2)
-    scaled_data = MinMaxScaler().fit_transform(data)
+    scaled_data = StandardScaler().fit_transform(data)
 
-    pcaTr = pca.fit(scaled_data)
-    rotatedData = pcaTr.transform(scaled_data)
+    components = pca.fit_transform(scaled_data)
+    print(f"PCA Variance explained: {pca.explained_variance_ratio_}")
 
-    # # Create a data frame with the new variables. We call these new variables PC1 and PC2
-    df_pca = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2'])
-
+    df_pca = pd.DataFrame(data=components, columns=['PC1', 'PC2'])
     return df_pca
 
 
-def plot_pca_vocab(vocab_weights):
+def _get_pca_plot_data(vocab_weights, unigram=False):
     weights = vocab_weights['weights'].T
     vocab = vocab_weights['vocab']
-    df_style = get_chord_plot_styling(vocab)
+
+    # do PCA only on unigrams
+    if unigram:
+        multigram_indices = [i for i, token in enumerate(vocab) if '-' not in token]
+        weights = weights[multigram_indices]
+        vocab = [vocab[i] for i in multigram_indices]
+        assert(len(weights) == len(vocab))
 
     df_pca = get_pca(weights)
 
+    df_style = get_chord_plot_styling(vocab)
+
     df_pca['vocab'] = df_style['chord']
     df_pca['print_size'] = df_style['print_size']
+    df_pca['n'] = [(token.count('-') + 1) for i, token in enumerate(vocab)] # get n-gram n as an integer
+    df_pca['ngram'] = df_pca['n'].astype('str') # convert ngram n to string to make it categorical
     df_pca['mode'] = df_style['mode']
+    return df_pca
+
+
+def plot_pca_vocab(df, filter='none'):
+
+    if filter == 'root':
+        df_plot = df[df['mode']=='root']
+    elif filter == 'root12':
+        # filter for ngrams 1 and 2 only, only root chords
+        df_plot = df.query(f"mode=='root' & n < 3")
+    else:
+        df_plot = df[:]
 
     fig = px.scatter(
-        df_pca,
+        df_plot,
         x='PC1', y='PC2',
         text='vocab',
         color='mode',
         size='print_size',
         size_max=SIZE_MAX,
         opacity=0.5,
-        title=f"{model} Token Vectors<br><sup>PCA, {preprocessing}</sup>",
-        width=800, height=500,
+        title=f"{model} Chord n-gram Weights<br><sup>PCA, {preprocessing}</sup>",
+        width=WIDTH, height=HEIGHT,
+    )
+    fig.update_traces(textposition='top center')
+    fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      )
+
+    for format in ["pdf", "png", "jpg", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_token_pca_ngram12.{format}",
+                        width=WIDTH, height=HEIGHT,
+                        scale=5)
+    return fig
+
+
+def plot_pca_vocab_unigrams(df):
+
+    # filter for unigrams only, only root min and dom7 chords
+    df_plot = df.query(f"mode=='root' | mode=='min' | mode=='dom7'")
+
+    fig = px.scatter(
+        df_plot,
+        x='PC1', y='PC2',
+        text='vocab',
+        color='mode',
+        size='print_size',
+        size_max=SIZE_MAX,
+        opacity=0.5,
+        title=f"{model} Chord n-gram Weights<br><sup>PCA on unigrams only, {preprocessing}</sup>",
+        width=WIDTH, height=450,
+    )
+    fig.update_traces(textposition='top center')
+    fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      )
+
+    for format in ["pdf", "png", "jpg", "svg"]:
+        fig.write_image(f"images/06a_{model}_{preprocessing}_token_pca-on-unigrams-only.{format}",
+                        width=WIDTH, height=450,
+                        scale=5)
+    return fig
+
+
+def plot_pca_vocab_ngrams(df):
+
+    fig = px.scatter(
+        df,
+        x='PC1', y='PC2',
+        color='ngram',
+        opacity=0.5,
+        title=f"{model} Chord n-gram Weights<br><sup>PCA, {preprocessing}</sup>",
+        width=WIDTH, height=HEIGHT,
     )
     fig.update_traces(textposition='top center')
     fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
@@ -354,7 +457,7 @@ def plot_pca_vocab(vocab_weights):
                       plot_bgcolor="white",
                       )
     for format in ["pdf", "png", "jpg", "svg"]:
-        fig.write_image(f"images/06a_{model}_{preprocessing}_token_pca.{format}")
+        fig.write_image(f"images/06a_{model}_{preprocessing}_token_pca_ngrams.{format}")
     return fig
 
 
@@ -381,7 +484,7 @@ if __name__ == "__main__":
     if not os.path.exists('images'):
         os.makedirs('images')
     set_pandas_display_options()
-    np.random.seed(31)
+    np.random.seed(444)
 
     # select the model
     model = 'doc2vec'
@@ -403,7 +506,7 @@ if __name__ == "__main__":
     # get the LSI topics for each tune
     df_vectors = mod.get_train_tune_vectors()
 
-    if True:
+    if False:
         # a) Plot model weights
         fig = plot_model_weights(mod, preprocessing, vocab_weights)
         fig.show()
@@ -418,17 +521,35 @@ if __name__ == "__main__":
     metric = 'cosine'
 
     if True:
-        fig = plot_pca_vocab(vocab_weights)
+        df_pca = _get_pca_plot_data(vocab_weights, unigram=False)
+        df_pca_unigram = _get_pca_plot_data(vocab_weights, unigram=True)
+
+        fig = plot_pca_vocab(df_pca)
+        fig.show()
+        #fig = plot_pca_vocab(df_pca, filter='root')
+        #fig.show()
+        fig = plot_pca_vocab(df_pca, filter='root12')
         fig.show()
 
+        fig = plot_pca_vocab_ngrams(df_pca)
+        fig.show()
+
+        fig = plot_pca_vocab_unigrams(df_pca_unigram)
+        fig.show()
+
+    if False:
         plot_pca_tunes(df_vectors)
 
-    if True:
+    if False:
         fig = plot_umap_vocab(vocab_weights, metric)
         fig.show()
 
     if True:
-        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=8)
+        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=10, min_samples=8)
+
+    if False:
+        plot_umap_tunes(df_vectors, metric, section_label='A', cluster_size=10, min_samples=8)
+        plot_umap_tunes(df_vectors, metric, section_label='B', cluster_size=10, min_samples=8)
 
     # TSNE
     if False:

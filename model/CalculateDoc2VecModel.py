@@ -26,7 +26,7 @@ class CalculateDoc2VecModel(EmbeddingModel):
                 'vector_size': 300,
                 'window': 3,
                 'epochs': 50,
-                'min_count': 20,
+                'min_count': 30,
                 'negative': 12,
                 'sample': 0.001,
                 'seed': 42,

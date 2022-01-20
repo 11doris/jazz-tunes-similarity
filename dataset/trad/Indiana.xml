@@ -8,7 +8,7 @@
         <rights>Made with iReal Pro</rights>
         <encoding>
             <software>iReal Pro (Android)</software>
-            <encoding-date>2021-12-22</encoding-date>
+            <encoding-date>2022-01-17</encoding-date>
             <supports element="accidental" type="no"/>
             <supports element="transpose" type="no"/>
             <supports attribute="new-page" element="print" type="yes" value="yes"/>
@@ -270,6 +270,11 @@
       <print new-system="yes"/>
       <attributes/>
       <barLine/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>B</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>B</root-step>
@@ -452,7 +457,7 @@
       <barLine/>
       <direction placement="above">
         <direction-type>
-          <rehearsal>B</rehearsal>
+          <rehearsal>C</rehearsal>
         </direction-type>
       </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
@@ -635,6 +640,11 @@
       <print new-system="yes"/>
       <attributes/>
       <barLine/>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal>D</rehearsal>
+        </direction-type>
+      </direction>
       <harmony print-frame="no" default-y="25" relative-x="10">
         <root>
           <root-step>F</root-step>
