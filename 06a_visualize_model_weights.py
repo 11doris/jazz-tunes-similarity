@@ -16,7 +16,7 @@ import os
 
 
 SIZE_MAX = 10
-WIDTH = 600
+WIDTH = 700
 HEIGHT = 350
 SCALE = 5
 
@@ -100,7 +100,7 @@ def plot_section_vectors(model, preprocessing, df):
     return fig
 
 
-def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10):
+def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10, min_samples=10):
     df = df.reset_index(drop=True)
     if section_label is not None:
         indices = titles[titles['section_name'] == section_label].index
@@ -109,8 +109,8 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         indices = titles.index
         sections = 'all'
 
-    n_neighbors = 40
-    min_dist = 0.01
+    n_neighbors = 20
+    min_dist = 0.0001
     umap_2d = umap.UMAP(n_components=2,
                         init='random',
                         random_state=31,
@@ -135,9 +135,11 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
     df_umap['period'] = df_umap['year'].replace(np.nan, 0).apply(lambda year: year_to_period(year))
 
     # cluster the result
-    clusterer = hdbscan.HDBSCAN(min_cluster_size=cluster_size)
+    clusterer = hdbscan.HDBSCAN(min_cluster_size=cluster_size,
+                                min_samples=min_samples)
     clusterer.fit(U)
     df_umap['cluster'] = clusterer.labels_.astype(str)
+    prop_noise = 100 * len(df_umap[df_umap['cluster'] == '-1']) / len(df_umap)
 
     fig = px.scatter(
         df_umap,
@@ -145,7 +147,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         opacity=0.5,
         color=clusterer.labels_.astype(str),
         hover_name='title_section',
-        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}, cluster_size: {cluster_size}</sup>",
+        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>UMAP metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}. HDBSCAN: cluster_size: {cluster_size}, min_samples: {min_samples}.<br>Number of Clusters: {max(clusterer.labels_)}, Noise proportion: {prop_noise:.2f}%</sup>",
         width=WIDTH, height=450,
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -155,7 +157,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
                       )
     fig.show()
     for format in ["pdf", "png", "svg"]:
-        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap.{format}")
+        fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap_sections-{sections}.{format}")
 
     # plot
     fig = px.scatter(
@@ -177,7 +179,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10)
         fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap_publicationdate.{format}")
 
     # save UMAP restults to csv for use in the web application
-    f = f'output/model/umap_{mod.model_name}_{preprocessing}_{mod.get_ngrams_as_str()}'
+    f = f'output/model/umap_{mod.model_name}_{preprocessing}_{mod.get_ngrams_as_str()}_sections-{sections}'
     df_umap.to_csv(f'{f}.csv', encoding='utf8', index=None)
     with zipfile.ZipFile(f'{f}.zip', 'w', zipfile.ZIP_DEFLATED) as zf:
         zf.write(f'{f}.csv')
@@ -321,12 +323,10 @@ def get_pca(data):
     pca = PCA(n_components=2)
     scaled_data = StandardScaler().fit_transform(data)
 
-    pcaTr = pca.fit(scaled_data)
-    rotatedData = pcaTr.transform(scaled_data)
+    components = pca.fit_transform(scaled_data)
+    print(f"PCA Variance explained: {pca.explained_variance_ratio_}")
 
-    # # Create a data frame with the new variables. We call these new variables PC1 and PC2
-    df_pca = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2'])
-
+    df_pca = pd.DataFrame(data=components, columns=['PC1', 'PC2'])
     return df_pca
 
 
@@ -367,7 +367,7 @@ def plot_pca_vocab(df, filter='none'):
         df_plot,
         x='PC1', y='PC2',
         text='vocab',
-        color='ngram',
+        color='mode',
         size='print_size',
         size_max=SIZE_MAX,
         opacity=0.5,
@@ -469,7 +469,7 @@ if __name__ == "__main__":
 
     # select the model
     model = 'doc2vec'
-    preprocessing = 'chordsBasic'
+    preprocessing = 'chordsSimplified'
     ngrams = [1,2,3,4]
 
     # Load the Model
@@ -526,7 +526,11 @@ if __name__ == "__main__":
         fig.show()
 
     if True:
-        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=8)
+        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=10, min_samples=8)
+
+    if False:
+        plot_umap_tunes(df_vectors, metric, section_label='A', cluster_size=10, min_samples=8)
+        plot_umap_tunes(df_vectors, metric, section_label='B', cluster_size=10, min_samples=8)
 
     # TSNE
     if False:
