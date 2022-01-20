@@ -57,13 +57,14 @@ def similar_chords(doc2vecObj, preprocessing):
     model = doc2vecObj.doc2vec
     if 1 in doc2vecObj.ngrams:
         if preprocessing == 'chordsBasic':
-            ref = 'F'
+            ref = ['C', 'F', 'G', 'Bb', 'Eb', 'Ab', 'C#', 'D', 'A', 'E', 'B', 'F#']
         else:
-            ref = 'FM7'
+            ref = ['FM7']
 
-        print(f"\nMost similar to {ref}:")
-        for t in model.wv.similar_by_word(ref, topn=20):
-            print(t)
+        for root in ref:
+            print(f"\nMost similar to {root}:")
+            for t in model.wv.similar_by_word(root, topn=10):
+                print(t)
 
 
 def generate_webapp_data(doc2vecObj, filename):
@@ -94,7 +95,7 @@ if __name__ == "__main__":
 
     for run in range(1):
         for p in ['chordsBasic', 'chordsSimplified']:
-            for ngram in [[1,2,3]]:
+            for ngram in [[1,2,3,4]]:
                 print(f'*** Chord Preprocessing: {p} ***')
                 # initialize model with the chords preprocessing method
                 mod = CalculateDoc2VecModel(p, ngram)
