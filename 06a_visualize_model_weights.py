@@ -156,10 +156,29 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10,
                       plot_bgcolor="white",
                       )
     fig.show()
+
+    # do the same figure but without the noise cluster and without the legend
+    fig = px.scatter(
+        df_umap[df_umap['cluster'] != "-1"],
+        x='UMAP1', y='UMAP2',
+        opacity=0.5,
+        color='cluster',
+        hover_name='title_section',
+        title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>UMAP metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}. HDBSCAN: cluster_size: {cluster_size}, min_samples: {min_samples}.<br>Number of Clusters: {max(clusterer.labels_)}, Noise proportion: {prop_noise:.2f}%</sup>",
+        width=WIDTH, height=450,
+    )
+    fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      showlegend=False
+                      )
     for format in ["pdf", "png", "svg"]:
         fig.write_image(f"images/06a_{model}_{preprocessing}_tunes_umap_sections-{sections}.{format}")
 
-    # plot
+
+
+    # plot Publication Date
     fig = px.scatter(
         df_umap,
         x='UMAP1', y='UMAP2',
@@ -469,7 +488,7 @@ if __name__ == "__main__":
 
     # select the model
     model = 'doc2vec'
-    preprocessing = 'chordsSimplified'
+    preprocessing = 'chordsBasic'
     ngrams = [1,2,3,4]
 
     # Load the Model
