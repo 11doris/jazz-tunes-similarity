@@ -17,7 +17,7 @@ import os
 
 SIZE_MAX = 10
 WIDTH = 700
-HEIGHT = 350
+HEIGHT = 450
 SCALE = 5
 
 
@@ -148,7 +148,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10,
         color=clusterer.labels_.astype(str),
         hover_name='title_section',
         title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>UMAP metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}. HDBSCAN: cluster_size: {cluster_size}, min_samples: {min_samples}.<br>Number of Clusters: {max(clusterer.labels_)}, Noise proportion: {prop_noise:.2f}%</sup>",
-        width=WIDTH, height=450,
+        width=WIDTH, height=HEIGHT,
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
                       xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -165,7 +165,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10,
         color='cluster',
         hover_name='title_section',
         title=f"{model} Clustered Tune Sections<br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>UMAP metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}. HDBSCAN: cluster_size: {cluster_size}, min_samples: {min_samples}.<br>Number of Clusters: {max(clusterer.labels_)}, Noise proportion: {prop_noise:.2f}%</sup>",
-        width=WIDTH, height=450,
+        width=WIDTH, height=HEIGHT,
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
                       xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -186,7 +186,7 @@ def plot_umap_tunes(df, metric='euclidean', section_label=None, cluster_size=10,
         color=df_umap['period'].astype(str),
         hover_name='title_section',
         title=f"{model} Publication Date of Tune Sections <br><sup>UMAP, {preprocessing}, {sections} sections</sup><br><sup>metric: {metric}, n_neighbors: {n_neighbors}, min_dist: {min_dist}</sup>",
-        width=WIDTH, height=450,
+        width=WIDTH, height=HEIGHT,
     )
     fig.update_layout(yaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
                       xaxis={'showline': True, 'linewidth': 1, 'linecolor': 'black', 'showgrid': False, 'showticklabels': False},
@@ -267,7 +267,7 @@ def get_chord_plot_styling(vocab):
             mode.append('dom7')
             mode_size.append(1)
         elif re.search("m$", chord):
-            mode.append('min')
+            mode.append('minor')
             mode_size.append(0.5)
         elif re.search("m7$", chord):
             mode.append('min7')
@@ -279,7 +279,7 @@ def get_chord_plot_styling(vocab):
             mode.append('M7')
             mode_size.append(0.5)
         elif re.search("[A-G][#b]?$", chord):
-            mode.append('root')
+            mode.append('major')
             mode_size.append(3)
         else:
             mode.append('else')
@@ -374,11 +374,11 @@ def _get_pca_plot_data(vocab_weights, unigram=False):
 
 def plot_pca_vocab(df, filter='none'):
 
-    if filter == 'root':
-        df_plot = df[df['mode']=='root']
-    elif filter == 'root12':
-        # filter for ngrams 1 and 2 only, only root chords
-        df_plot = df.query(f"mode=='root' & n < 3")
+    if filter == 'major':
+        df_plot = df[df['mode']=='major']
+    elif filter == 'major12':
+        # filter for ngrams 1 and 2 only, only major chords
+        df_plot = df.query(f"mode=='major' & n < 3")
     else:
         df_plot = df[:]
 
@@ -410,8 +410,8 @@ def plot_pca_vocab(df, filter='none'):
 
 def plot_pca_vocab_unigrams(df):
 
-    # filter for unigrams only, only root min and dom7 chords
-    df_plot = df.query(f"mode=='root' | mode=='min' | mode=='dom7'")
+    # filter for unigrams only, only major minor and dom7 chords
+    df_plot = df.query(f"mode=='major' | mode=='minor' | mode=='dom7'")
 
     fig = px.scatter(
         df_plot,
@@ -422,7 +422,7 @@ def plot_pca_vocab_unigrams(df):
         size_max=SIZE_MAX,
         opacity=0.5,
         title=f"{model} Chord n-gram Weights<br><sup>PCA on unigrams only, {preprocessing}</sup>",
-        width=WIDTH, height=450,
+        width=WIDTH, height=HEIGHT,
     )
     fig.update_traces(textposition='top center')
     fig.update_traces(textfont_size=8, selector=dict(type='scatter'))
@@ -434,7 +434,7 @@ def plot_pca_vocab_unigrams(df):
 
     for format in ["pdf", "png", "jpg", "svg"]:
         fig.write_image(f"images/06a_{model}_{preprocessing}_token_pca-on-unigrams-only.{format}",
-                        width=WIDTH, height=450,
+                        width=WIDTH, height=HEIGHT,
                         scale=5)
     return fig
 
@@ -526,9 +526,9 @@ if __name__ == "__main__":
 
         fig = plot_pca_vocab(df_pca)
         fig.show()
-        #fig = plot_pca_vocab(df_pca, filter='root')
+        #fig = plot_pca_vocab(df_pca, filter='major')
         #fig.show()
-        fig = plot_pca_vocab(df_pca, filter='root12')
+        fig = plot_pca_vocab(df_pca, filter='major12')
         fig.show()
 
         fig = plot_pca_vocab_ngrams(df_pca)
@@ -545,7 +545,7 @@ if __name__ == "__main__":
         fig.show()
 
     if True:
-        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=10, min_samples=8)
+        plot_umap_tunes(df_vectors, metric, section_label=None, cluster_size=8, min_samples=8)
 
     if False:
         plot_umap_tunes(df_vectors, metric, section_label='A', cluster_size=10, min_samples=8)
