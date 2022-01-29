@@ -7,26 +7,29 @@ import plotly.express as px
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, normalize
 from sklearn.metrics import pairwise_distances
 
+SIZE_MAX = 10
+WIDTH = 500
+HEIGHT = 500
+SCALE = 5
+
 
 def apply_pca(input_matrix):
-    # scale input data to unit variance for PCA
+    pca = PCA(n_components=2)
+
+    # scaling is not needed since the vectors are already normalized
     #scaled_data = StandardScaler().fit_transform(input_matrix)
-    pca = PCA(n_components=2, random_state=31)
 
-    # Create the transformation model for this data. Internally, it gets the rotation matrix and the explained variance
-    pcaTr = pca.fit(input_matrix)
-    # apply PCA
-    rotatedData = pcaTr.transform(input_matrix)
-
-    # Create a data frame with the new variables for the two principal components
-    _df = pd.DataFrame(data=rotatedData, columns=['PC1', 'PC2']).reset_index()
-    _df.columns = ['id', 'PC1', 'PC2']
-    return _df
+    components = pca.fit_transform(input_matrix)
+    print(f"PCA Variance explained: {pca.explained_variance_ratio_}")
+    df_pca = pd.DataFrame(data=components, columns=['PC1', 'PC2']).reset_index()
+    df_pca.columns = ['id', 'PC1', 'PC2']
+    return df_pca
 
 
-def visualize_pca(pca, subset, title="", comment=""):
+
+def visualize_pca(pca, subset, title="", comment="", show_legend=True):
     df_pca = pca.merge(subset, on='id', how='inner')
-    df_pca['marker_size'] = df_pca['relevance'].apply(lambda x: 10.0 if x == 'reference' else 1.5)
+    df_pca['marker_size'] = df_pca['relevance'].apply(lambda x: 10.0 if x in ['reference', 'positive feedback'] else 1.5)
 
     fig = px.scatter(
         df_pca,
@@ -43,9 +46,34 @@ def visualize_pca(pca, subset, title="", comment=""):
     fig.update_traces(marker=dict(line=dict(width=0,
                                             color=None)),
                       selector=dict(mode='markers'))
-    fig.update_layout(coloraxis_showscale=False,
-                      yaxis_range=[-0.5,0.5],
-                      xaxis_range=[-0.5,0.5])
+
+    fig.update_layout(yaxis={'range': [-0.4, 0.4],
+                             'showline': True,
+                             'linewidth': 1,
+                             'linecolor': 'black',
+                             'showgrid': False,
+                             'showticklabels': True},
+                      xaxis={'range': [-0.4, 0.4],
+                             'showline': True,
+                             'linewidth': 1,
+                             'linecolor': 'black',
+                             'showgrid': False,
+                             'showticklabels': True},
+                      margin=dict(l=25, b=0),
+                      plot_bgcolor="white",
+                      coloraxis_showscale=False,
+                      showlegend=show_legend,
+                      )
+
+    if show_legend:
+        width = WIDTH + 100
+    else:
+        width = WIDTH
+
+    for format in ["pdf", "jpg", "svg"]:
+        fig.write_image(f"images/91b_rocchio_{modelname}_{preprocessing}_{comment}.{format}",
+                        width=width, height=HEIGHT,
+                        scale=5)
     return fig
 
 
@@ -60,7 +88,7 @@ def get_tune_id(mod, title, section):
             'section': section}
 
 
-def get_relevant_and_irrelevant_tunes(A, ref, n=10):
+def get_relevant_and_irrelevant_tunes(A, ref, pos, n=10):
     id = ref['id']
 
     # Calculate Cosine Similarity Matrix
@@ -90,6 +118,10 @@ def get_relevant_and_irrelevant_tunes(A, ref, n=10):
                               },
                              ignore_index=True)
 
+    # mark the row with the positive feedback
+    pos_id = df_plot.loc[df_plot['id'] == pos['id']].index
+    df_plot.at[pos_id, 'relevance'] = 'positive feedback'
+
     return df_plot
 
 
@@ -100,9 +132,12 @@ if __name__ == "__main__":
 
     # Configuration
     topn = 15  # number of documents to consider for the relevance feedback
+    ngrams = [1,2,3,4]
+    preprocessing = 'chordsBasic'
+    modelname = 'Doc2Vec'
 
     # Load the LSI Model
-    mod = CalculateDoc2VecModel('chordsBasic')
+    mod = CalculateDoc2VecModel(preprocessing, ngrams=ngrams)
     mod.load_model()
     model = mod.doc2vec
 
@@ -116,17 +151,17 @@ if __name__ == "__main__":
     ##
     # Define Reference query
 
-    ref_tune = get_tune_id(mod, 'These Foolish Things [jazz1350]', 'A')
+    ref_tune = get_tune_id(mod, 'These Foolish Things [jazz1350]', 'B')
     print(f"Reference Section: {ref_tune['title']}, {ref_tune['section']}")
 
     ##
     # Define Positive Feedback
-    pos_tune = get_tune_id(mod, 'Down For Double [jazz1350]', 'A')
+    pos_tune = get_tune_id(mod, 'If I Had You [jazz1350]', 'B')
     print(f"Positive Feedback from: {pos_tune['title']}, {pos_tune['section']}")
 
     ##
     # Get the top-n relevant and irrelevant recommendations for the reference tune
-    df_plot = get_relevant_and_irrelevant_tunes(vectors_norm, ref_tune, topn)
+    df_plot = get_relevant_and_irrelevant_tunes(vectors_norm, ref_tune, pos_tune, topn)
     print(df_plot)
 
     print(df_plot.loc[:,['title', 'score']].head(topn))
@@ -136,7 +171,7 @@ if __name__ == "__main__":
     # PCA: Visualize Vectors of relevant and irrelevant recommendations
     # Note: plots are not identical because StandardScaler is used. Use MinMaxScaler to keep them consistent if needed.
     dataPCA = apply_pca(vectors_norm)
-    fig = visualize_pca(pca=dataPCA, subset=df_plot, title=ref_tune['title'], comment=f"Original Query")
+    fig = visualize_pca(pca=dataPCA, subset=df_plot, title=ref_tune['title'], comment=f"Original Query", show_legend=True)
     fig.show()
 
     ##
@@ -149,7 +184,7 @@ if __name__ == "__main__":
     q0 = A[ref_tune['id']]
     vec_positive = A[pos_tune['id']]
 
-    _alpha = 0.9
+    _alpha = 0.8
     _beta = 1.0 - _alpha
     q1 = _alpha * q0 + _beta * vec_positive
 
@@ -157,14 +192,15 @@ if __name__ == "__main__":
     A[ref_tune['id']] = q1
 
     # Get the new recommendations
-    df_plot2 = get_relevant_and_irrelevant_tunes(A, ref_tune, topn)
+    df_plot2 = get_relevant_and_irrelevant_tunes(A, ref_tune, pos_tune, topn)
     print(df_plot2.loc[:,['title', 'score']].head(topn))
     print()
 
     # Re-evaluate PCA and visualize
     dataPCA = apply_pca(A)
     fig = visualize_pca(pca=dataPCA, subset=df_plot2, title=ref_tune['title'],
-                        comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
+                        comment=f"Rocchio 01 alpha={_alpha:.1f}, beta={_beta:.1f}",
+                        show_legend=True)
     fig.show()
 
     ##
@@ -173,7 +209,7 @@ if __name__ == "__main__":
     q0 = A[ref_tune['id']]
     vec_positive = A[pos_tune['id']]
 
-    _alpha = 0.9
+    _alpha = 0.8
     _beta = 1.0 - _alpha
     q1 = _alpha * q0 + _beta * vec_positive
 
@@ -181,21 +217,15 @@ if __name__ == "__main__":
     A[ref_tune['id']] = q1
 
     # Get the new recommendations
-    df_plot3 = get_relevant_and_irrelevant_tunes(A, ref_tune, topn)
+    df_plot3 = get_relevant_and_irrelevant_tunes(A, ref_tune, pos_tune, topn)
     print(df_plot3.loc[:,['title', 'score']].head(topn))
     print()
 
     # Re-evaluate PCA and visualize
     dataPCA = apply_pca(A)
     fig = visualize_pca(pca=dataPCA, subset=df_plot3, title=ref_tune['title'],
-                        comment=f"Rocchio alpha={_alpha:.1f}, beta={_beta:.1f}")
+                        comment=f"Rocchio 02 alpha={_alpha:.1f}, beta={_beta:.1f}")
     fig.show()
 
-    # Visualize the momevent of the positive feedback
-    # df_par = df_plot.loc[:topn,['title', 'score']].merge(df_plot2.loc[:topn,['title', 'score']], on='title')
-    # df_par = df_par.merge(df_plot3.loc[:topn,['title', 'score']], on='title')
-    # df_par.columns = ['title', 'score1', 'score2', 'score3']
-    # df_par['color'] = 1
-    # df_par.at[df_par[df_par['title'] == pos_tune['title']].index[0], 'color'] = 0
-    # fig = px.parallel_coordinates(df_par, color='color')
-    # fig.show()
+    print('Done.')
+
